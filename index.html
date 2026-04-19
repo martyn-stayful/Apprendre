@@ -1,0 +1,3656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Apprendre — Martyn's French Revision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --snow: #f7f5f0;
+    --cream: #efebe0;
+    --ink: #1a2332;
+    --ink-soft: #2d3e54;
+    --pine: #2a4a3c;
+    --pine-deep: #1e3529;
+    --moss: #6b8266;
+    --ember: #c64b3b;
+    --ember-deep: #a03828;
+    --gold: #d4a24c;
+    --slate: #7a8a9a;
+    --slate-soft: #c8cdd3;
+    --paper: #fefcf7;
+    --shadow: rgba(26, 35, 50, 0.08);
+    --shadow-deep: rgba(26, 35, 50, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    background: var(--snow);
+    color: var(--ink);
+    font-family: 'Lato', -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    min-height: 100vh;
+    overscroll-behavior: none;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse 800px 400px at 80% -10%, rgba(212, 162, 76, 0.12), transparent),
+      radial-gradient(ellipse 600px 500px at -10% 30%, rgba(42, 74, 60, 0.08), transparent),
+      var(--snow);
+    min-height: 100vh;
+  }
+
+  /* ========== APP SHELL ========== */
+  .app {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 0 120px;
+    position: relative;
+  }
+
+  .topbar {
+    padding: 24px 24px 16px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(26, 35, 50, 0.08);
+    margin-bottom: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(247, 245, 240, 0.82);
+  }
+
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-mark {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    position: relative;
+  }
+
+  .logo-mark svg { width: 100%; height: 100%; }
+
+  .streak {
+    font-size: 13px;
+    color: var(--slate);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .streak strong {
+    color: var(--ember);
+    font-weight: 700;
+  }
+
+  /* ========== HOME ========== */
+  .hero {
+    padding: 20px 24px 32px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--moss);
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(32px, 7vw, 44px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--pine);
+    font-weight: 500;
+  }
+
+  .hero p {
+    color: var(--ink-soft);
+    font-size: 15px;
+    max-width: 52ch;
+  }
+
+  .phrase-of-day {
+    margin: 24px;
+    padding: 24px 24px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--pine) 0%, var(--pine-deep) 100%);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phrase-of-day::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(212, 162, 76, 0.25), transparent 70%);
+    pointer-events: none;
+  }
+
+  .phrase-of-day .eyebrow {
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .phrase-fr {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    margin-bottom: 10px;
+  }
+
+  .phrase-en {
+    font-size: 14px;
+    color: rgba(254, 252, 247, 0.7);
+    font-style: italic;
+  }
+
+  .phrase-speak {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(212, 162, 76, 0.4);
+    background: transparent;
+    color: var(--gold);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .phrase-speak:hover { background: rgba(212, 162, 76, 0.15); }
+  .phrase-speak:active { transform: scale(0.92); }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    padding: 0 24px;
+    margin: 8px 0 14px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .section-title .count {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: var(--slate);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  /* ========== MODE CARDS ========== */
+  .modes {
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .mode-card {
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-radius: 14px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: inherit;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mode-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--shadow);
+    border-color: var(--pine);
+  }
+
+  .mode-card:active { transform: translateY(0); }
+
+  .mode-card .icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+
+  .mode-card .mode-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .mode-card .mode-sub {
+    font-size: 12px;
+    color: var(--slate);
+    line-height: 1.35;
+  }
+
+  .mode-card[data-tone="flash"] .icon { background: rgba(212, 162, 76, 0.16); color: var(--gold); }
+  .mode-card[data-tone="quiz"] .icon { background: rgba(42, 74, 60, 0.12); color: var(--pine); }
+  .mode-card[data-tone="conj"] .icon { background: rgba(198, 75, 59, 0.12); color: var(--ember); }
+  .mode-card[data-tone="roleplay"] .icon { background: rgba(122, 138, 154, 0.18); color: var(--slate); }
+  .mode-card[data-tone="grammar"] .icon { background: rgba(107, 130, 102, 0.18); color: var(--moss); }
+  .mode-card[data-tone="drills"] .icon { background: rgba(30, 53, 41, 0.12); color: var(--pine-deep); }
+
+  /* ========== VIEW SYSTEM ========== */
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .view-header {
+    padding: 16px 24px 8px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(26, 35, 50, 0.12);
+    background: var(--paper);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--ink);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover { background: var(--cream); border-color: var(--pine); }
+
+  .view-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .view-sub {
+    font-size: 12px;
+    color: var(--slate);
+    margin-top: 2px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ========== DECK PICKER ========== */
+  .deck-picker {
+    padding: 16px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .deck-item {
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    color: inherit;
+    text-align: left;
+    width: 100%;
+  }
+
+  .deck-item:hover {
+    border-color: var(--pine);
+    background: var(--cream);
+  }
+
+  .deck-item .deck-name {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .deck-item .deck-meta {
+    font-size: 11px;
+    color: var(--slate);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 3px;
+  }
+
+  .deck-item .deck-count {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: var(--pine);
+    font-weight: 500;
+  }
+
+  /* ========== FLASHCARDS ========== */
+  .fc-wrap {
+    padding: 20px 24px 40px;
+  }
+
+  .fc-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: var(--slate);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .fc-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(26, 35, 50, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .fc-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pine), var(--moss));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .flashcard {
+    aspect-ratio: 3/4;
+    max-height: 58vh;
+    perspective: 1200px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+
+  .fc-face {
+    position: absolute;
+    inset: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 12px 40px var(--shadow-deep);
+  }
+
+  .fc-face.front {
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.1);
+  }
+
+  .fc-face.back {
+    background: linear-gradient(160deg, var(--pine) 0%, var(--pine-deep) 100%);
+    color: var(--paper);
+    transform: rotateY(180deg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fc-face.back::before {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    left: -60px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(212, 162, 76, 0.18), transparent 70%);
+  }
+
+  .fc-category {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--moss);
+    margin-bottom: 8px;
+  }
+
+  .fc-face.back .fc-category { color: var(--gold); }
+
+  .fc-word {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(32px, 8vw, 44px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin: auto 0;
+  }
+
+  .fc-face.front .fc-word { color: var(--ink); }
+  .fc-face.back .fc-word { color: var(--paper); }
+
+  .fc-example {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-soft);
+    padding-top: 14px;
+    border-top: 1px solid rgba(26, 35, 50, 0.1);
+    line-height: 1.4;
+  }
+
+  .fc-face.back .fc-example {
+    color: rgba(254, 252, 247, 0.8);
+    border-top-color: rgba(254, 252, 247, 0.18);
+  }
+
+  .fc-hint {
+    position: absolute;
+    bottom: 18px;
+    right: 20px;
+    font-size: 11px;
+    color: var(--slate);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .fc-face.back .fc-hint { color: rgba(254, 252, 247, 0.5); }
+
+  .fc-speak {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(26, 35, 50, 0.15);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 2;
+  }
+
+  .fc-face.back .fc-speak { border-color: rgba(212, 162, 76, 0.4); color: var(--gold); }
+  .fc-face.front .fc-speak { color: var(--pine); }
+  .fc-speak:hover { transform: scale(1.08); }
+  .fc-speak:active { transform: scale(0.92); }
+
+  .fc-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .fc-action {
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(26, 35, 50, 0.1);
+    background: var(--paper);
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all 0.15s;
+  }
+
+  .fc-action:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--shadow); }
+  .fc-action[data-rate="again"]:hover { border-color: var(--ember); color: var(--ember); }
+  .fc-action[data-rate="good"]:hover { border-color: var(--moss); color: var(--moss); }
+  .fc-action[data-rate="easy"]:hover { border-color: var(--pine); color: var(--pine); }
+
+  /* ========== QUIZ ========== */
+  .quiz-wrap { padding: 20px 24px 40px; }
+
+  .quiz-question {
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+
+  .quiz-prompt {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .quiz-prompt .blank {
+    display: inline-block;
+    min-width: 80px;
+    padding: 0 8px 2px;
+    border-bottom: 2px dashed var(--ember);
+    color: transparent;
+  }
+
+  .quiz-prompt .blank.revealed {
+    color: var(--pine);
+    border-bottom-color: var(--pine);
+    border-bottom-style: solid;
+  }
+
+  .quiz-translation {
+    font-size: 13px;
+    color: var(--slate);
+    font-style: italic;
+  }
+
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-option {
+    background: var(--paper);
+    border: 1.5px solid rgba(26, 35, 50, 0.12);
+    border-radius: 12px;
+    padding: 16px 14px;
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .quiz-option:hover { border-color: var(--pine); background: var(--cream); }
+
+  .quiz-option.correct {
+    background: rgba(107, 130, 102, 0.14);
+    border-color: var(--moss);
+    color: var(--pine-deep);
+  }
+
+  .quiz-option.wrong {
+    background: rgba(198, 75, 59, 0.1);
+    border-color: var(--ember);
+    color: var(--ember-deep);
+  }
+
+  .quiz-option:disabled { cursor: default; }
+
+  .quiz-feedback {
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .quiz-feedback.show { display: block; }
+
+  .quiz-feedback.correct {
+    background: rgba(107, 130, 102, 0.12);
+    border-left: 3px solid var(--moss);
+    color: var(--pine-deep);
+  }
+
+  .quiz-feedback.wrong {
+    background: rgba(198, 75, 59, 0.08);
+    border-left: 3px solid var(--ember);
+    color: var(--ember-deep);
+  }
+
+  .quiz-feedback strong { font-weight: 700; }
+
+  .quiz-next {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: none;
+  }
+
+  .quiz-next.show { display: block; animation: fadeIn 0.3s ease; }
+  .quiz-next:hover { background: var(--pine-deep); }
+
+  /* ========== CONJUGATION DRILL ========== */
+  .conj-wrap { padding: 20px 24px 40px; }
+
+  .conj-verb {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(34px, 8vw, 48px);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    color: var(--ember);
+    text-align: center;
+    margin: 20px 0 6px;
+    font-style: italic;
+  }
+
+  .conj-meaning {
+    text-align: center;
+    color: var(--slate);
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+
+  .conj-pronoun {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ink);
+    text-align: center;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+
+  .conj-input {
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    border: 2px solid rgba(26, 35, 50, 0.1);
+    border-radius: 14px;
+    background: var(--paper);
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .conj-input:focus { border-color: var(--pine); background: var(--cream); }
+  .conj-input.correct { border-color: var(--moss); background: rgba(107, 130, 102, 0.08); }
+  .conj-input.wrong { border-color: var(--ember); background: rgba(198, 75, 59, 0.06); }
+
+  .conj-answer {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--slate);
+    min-height: 22px;
+  }
+
+  .conj-answer strong { color: var(--pine); font-weight: 700; }
+
+  .conj-full {
+    margin-top: 32px;
+    background: var(--paper);
+    border-radius: 14px;
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    padding: 20px 22px;
+  }
+
+  .conj-full-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 12px;
+  }
+
+  .conj-full-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    padding: 7px 0;
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    border-bottom: 1px dashed rgba(26, 35, 50, 0.07);
+  }
+
+  .conj-full-row:last-child { border-bottom: none; }
+  .conj-full-row .pr { color: var(--slate); font-style: italic; }
+  .conj-full-row .fm { color: var(--ink); font-weight: 500; }
+
+  /* ========== ROLE-PLAY ========== */
+  .rp-wrap { padding: 16px 24px 40px; }
+
+  .rp-scene {
+    background: var(--paper);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    margin-bottom: 16px;
+  }
+
+  .rp-scene-head {
+    padding: 20px 22px 18px;
+    background: linear-gradient(135deg, var(--pine) 0%, var(--pine-deep) 100%);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rp-scene-head::after {
+    content: '';
+    position: absolute;
+    right: -30px;
+    top: -30px;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(212, 162, 76, 0.2), transparent 70%);
+  }
+
+  .rp-scene-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .rp-scene-ctx {
+    font-size: 13px;
+    color: rgba(254, 252, 247, 0.75);
+    font-style: italic;
+  }
+
+  .rp-dialogue {
+    padding: 18px 22px 22px;
+  }
+
+  .rp-line {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+
+  .rp-speaker {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Lato';
+    margin-top: 2px;
+  }
+
+  .rp-speaker.you { background: var(--ember); color: var(--paper); }
+  .rp-speaker.them { background: var(--cream); color: var(--ink); border: 1px solid rgba(26, 35, 50, 0.1); }
+
+  .rp-bubble {
+    flex: 1;
+    background: var(--cream);
+    padding: 12px 14px;
+    border-radius: 12px;
+    border-top-left-radius: 4px;
+  }
+
+  .rp-line.you-line .rp-bubble {
+    background: rgba(198, 75, 59, 0.08);
+    border: 1px solid rgba(198, 75, 59, 0.15);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 4px;
+  }
+
+  .rp-line.you-line { flex-direction: row-reverse; }
+
+  .rp-fr {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .rp-en {
+    font-size: 12px;
+    color: var(--slate);
+    margin-top: 4px;
+    font-style: italic;
+    line-height: 1.35;
+  }
+
+  .rp-speak {
+    background: transparent;
+    border: none;
+    color: var(--pine);
+    font-size: 14px;
+    padding: 2px 6px;
+    cursor: pointer;
+    margin-left: 6px;
+    vertical-align: middle;
+    transition: all 0.2s;
+  }
+
+  .rp-speak:hover { color: var(--ember); }
+  .rp-speak:active { transform: scale(0.88); }
+
+  .rp-notes {
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: rgba(212, 162, 76, 0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+
+  .rp-notes strong { color: var(--pine); font-weight: 700; }
+
+  /* ========== GRAMMAR NOTES ========== */
+  .gr-wrap { padding: 16px 24px 40px; }
+
+  .gr-topic {
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .gr-topic-head {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    width: 100%;
+    font-family: inherit;
+    color: inherit;
+    text-align: left;
+  }
+
+  .gr-topic-head:hover { background: var(--cream); }
+
+  .gr-topic-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .gr-chev {
+    font-size: 14px;
+    color: var(--slate);
+    transition: transform 0.25s;
+  }
+
+  .gr-topic.open .gr-chev { transform: rotate(90deg); }
+
+  .gr-body {
+    padding: 0 20px 18px;
+    display: none;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .gr-topic.open .gr-body { display: block; animation: fadeIn 0.3s ease; }
+
+  .gr-body p { margin-bottom: 10px; }
+  .gr-body em { color: var(--pine); font-style: italic; font-weight: 500; }
+  .gr-body strong { color: var(--ember); font-weight: 700; }
+
+  .gr-box {
+    background: var(--cream);
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    border-left: 3px solid var(--pine);
+  }
+
+  .gr-box .label {
+    font-family: 'Lato', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pine);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .gr-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+
+  .gr-table th, .gr-table td {
+    padding: 8px 10px;
+    border: 1px solid rgba(26, 35, 50, 0.1);
+    text-align: left;
+  }
+
+  .gr-table th {
+    background: var(--pine);
+    color: var(--paper);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .gr-table td.fr {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    color: var(--pine);
+  }
+
+  .mode-card[data-tone="stories" i] .icon { background: rgba(212, 162, 76, 0.16); color: var(--gold); }
+
+  /* ========== TIME TRACKER ========== */
+  .tracker {
+    margin: 0 24px 28px;
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-radius: 16px;
+    padding: 22px 22px 20px;
+    position: relative;
+  }
+
+  .tracker-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+
+  .tracker-ring {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+  }
+
+  .tracker-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .tracker-ring .bg-circle {
+    fill: none;
+    stroke: rgba(26, 35, 50, 0.08);
+    stroke-width: 6;
+  }
+
+  .tracker-ring .fg-circle {
+    fill: none;
+    stroke: var(--pine);
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s;
+  }
+
+  .tracker-ring.met .fg-circle {
+    stroke: var(--ember);
+  }
+
+  .tracker-ring-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .tracker-ring-num {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .tracker-ring-unit {
+    font-size: 9px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-top: 2px;
+  }
+
+  .tracker-info { flex: 1; min-width: 0; }
+
+  .tracker-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--moss);
+    margin-bottom: 4px;
+  }
+
+  .tracker-message {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    margin-bottom: 3px;
+  }
+
+  .tracker-sub {
+    font-size: 12px;
+    color: var(--slate);
+    line-height: 1.4;
+  }
+
+  .tracker-week {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(26, 35, 50, 0.1);
+  }
+
+  .week-day {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .week-bar {
+    width: 100%;
+    max-width: 22px;
+    height: 40px;
+    background: rgba(26, 35, 50, 0.06);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .week-bar-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, var(--moss), var(--pine));
+    border-radius: 6px;
+    transition: height 0.5s ease;
+  }
+
+  .week-bar.met .week-bar-fill {
+    background: linear-gradient(180deg, var(--gold), var(--ember));
+  }
+
+  .week-bar.today {
+    box-shadow: 0 0 0 2px var(--ink);
+  }
+
+  .week-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .week-day.today .week-label {
+    color: var(--ink);
+    font-weight: 900;
+  }
+
+  /* ========== STORIES ========== */
+  .sp-wrap { padding: 16px 24px 24px; display: flex; flex-direction: column; gap: 12px; }
+
+  .sp-item {
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-radius: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    color: inherit;
+    text-align: left;
+    width: 100%;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .sp-item:hover {
+    border-color: var(--pine);
+    background: var(--cream);
+    transform: translateY(-1px);
+  }
+
+  .sp-level {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--pine) 0%, var(--pine-deep) 100%);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+
+  .sp-body { flex: 1; min-width: 0; }
+
+  .sp-title {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+
+  .sp-meta {
+    font-size: 12px;
+    color: var(--slate);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .sp-tags {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .sp-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--moss);
+    background: rgba(107, 130, 102, 0.1);
+    padding: 3px 8px;
+    border-radius: 10px;
+  }
+
+  .st-wrap { padding: 16px 24px 40px; }
+
+  .st-intro {
+    background: linear-gradient(135deg, var(--pine) 0%, var(--pine-deep) 100%);
+    color: var(--paper);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .st-intro::before {
+    content: '';
+    position: absolute;
+    right: -30px;
+    top: -30px;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(212, 162, 76, 0.22), transparent 70%);
+    pointer-events: none;
+  }
+
+  .st-intro .eyebrow { color: var(--gold); margin-bottom: 8px; }
+
+  .st-intro h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+
+  .st-intro p {
+    font-size: 13px;
+    color: rgba(254, 252, 247, 0.8);
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .st-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .st-ctrl {
+    padding: 8px 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(26, 35, 50, 0.12);
+    background: var(--paper);
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all 0.15s;
+  }
+
+  .st-ctrl:hover { border-color: var(--pine); color: var(--pine); }
+
+  .st-ctrl.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .st-body {
+    background: var(--paper);
+    border-radius: 16px;
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    padding: 28px 26px;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.75;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+
+  .st-body p { margin-bottom: 16px; }
+  .st-body p:last-child { margin-bottom: 0; }
+
+  .st-body .hl {
+    cursor: pointer;
+    border-bottom: 1.5px dotted var(--ember);
+    transition: all 0.15s;
+    padding: 0 1px;
+  }
+
+  .st-body .hl:hover,
+  .st-body .hl.revealed {
+    background: rgba(212, 162, 76, 0.18);
+    border-bottom-color: var(--gold);
+    border-bottom-style: solid;
+  }
+
+  .st-body.show-all .hl {
+    background: rgba(212, 162, 76, 0.12);
+    border-bottom: 1.5px solid var(--gold);
+  }
+
+  /* Tooltip / translation popover */
+  .st-tip {
+    position: absolute;
+    z-index: 20;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    max-width: 260px;
+    box-shadow: 0 10px 30px var(--shadow-deep);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.18s, transform 0.18s;
+  }
+
+  .st-tip.show { opacity: 1; transform: translateY(0); }
+
+  .st-tip::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--ink);
+  }
+
+  .st-tip.below::after {
+    bottom: auto;
+    top: -6px;
+    border-top: none;
+    border-bottom: 6px solid var(--ink);
+  }
+
+  .st-tip .tip-en {
+    color: var(--gold);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 2px;
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+  }
+
+  .st-tip .tip-note {
+    color: rgba(254, 252, 247, 0.8);
+    font-size: 11px;
+    font-style: italic;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .st-translation {
+    margin-top: 18px;
+    padding: 18px 22px;
+    background: var(--cream);
+    border-radius: 14px;
+    border-left: 3px solid var(--gold);
+    display: none;
+  }
+
+  .st-translation.show { display: block; animation: fadeIn 0.3s ease; }
+
+  .st-translation h4 {
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pine);
+    margin-bottom: 10px;
+  }
+
+  .st-translation p {
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  .st-translation p:last-child { margin-bottom: 0; }
+
+  .st-focus {
+    margin-top: 18px;
+    padding: 16px 20px;
+    background: rgba(42, 74, 60, 0.06);
+    border-radius: 12px;
+    border-left: 3px solid var(--pine);
+  }
+
+  .st-focus h4 {
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pine);
+    margin-bottom: 8px;
+  }
+
+  .st-focus ul { list-style: none; padding: 0; }
+
+  .st-focus li {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    padding: 4px 0;
+    position: relative;
+    padding-left: 16px;
+  }
+
+  .st-focus li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--pine);
+    font-weight: 700;
+  }
+
+  .st-focus li em {
+    font-family: 'Fraunces', serif;
+    color: var(--pine);
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  /* ========== DAILY DRILLS ========== */
+  .dr-wrap { padding: 20px 24px 40px; }
+
+  .dr-intro {
+    background: linear-gradient(135deg, var(--ember) 0%, var(--ember-deep) 100%);
+    color: var(--paper);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dr-intro::before {
+    content: '';
+    position: absolute;
+    right: -40px;
+    bottom: -40px;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(212, 162, 76, 0.25), transparent 70%);
+  }
+
+  .dr-intro .eyebrow { color: var(--gold); margin-bottom: 8px; }
+  .dr-intro h3 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500; letter-spacing: -0.015em; margin-bottom: 6px; }
+  .dr-intro p { font-size: 14px; color: rgba(254, 252, 247, 0.8); }
+
+  .dr-prompt {
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.1);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 12px;
+  }
+
+  .dr-en {
+    font-size: 14px;
+    color: var(--slate);
+    font-style: italic;
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
+  }
+
+  .dr-your-turn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .dr-reveal {
+    padding: 10px 18px;
+    background: var(--pine);
+    color: var(--paper);
+    border: none;
+    border-radius: 20px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .dr-reveal:hover { background: var(--pine-deep); }
+
+  .dr-answer {
+    display: none;
+    padding-top: 14px;
+    margin-top: 10px;
+    border-top: 1px dashed rgba(26, 35, 50, 0.12);
+  }
+
+  .dr-answer.show { display: block; animation: fadeIn 0.3s ease; }
+
+  .dr-fr {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--pine);
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+
+  .dr-note {
+    font-size: 12px;
+    color: var(--slate);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* ========== END CARD ========== */
+  .end-card {
+    text-align: center;
+    padding: 40px 24px;
+    background: var(--paper);
+    border-radius: 20px;
+    margin: 20px 24px;
+    border: 1px solid rgba(26, 35, 50, 0.08);
+  }
+
+  .end-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .end-card p {
+    color: var(--slate);
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .end-score {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 400;
+    color: var(--pine);
+    line-height: 1;
+    margin: 20px 0;
+    letter-spacing: -0.04em;
+  }
+
+  .end-score .of { font-size: 24px; color: var(--slate); }
+
+  .end-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .end-btn {
+    padding: 12px 22px;
+    border-radius: 24px;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .end-btn.primary { background: var(--ink); color: var(--paper); }
+  .end-btn:hover { transform: translateY(-1px); }
+
+  /* ========== FOOTER ========== */
+  .footer {
+    text-align: center;
+    padding: 20px 24px;
+    font-size: 11px;
+    color: var(--slate);
+    letter-spacing: 0.04em;
+  }
+
+  /* ========== MOBILE TWEAKS ========== */
+  @media (max-width: 500px) {
+    .modes { grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px; }
+    .mode-card { padding: 14px 12px; }
+    .mode-card .mode-title { font-size: 15px; }
+    .mode-card .mode-sub { font-size: 11px; }
+    .topbar { padding: 18px 20px 14px; }
+    .logo { font-size: 18px; }
+    .hero { padding: 14px 20px 24px; }
+    .phrase-of-day { margin: 20px; padding: 20px; }
+    .phrase-fr { font-size: 20px; }
+    .section-title { padding: 0 20px; font-size: 18px; }
+    .deck-picker, .fc-wrap, .quiz-wrap, .conj-wrap, .rp-wrap, .gr-wrap, .dr-wrap { padding-left: 20px; padding-right: 20px; }
+    .view-header { padding: 14px 20px 6px; }
+    .quiz-options { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- ================ TOP BAR ================ -->
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-mark">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 26 L11 10 L16 18 L21 6 L28 26 Z" stroke="#2a4a3c" stroke-width="1.75" stroke-linejoin="round" fill="#efebe0"/>
+          <path d="M10 22 L22 22" stroke="#c64b3b" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      Apprendre
+    </div>
+    <div class="streak" id="streakLabel">day <strong>1</strong></div>
+  </header>
+
+  <!-- ================ HOME VIEW ================ -->
+  <section class="view active" id="home">
+    <div class="hero">
+      <div class="eyebrow">Bienvenue à Morzine</div>
+      <h1>Your French, <em>sharpened weekly.</em></h1>
+      <p>Built from your lessons — modals, comparisons, possessives, adverbs, questions. Pick up where your tutor left off.</p>
+    </div>
+
+    <div class="phrase-of-day">
+      <div class="eyebrow">Phrase du jour</div>
+      <div class="phrase-fr" id="podFr">Ça a l'air bon !</div>
+      <div class="phrase-en" id="podEn">That looks / sounds good!</div>
+      <button class="phrase-speak" onclick="speak(document.getElementById('podFr').textContent)" aria-label="Listen">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+    </div>
+
+    <div class="tracker" id="tracker">
+      <div class="tracker-head">
+        <div class="tracker-ring" id="trackerRing">
+          <svg viewBox="0 0 72 72">
+            <circle class="bg-circle" cx="36" cy="36" r="30"/>
+            <circle class="fg-circle" id="trackerFg" cx="36" cy="36" r="30"
+                    stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+          </svg>
+          <div class="tracker-ring-label">
+            <span class="tracker-ring-num" id="trackerNum">0</span>
+            <span class="tracker-ring-unit" id="trackerUnit">min</span>
+          </div>
+        </div>
+        <div class="tracker-info">
+          <div class="tracker-label">Today</div>
+          <div class="tracker-message" id="trackerMsg">Let's start</div>
+          <div class="tracker-sub" id="trackerSub">Goal: 15 minutes a day</div>
+        </div>
+      </div>
+      <div class="tracker-week" id="trackerWeek"></div>
+    </div>
+
+    <div class="section-title">Practice <span class="count" id="dailyLabel">15 min daily</span></div>
+
+    <div class="modes">
+      <button class="mode-card" data-tone="flash" onclick="showView('decks')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 3H2C.9 3 0 3.9 0 5v14c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H2V5h20v14z"/><path d="M4 8h16v2H4zm0 4h10v2H4z"/></svg>
+        </div>
+        <div class="mode-title">Flashcards</div>
+        <div class="mode-sub">Vocab by category, tap to flip</div>
+      </button>
+
+      <button class="mode-card" data-tone="quiz" onclick="showView('quizPicker')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+        </div>
+        <div class="mode-title">Grammar Quiz</div>
+        <div class="mode-sub">Fill-the-blank, multi-choice</div>
+      </button>
+
+      <button class="mode-card" data-tone="conj" onclick="showView('conjPicker')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11z M17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zM3 21.5h8v-8H3v8z"/></svg>
+        </div>
+        <div class="mode-title">Conjugation Drill</div>
+        <div class="mode-sub">Type the right form, fast</div>
+      </button>
+
+      <button class="mode-card" data-tone="roleplay" onclick="showView('roleplay')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        </div>
+        <div class="mode-title">Morzine Scenes</div>
+        <div class="mode-sub">Role-plays: bakery, bar, pistes</div>
+      </button>
+
+      <button class="mode-card" data-tone="drills" onclick="showView('drills')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
+        </div>
+        <div class="mode-title">Daily 10</div>
+        <div class="mode-sub">Shops, bars, meeting people</div>
+      </button>
+
+      <button class="mode-card" data-tone="grammar" onclick="showView('grammar')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg>
+        </div>
+        <div class="mode-title">Grammar Notes</div>
+        <div class="mode-sub">Cheat sheet of every rule</div>
+      </button>
+
+      <button class="mode-card" data-tone="stories" onclick="showView('storyPicker')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+        </div>
+        <div class="mode-title">Short Stories</div>
+        <div class="mode-sub">Read with tap-to-translate</div>
+      </button>
+    </div>
+
+    <div class="footer">Built from your lessons · A1–A2 · 🇫🇷</div>
+  </section>
+
+  <!-- ================ DECK PICKER ================ -->
+  <section class="view" id="decks">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Flashcards</div>
+        <div class="view-sub">Pick a deck · tap card to flip</div>
+      </div>
+    </div>
+    <div class="deck-picker" id="deckList"></div>
+  </section>
+
+  <!-- ================ FLASHCARD VIEW ================ -->
+  <section class="view" id="flashView">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('decks')">←</button>
+      <div>
+        <div class="view-title" id="fcDeckTitle">Deck</div>
+        <div class="view-sub" id="fcDeckSub">—</div>
+      </div>
+    </div>
+    <div class="fc-wrap">
+      <div class="fc-progress">
+        <span id="fcIndex">1 / 10</span>
+        <div class="fc-bar"><div class="fc-bar-fill" id="fcBar" style="width:10%"></div></div>
+      </div>
+      <div class="flashcard" id="fcCard" onclick="flipCard()">
+        <div class="flashcard-inner">
+          <div class="fc-face front">
+            <div class="fc-category" id="fcCatFront">—</div>
+            <div class="fc-word" id="fcFront">—</div>
+            <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcFront').textContent)" aria-label="Listen">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            </button>
+            <div class="fc-hint">tap to reveal →</div>
+          </div>
+          <div class="fc-face back">
+            <div class="fc-category" id="fcCatBack">—</div>
+            <div class="fc-word" id="fcBack">—</div>
+            <div class="fc-example" id="fcExample"></div>
+            <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcBack').textContent)" aria-label="Listen">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="fc-actions">
+        <button class="fc-action" data-rate="again" onclick="rateCard('again')">Again</button>
+        <button class="fc-action" data-rate="good" onclick="rateCard('good')">Good</button>
+        <button class="fc-action" data-rate="easy" onclick="rateCard('easy')">Easy</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================ QUIZ PICKER ================ -->
+  <section class="view" id="quizPicker">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Grammar Quiz</div>
+        <div class="view-sub">10 questions per topic</div>
+      </div>
+    </div>
+    <div class="deck-picker" id="quizList"></div>
+  </section>
+
+  <!-- ================ QUIZ VIEW ================ -->
+  <section class="view" id="quizView">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('quizPicker')">←</button>
+      <div>
+        <div class="view-title" id="qTitle">Quiz</div>
+        <div class="view-sub"><span id="qIdx">1</span> / <span id="qTotal">10</span></div>
+      </div>
+    </div>
+    <div class="quiz-wrap">
+      <div class="quiz-question">
+        <div class="quiz-prompt" id="qPrompt">—</div>
+        <div class="quiz-translation" id="qTrans">—</div>
+      </div>
+      <div class="quiz-options" id="qOptions"></div>
+      <div class="quiz-feedback" id="qFb"></div>
+      <button class="quiz-next" id="qNext" onclick="nextQuiz()">Next →</button>
+    </div>
+  </section>
+
+  <!-- ================ CONJ PICKER ================ -->
+  <section class="view" id="conjPicker">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Conjugation Drill</div>
+        <div class="view-sub">Type the answer · present tense</div>
+      </div>
+    </div>
+    <div class="deck-picker" id="conjList"></div>
+  </section>
+
+  <!-- ================ CONJ DRILL VIEW ================ -->
+  <section class="view" id="conjView">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('conjPicker')">←</button>
+      <div>
+        <div class="view-title" id="conjTitle">Drill</div>
+        <div class="view-sub"><span id="conjIdx">1</span> / <span id="conjTotal">8</span></div>
+      </div>
+    </div>
+    <div class="conj-wrap">
+      <div class="conj-verb" id="conjVerb">—</div>
+      <div class="conj-meaning" id="conjMeaning">—</div>
+      <div class="conj-pronoun" id="conjPronoun">—</div>
+      <input class="conj-input" id="conjInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type here...">
+      <div class="conj-answer" id="conjAns"></div>
+      <div class="conj-full" id="conjFull" style="display:none">
+        <div class="conj-full-title">Full conjugation</div>
+        <div id="conjFullBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================ ROLE-PLAY ================ -->
+  <section class="view" id="roleplay">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Morzine Scenes</div>
+        <div class="view-sub">Real situations · tap 🔊 to hear</div>
+      </div>
+    </div>
+    <div class="rp-wrap" id="rpWrap"></div>
+  </section>
+
+  <!-- ================ GRAMMAR NOTES ================ -->
+  <section class="view" id="grammar">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Grammar Notes</div>
+        <div class="view-sub">Everything from your sheets · distilled</div>
+      </div>
+    </div>
+    <div class="gr-wrap" id="grWrap"></div>
+  </section>
+
+  <!-- ================ DAILY DRILLS ================ -->
+  <section class="view" id="drills">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Daily 10</div>
+        <div class="view-sub">Say them out loud, then reveal</div>
+      </div>
+    </div>
+    <div class="dr-wrap" id="drWrap"></div>
+  </section>
+
+  <!-- ================ STORY PICKER ================ -->
+  <section class="view" id="storyPicker">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Short Stories</div>
+        <div class="view-sub">Tap underlined words for translations</div>
+      </div>
+    </div>
+    <div class="sp-wrap" id="spList"></div>
+  </section>
+
+  <!-- ================ STORY VIEW ================ -->
+  <section class="view" id="storyView">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('storyPicker')">←</button>
+      <div>
+        <div class="view-title" id="stTitle">Story</div>
+        <div class="view-sub" id="stSub">—</div>
+      </div>
+    </div>
+    <div class="st-wrap" id="stWrap"></div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   DATA — all pulled from your lesson sheets
+   ========================================================= */
+
+// ---------- FLASHCARD DECKS ----------
+const decks = {
+  taille: {
+    name: "Size & shape",
+    category: "Adjectives",
+    cards: [
+      { fr: "grand(e)", en: "big / tall", ex: "Il est plus grand que moi." },
+      { fr: "petit(e)", en: "small", ex: "La maison est plus petite que le château." },
+      { fr: "long(ue)", en: "long", ex: "La route est longue." },
+      { fr: "court(e)", en: "short", ex: "Cette jupe est trop courte." },
+      { fr: "haut(e)", en: "high", ex: "Les montagnes sont hautes à Morzine." },
+      { fr: "bas(se)", en: "low", ex: "Le plafond est bas." },
+      { fr: "large", en: "wide", ex: "La piste est large." },
+      { fr: "étroit(e)", en: "narrow", ex: "La rue est étroite." },
+      { fr: "épais(se)", en: "thick", ex: "La neige est épaisse." },
+      { fr: "mince / fin(e)", en: "thin", ex: "Une fine couche de glace." },
+      { fr: "profond(e)", en: "deep", ex: "Le lac est profond." }
+    ]
+  },
+  qualite: {
+    name: "Quality",
+    category: "Adjectives",
+    cards: [
+      { fr: "bon(ne)", en: "good", ex: "Ce vin est bon." },
+      { fr: "mauvais(e)", en: "bad", ex: "Le temps est mauvais." },
+      { fr: "beau / belle", en: "beautiful", ex: "La vue est belle." },
+      { fr: "laid(e)", en: "ugly", ex: "C'est un peu laid." },
+      { fr: "facile", en: "easy", ex: "La piste bleue est facile." },
+      { fr: "difficile", en: "difficult", ex: "Le français est difficile." },
+      { fr: "propre", en: "clean", ex: "La chambre est propre." },
+      { fr: "sale", en: "dirty", ex: "Mes gants sont sales." },
+      { fr: "intéressant(e)", en: "interesting", ex: "Le livre est intéressant." },
+      { fr: "ennuyeux(-se)", en: "boring", ex: "Ce film est ennuyeux." }
+    ]
+  },
+  age: {
+    name: "Age",
+    category: "Adjectives",
+    cards: [
+      { fr: "vieux / vieille", en: "old (thing or person)", ex: "Une vieille maison." },
+      { fr: "jeune", en: "young", ex: "Un jeune skieur." },
+      { fr: "ancien(ne)", en: "old / former", ex: "Un ancien chalet." },
+      { fr: "moderne / neuf", en: "modern / new", ex: "Un ski neuf." },
+      { fr: "âgé(e)", en: "old (person)", ex: "Une personne âgée." },
+      { fr: "usé(e)", en: "worn out", ex: "Mes bottes sont usées." }
+    ]
+  },
+  prix: {
+    name: "Price",
+    category: "Adjectives",
+    cards: [
+      { fr: "cher / chère", en: "expensive", ex: "Le forfait est cher." },
+      { fr: "bon marché", en: "cheap", ex: "Ce restaurant est bon marché." },
+      { fr: "coûteux(-se)", en: "costly", ex: "Un hôtel coûteux." },
+      { fr: "abordable", en: "affordable", ex: "Un prix abordable." },
+      { fr: "luxueux(-se)", en: "luxury", ex: "Un chalet luxueux." },
+      { fr: "simple / basique", en: "basic", ex: "Un menu simple." },
+      { fr: "rare / unique", en: "rare / unique", ex: "Une pièce rare." },
+      { fr: "courant(e)", en: "common", ex: "Un modèle courant." }
+    ]
+  },
+  vitesse: {
+    name: "Speed & efficiency",
+    category: "Adjectives",
+    cards: [
+      { fr: "rapide", en: "fast", ex: "Le télésiège est rapide." },
+      { fr: "lent(e)", en: "slow", ex: "Le service est lent." },
+      { fr: "agile", en: "agile", ex: "Un skieur agile." },
+      { fr: "maladroit(e)", en: "clumsy", ex: "Je suis maladroit sur la glace." },
+      { fr: "actif(-ve)", en: "active", ex: "Une vie active." },
+      { fr: "passif(-ve)", en: "passive", ex: "Un rôle passif." },
+      { fr: "efficace", en: "efficient", ex: "Un système efficace." },
+      { fr: "inefficace", en: "inefficient", ex: "Une méthode inefficace." }
+    ]
+  },
+  poids: {
+    name: "Weight",
+    category: "Adjectives",
+    cards: [
+      { fr: "lourd(e)", en: "heavy", ex: "Mon sac est lourd." },
+      { fr: "léger / légère", en: "light", ex: "Une veste légère." },
+      { fr: "gros(se)", en: "big / fat", ex: "Un gros chien." },
+      { fr: "mince", en: "thin / slim", ex: "Elle est mince." },
+      { fr: "plein(e)", en: "full", ex: "La piste est pleine." },
+      { fr: "vide", en: "empty", ex: "Le verre est vide." },
+      { fr: "solide", en: "strong / solid", ex: "Une corde solide." },
+      { fr: "fragile", en: "fragile", ex: "C'est fragile." }
+    ]
+  },
+  temperature: {
+    name: "Weather & temperature",
+    category: "Adjectives",
+    cards: [
+      { fr: "chaud(e)", en: "hot", ex: "Le chocolat chaud." },
+      { fr: "froid(e)", en: "cold", ex: "Il fait froid dehors." },
+      { fr: "brûlant(e)", en: "burning", ex: "Le café est brûlant." },
+      { fr: "glacé(e)", en: "icy", ex: "La route est glacée." },
+      { fr: "tiède", en: "warm / lukewarm", ex: "L'eau est tiède." },
+      { fr: "frais / fraîche", en: "fresh / cool", ex: "Du pain frais." },
+      { fr: "ensoleillé(e)", en: "sunny", ex: "Une journée ensoleillée." },
+      { fr: "nuageux(-se)", en: "cloudy", ex: "Le ciel est nuageux." }
+    ]
+  },
+  personnalite: {
+    name: "Personality",
+    category: "Adjectives",
+    cards: [
+      { fr: "sympa / gentil(le)", en: "nice / kind", ex: "Le voisin est sympa." },
+      { fr: "méchant(e)", en: "mean / not nice", ex: "Ce chien est méchant." },
+      { fr: "calme", en: "calm", ex: "Un village calme." },
+      { fr: "nerveux(-se)", en: "nervous", ex: "Je suis nerveux avant l'examen." },
+      { fr: "courageux(-se)", en: "brave", ex: "Un skieur courageux." },
+      { fr: "timide", en: "shy", ex: "Elle est timide." },
+      { fr: "sérieux(-se)", en: "serious", ex: "C'est sérieux." },
+      { fr: "drôle / amusant(e)", en: "funny", ex: "Mon frère est drôle." },
+      { fr: "bavard(e)", en: "chatty", ex: "Le moniteur est bavard." },
+      { fr: "silencieux(-se)", en: "silent", ex: "Un enfant silencieux." }
+    ]
+  },
+  apparence: {
+    name: "Appearance",
+    category: "Adjectives",
+    cards: [
+      { fr: "clair(e)", en: "light (colour)", ex: "Un ciel clair." },
+      { fr: "sombre / foncé(e)", en: "dark", ex: "Une veste foncée." },
+      { fr: "brillant(e)", en: "shiny", ex: "La neige brillante." },
+      { fr: "terne", en: "dull", ex: "Des couleurs ternes." },
+      { fr: "neuf / neuve", en: "new", ex: "Des skis neufs." },
+      { fr: "lisse", en: "smooth", ex: "Une surface lisse." },
+      { fr: "rugueux(-se)", en: "rough", ex: "Une peau rugueuse." },
+      { fr: "coloré(e)", en: "colourful", ex: "Une veste colorée." }
+    ]
+  },
+  distance: {
+    name: "Distance & space",
+    category: "Adjectives",
+    cards: [
+      { fr: "proche / près", en: "near / close", ex: "La piste est proche." },
+      { fr: "loin / éloigné(e)", en: "far", ex: "C'est loin d'ici." },
+      { fr: "ouvert(e)", en: "open", ex: "Le magasin est ouvert." },
+      { fr: "fermé(e)", en: "closed", ex: "Les pistes sont fermées." },
+      { fr: "droit(e)", en: "straight", ex: "Une ligne droite." },
+      { fr: "courbe / tordu(e)", en: "curved / winding", ex: "Une route courbe." },
+      { fr: "plat(e)", en: "flat", ex: "Un terrain plat." },
+      { fr: "montagneux(-se)", en: "mountainous", ex: "Une région montagneuse." },
+      { fr: "spacieux(-se)", en: "spacious", ex: "Un chalet spacieux." },
+      { fr: "étroit(e)", en: "narrow", ex: "Une rue étroite." }
+    ]
+  },
+  invariables: {
+    name: "Time & sequence words",
+    category: "Adverbs",
+    cards: [
+      { fr: "toujours", en: "always", ex: "Je vais toujours au marché le mercredi." },
+      { fr: "jamais", en: "never", ex: "Il ne pleut jamais en été ici." },
+      { fr: "souvent", en: "often", ex: "Je vais souvent au collège à pied." },
+      { fr: "parfois", en: "sometimes", ex: "Parfois, j'oublie mes affaires." },
+      { fr: "maintenant", en: "now", ex: "Maintenant, je comprends la leçon." },
+      { fr: "ensuite", en: "next", ex: "Ensuite, je prends mon petit-déjeuner." },
+      { fr: "alors", en: "so / then", ex: "Alors, nous pourrons jouer." },
+      { fr: "puis", en: "then", ex: "D'abord tu lis, puis tu réponds." },
+      { fr: "enfin", en: "finally", ex: "Enfin, nous partons ensemble." },
+      { fr: "d'abord", en: "first", ex: "D'abord, il faut lire la consigne." }
+    ]
+  },
+  verbes: {
+    name: "Essential verbs (daily)",
+    category: "Verbs",
+    cards: [
+      { fr: "être", en: "to be", ex: "Je suis fatigué." },
+      { fr: "avoir", en: "to have", ex: "J'ai un chat." },
+      { fr: "faire", en: "to do / make", ex: "Je fais du sport." },
+      { fr: "aller", en: "to go", ex: "Je vais à l'école." },
+      { fr: "venir", en: "to come", ex: "Tu viens avec moi ?" },
+      { fr: "pouvoir", en: "to be able to / can", ex: "Je peux t'aider." },
+      { fr: "vouloir", en: "to want", ex: "Je veux un café." },
+      { fr: "devoir", en: "to have to / must", ex: "Je dois partir." },
+      { fr: "savoir", en: "to know (how)", ex: "Je sais nager." },
+      { fr: "prendre", en: "to take", ex: "Je prends le bus." }
+    ]
+  },
+  communication: {
+    name: "Communication verbs",
+    category: "Verbs",
+    cards: [
+      { fr: "parler", en: "to speak / talk", ex: "Je parle français." },
+      { fr: "dire", en: "to say / tell", ex: "Qu'est-ce que tu dis ?" },
+      { fr: "demander", en: "to ask", ex: "Je demande de l'aide." },
+      { fr: "répondre", en: "to answer", ex: "Réponds à ma question." },
+      { fr: "écouter", en: "to listen", ex: "J'écoute de la musique." }
+    ]
+  },
+  possessifs: {
+    name: "Possessive adjectives",
+    category: "Grammar",
+    cards: [
+      { fr: "mon / ma / mes", en: "my", ex: "mon sac · ma voiture · mes clés" },
+      { fr: "ton / ta / tes", en: "your (informal)", ex: "ton livre · ta maison · tes amis" },
+      { fr: "son / sa / ses", en: "his/her/its", ex: "son chien · sa mère · ses enfants" },
+      { fr: "notre / nos", en: "our", ex: "notre chalet · nos voisins" },
+      { fr: "votre / vos", en: "your (formal/plural)", ex: "votre passeport · vos documents" },
+      { fr: "leur / leurs", en: "their", ex: "leur voiture · leurs affaires" }
+    ]
+  },
+  questions: {
+    name: "Question words",
+    category: "Grammar",
+    cards: [
+      { fr: "qui", en: "who", ex: "Avec qui est-ce que tu habites ?" },
+      { fr: "quoi / que", en: "what", ex: "Qu'est-ce que tu fais ?" },
+      { fr: "où", en: "where", ex: "Où vas-tu en vacances ?" },
+      { fr: "quand", en: "when", ex: "Quand part ton avion ?" },
+      { fr: "pourquoi", en: "why", ex: "Pourquoi tu apprends le français ?" },
+      { fr: "comment", en: "how", ex: "Comment voyagez-vous ?" },
+      { fr: "combien", en: "how much / many", ex: "Combien de chiens as-tu ?" },
+      { fr: "quel(le)", en: "which", ex: "Quel est ton loisir préféré ?" }
+    ]
+  }
+};
+
+// ---------- QUIZ POOLS ----------
+const quizzes = {
+  comparisons: {
+    title: "Comparisons (plus/moins/aussi)",
+    qs: [
+      { prompt: "La girafe est ___ grande ___ le chien.", en: "The giraffe is taller than the dog.", opts: ["plus … que", "aussi … que", "moins … que", "plus … de"], a: 0, note: "plus + adjective + que = more ... than" },
+      { prompt: "Ce livre est ___ intéressant ___ le film.", en: "The book is as interesting as the film.", opts: ["plus … que", "aussi … que", "moins … que", "autant de … que"], a: 1, note: "aussi + adjective + que = as ... as" },
+      { prompt: "Ma voiture est ___ rapide ___ le train.", en: "My car is less fast than the train.", opts: ["plus … que", "aussi … que", "moins … que", "plus … de"], a: 2, note: "moins + adjective + que = less ... than" },
+      { prompt: "Batman mange ___ chips que Superman.", en: "Batman eats more chips than Superman.", opts: ["plus de", "plus", "plus que", "plus … que"], a: 0, note: "With a NOUN, use plus DE / moins DE / autant DE + noun + que." },
+      { prompt: "Je dors ___ mon frère.", en: "I sleep more than my brother.", opts: ["plus de", "plus que", "aussi que", "plus"], a: 1, note: "With a VERB, use verb + plus/moins/autant + que — no 'de'." },
+      { prompt: "Le thé est ___ ___ le café. (bon)", en: "The tea is better than the coffee.", opts: ["plus bon que", "meilleur que", "plus meilleur que", "mieux que"], a: 1, note: "EXCEPTION: plus bon(ne) → meilleur(e). Never say 'plus bon'." },
+      { prompt: "Ce restaurant est ___ ___ l'autre. (mauvais)", en: "This restaurant is worse than the other.", opts: ["plus mauvais que", "pire que", "moins bon que", "pire que ou plus mauvais que (les deux)"], a: 3, note: "plus mauvais → pire. BOTH are correct." },
+      { prompt: "Pierre est plus grand ___ sa sœur.", en: "Pierre is taller than his sister.", opts: ["que", "de", "comme", "à"], a: 0, note: "The second part is always 'que', not 'de'." },
+      { prompt: "Marie est aussi rapide ___ Léo.", en: "Marie is as fast as Léo.", opts: ["comme", "que", "de", "à"], a: 1, note: "aussi ... QUE — never 'comme' for comparisons of equality." },
+      { prompt: "Il y a ___ neige à Morzine ___ à Paris.", en: "There is more snow in Morzine than in Paris.", opts: ["plus que", "plus de … que", "plus … que", "autant que"], a: 1, note: "plus DE neige que — remember 'de' before the noun." }
+    ]
+  },
+  modaux: {
+    title: "Modal verbs (pouvoir / devoir / vouloir)",
+    qs: [
+      { prompt: "Je ___ apprendre à skier hors-piste.", en: "I want to learn to ski off-piste.", opts: ["peux", "dois", "veux", "voudrais"], a: 2, note: "vouloir = desire. Je veux = I want." },
+      { prompt: "Vous ___ montrer votre forfait à l'entrée.", en: "You must show your ski pass at the entrance.", opts: ["pouvez", "devez", "voulez", "savez"], a: 1, note: "devoir = obligation. Vous devez = you must." },
+      { prompt: "Nous ___ réserver une table ?", en: "Must we book a table?", opts: ["pouvons", "devons", "voulons", "savons"], a: 1, note: "Context says 'restaurant often full' → obligation." },
+      { prompt: "On ne ___ pas skier aujourd'hui — les pistes sont fermées.", en: "We can't ski today — the pistes are closed.", opts: ["peut", "doit", "veut", "sait"], a: 0, note: "pouvoir = possibility/permission. On peut = we can." },
+      { prompt: "Tu ___ m'appeler si tu te perds ?", en: "Can you call me if you get lost?", opts: ["peux", "dois", "veux", "sais"], a: 0, note: "pouvoir = ability. Tu peux = you can." },
+      { prompt: "Elle ___ absolument essayer le snowboard !", en: "She absolutely wants to try snowboarding!", opts: ["peut", "doit", "veut", "sait"], a: 2, note: "vouloir — strong desire." },
+      { prompt: "Ils ___ louer un appartement pour la saison.", en: "They want to rent an apartment for the season.", opts: ["peuvent", "doivent", "veulent", "savent"], a: 2, note: "Ils veulent (vouloir, 3rd person plural)." },
+      { prompt: "Il ___ aller au spa — il a mal aux jambes.", en: "He wants to go to the spa — his legs hurt.", opts: ["peut", "doit", "veut", "sait"], a: 2, note: "The reason (sore legs) signals wanting, though 'doit' is also plausible. The lesson answer is 'veut'." },
+      { prompt: "Je ___ parler français.", en: "I can speak French.", opts: ["peux", "dois", "veux", "sais"], a: 0, note: "For ability 'I can', 'je peux' is used. (Some contexts prefer 'je sais parler' for skills, but pouvoir is the lesson answer.)" },
+      { prompt: "On ___ porter un casque sur les pistes.", en: "We must wear a helmet on the pistes.", opts: ["peut", "doit", "veut", "sait"], a: 1, note: "Safety rule = obligation = devoir." }
+    ]
+  },
+  possessifs: {
+    title: "Possessive adjectives",
+    qs: [
+      { prompt: "Les lunettes, elles sont à toi ? — Oui, ce sont ___ lunettes.", en: "The glasses, are they yours? — Yes, they are my glasses.", opts: ["ma", "mon", "mes", "mien"], a: 2, note: "Plural noun 'lunettes' → mes (regardless of gender)." },
+      { prompt: "Le panda, il est à lui ? — Oui, c'est ___ panda.", en: "The panda, is it his? — Yes, it's his panda.", opts: ["sa", "son", "ses", "leur"], a: 1, note: "panda = masculine singular → son." },
+      { prompt: "Vos enfants torturent mon chien ? — Oui, ce sont ___ enfants.", en: "Your children are torturing my dog? — Yes, they are our children.", opts: ["nos", "notre", "mes", "leur"], a: 0, note: "Plural noun 'enfants' → nos (our)." },
+      { prompt: "C'est la voiture de Jean et Brigitte ? — Oui, c'est ___ voiture.", en: "Is it Jean and Brigitte's car? — Yes, it's their car.", opts: ["sa", "son", "leur", "leurs"], a: 2, note: "TWO owners → leur. 'voiture' is singular, so leur (not leurs)." },
+      { prompt: "J'ai oublié ___ chaussettes.", en: "I forgot my socks.", opts: ["ma", "mon", "mes", "ton"], a: 2, note: "chaussettes is plural → mes." },
+      { prompt: "Est-ce que je peux inviter ___ voisins à notre mariage ?", en: "Can I invite my neighbours to our wedding?", opts: ["ma", "mon", "mes", "ton"], a: 2, note: "voisins plural → mes." },
+      { prompt: "J'ai adopté un tigre ! Je vais te montrer ___ photo.", en: "I adopted a tiger! I'll show you its photo.", opts: ["sa", "son", "ses", "ta"], a: 0, note: "photo = feminine singular → sa (the tiger's photo)." },
+      { prompt: "Bonjour Monsieur, montrez-moi ___ documents.", en: "Hello sir, show me your documents.", opts: ["ton", "tes", "votre", "vos"], a: 3, note: "Formal (Monsieur = vous) + plural (documents) = vos." },
+      { prompt: "C'est l'amie de Jean qui boit trop de bière ? — Oui, c'est ___ amie.", en: "Is that Jean's friend who drinks too much beer? — Yes, it's his friend.", opts: ["sa", "son", "ses", "leur"], a: 1, note: "Tricky: 'amie' is feminine BUT begins with a vowel → son (not sa) to avoid the vowel clash. Same as 'mon école'." },
+      { prompt: "Pourquoi ils sont heureux ? Parce qu'ils ont réussi ___ examen.", en: "Why are they happy? Because they passed their exam.", opts: ["son", "leur", "leurs", "sa"], a: 1, note: "'ils' = multiple people, 'examen' = singular → leur." }
+    ]
+  },
+  questions: {
+    title: "Question words",
+    qs: [
+      { prompt: "___ regardes-tu ce film ? — Parce que j'aime les super-héros.", en: "Why are you watching this film?", opts: ["Quand", "Pourquoi", "Comment", "Où"], a: 1, note: "Answer gives a reason → Pourquoi (why)." },
+      { prompt: "Cette Porsche coûte ___ ? — Seulement 67 000 €.", en: "How much does this Porsche cost?", opts: ["combien", "quel", "comment", "où"], a: 0, note: "Asking price → combien." },
+      { prompt: "Avec ___ est-ce que tu habites ? — Avec mon ami.", en: "Who do you live with?", opts: ["quoi", "qui", "comment", "où"], a: 1, note: "Person → qui." },
+      { prompt: "___ de chiens as-tu ? — Deux.", en: "How many dogs do you have?", opts: ["Quand", "Combien", "Quel", "Pourquoi"], a: 1, note: "combien DE + noun for quantity." },
+      { prompt: "Ton avion part ___ ? — Il part demain matin.", en: "When does your plane leave?", opts: ["combien", "pourquoi", "quand", "comment"], a: 2, note: "Time → quand." },
+      { prompt: "___ est-ce que tu apprends ? — Pour faire plaisir à mes parents.", en: "Why are you learning?", opts: ["Comment", "Pourquoi", "Quand", "Où"], a: 1, note: "Answer 'pour...' (in order to) → Pourquoi." },
+      { prompt: "___ est ton loisir préféré ? — Le sport.", en: "What is your favourite hobby?", opts: ["Quoi", "Quel", "Comment", "Qui"], a: 1, note: "'quel' + noun (loisir). Asking to choose among options = quel." },
+      { prompt: "___ voyagez-vous ? — En avion.", en: "How do you travel?", opts: ["Comment", "Où", "Quand", "Pourquoi"], a: 0, note: "Means/manner → comment." },
+      { prompt: "Tu fais ___ ? — Je surfe sur Internet.", en: "What are you doing?", opts: ["qui", "quoi", "où", "quand"], a: 1, note: "'Tu fais quoi' = informal. 'Qu'est-ce que tu fais' uses que/qu'." },
+      { prompt: "Quand tu as très faim, tu manges ___ ? — Des croissants.", en: "What do you eat when very hungry?", opts: ["qui", "quoi", "où", "combien"], a: 1, note: "Thing → quoi. At end of question = quoi (not que)." }
+    ]
+  },
+  invariables: {
+    title: "Adverbs of time & sequence",
+    qs: [
+      { prompt: "Je vais ___ au collège à pied.", en: "I often go to school on foot.", opts: ["toujours", "jamais", "souvent", "parfois"], a: 2, note: "'often' = souvent." },
+      { prompt: "Il ne pleut ___ en été dans cette région.", en: "It never rains in summer here.", opts: ["toujours", "jamais", "souvent", "maintenant"], a: 1, note: "ne ... jamais = never." },
+      { prompt: "___ nous allons faire les devoirs, ___ nous pourrons jouer.", en: "Now we'll do homework, then we can play.", opts: ["Parfois / enfin", "Maintenant / alors", "D'abord / jamais", "Souvent / puis"], a: 1, note: "Maintenant (now) + Alors (then/so)." },
+      { prompt: "Je vais ___ terminer cet exercice !", en: "I'm finally going to finish this exercise!", opts: ["d'abord", "ensuite", "enfin", "jamais"], a: 2, note: "'finally' = enfin." },
+      { prompt: "___, il faut lire la consigne.", en: "First, you must read the instructions.", opts: ["D'abord", "Enfin", "Alors", "Jamais"], a: 0, note: "'first' (as a step) = d'abord." },
+      { prompt: "Ce matin, je me réveille ___ très tôt.", en: "This morning, I wake up first thing very early.", opts: ["enfin", "d'abord", "jamais", "parfois"], a: 1, note: "Start of a sequence → d'abord." },
+      { prompt: "___, je prends mon petit-déjeuner.", en: "Next, I have breakfast.", opts: ["Ensuite", "D'abord", "Enfin", "Jamais"], a: 0, note: "'Next' = ensuite." },
+      { prompt: "Mon frère est ___ en retard !", en: "My brother is always late!", opts: ["jamais", "toujours", "parfois", "maintenant"], a: 1, note: "'always' = toujours." },
+      { prompt: "Moi, je suis ___ ponctuel.", en: "Me, I'm often punctual.", opts: ["parfois", "souvent", "jamais", "maintenant"], a: 1, note: "'often' = souvent." },
+      { prompt: "___, nous partons ensemble.", en: "Finally, we leave together.", opts: ["D'abord", "Ensuite", "Enfin", "Alors"], a: 2, note: "End of a sequence → enfin." }
+    ]
+  }
+};
+
+// ---------- CONJUGATION DRILLS ----------
+const verbTables = {
+  etre:    { meaning: "to be",        forms: { "je": "suis", "tu": "es", "il/elle/on": "est", "nous": "sommes", "vous": "êtes", "ils/elles": "sont" } },
+  avoir:   { meaning: "to have",      forms: { "je": "ai", "tu": "as", "il/elle/on": "a", "nous": "avons", "vous": "avez", "ils/elles": "ont" } },
+  aller:   { meaning: "to go",        forms: { "je": "vais", "tu": "vas", "il/elle/on": "va", "nous": "allons", "vous": "allez", "ils/elles": "vont" } },
+  faire:   { meaning: "to do / make", forms: { "je": "fais", "tu": "fais", "il/elle/on": "fait", "nous": "faisons", "vous": "faites", "ils/elles": "font" } },
+  venir:   { meaning: "to come",      forms: { "je": "viens", "tu": "viens", "il/elle/on": "vient", "nous": "venons", "vous": "venez", "ils/elles": "viennent" } },
+  pouvoir: { meaning: "to be able / can", forms: { "je": "peux", "tu": "peux", "il/elle/on": "peut", "nous": "pouvons", "vous": "pouvez", "ils/elles": "peuvent" } },
+  devoir:  { meaning: "must / have to",  forms: { "je": "dois", "tu": "dois", "il/elle/on": "doit", "nous": "devons", "vous": "devez", "ils/elles": "doivent" } },
+  vouloir: { meaning: "to want",      forms: { "je": "veux", "tu": "veux", "il/elle/on": "veut", "nous": "voulons", "vous": "voulez", "ils/elles": "veulent" } },
+  savoir:  { meaning: "to know (how)", forms: { "je": "sais", "tu": "sais", "il/elle/on": "sait", "nous": "savons", "vous": "savez", "ils/elles": "savent" } },
+  prendre: { meaning: "to take",      forms: { "je": "prends", "tu": "prends", "il/elle/on": "prend", "nous": "prenons", "vous": "prenez", "ils/elles": "prennent" } }
+};
+
+// ---------- ROLE-PLAYS (Morzine-specific) ----------
+const roleplays = [
+  {
+    title: "À la boulangerie",
+    ctx: "You walk into the bakery in Morzine for your morning bread.",
+    lines: [
+      { who: "them", fr: "Bonjour monsieur, qu'est-ce que je vous sers ?", en: "Hello sir, what can I get you?" },
+      { who: "you",  fr: "Bonjour ! Je voudrais une baguette, s'il vous plaît.", en: "Hello! I'd like a baguette, please." },
+      { who: "them", fr: "Tradition ou classique ?", en: "Tradition or classic?" },
+      { who: "you",  fr: "Une tradition, merci. Et deux croissants aussi.", en: "A tradition, thanks. And two croissants as well." },
+      { who: "them", fr: "Très bien. Ce sera tout ?", en: "Very good. Will that be all?" },
+      { who: "you",  fr: "Oui, c'est tout. Ça fait combien ?", en: "Yes, that's all. How much is it?" },
+      { who: "them", fr: "Cinq euros quarante, s'il vous plaît.", en: "Five euros forty, please." },
+      { who: "you",  fr: "Voilà. Bonne journée !", en: "Here you go. Have a good day!" }
+    ],
+    notes: "<strong>Je voudrais</strong> is the polite form of <em>je veux</em> — always use it in shops and restaurants. The reply to 'ça fait combien?' is pure listening practice — numbers are the hardest part of French retail."
+  },
+  {
+    title: "Au magasin de location de ski",
+    ctx: "You're renting skis for the week.",
+    lines: [
+      { who: "them", fr: "Bonjour ! Je peux vous aider ?", en: "Hello! Can I help you?" },
+      { who: "you",  fr: "Oui, je voudrais louer des skis pour la semaine.", en: "Yes, I'd like to rent skis for the week." },
+      { who: "them", fr: "Quel est votre niveau ?", en: "What's your level?" },
+      { who: "you",  fr: "Intermédiaire. Je veux skier sur les pistes rouges.", en: "Intermediate. I want to ski on red pistes." },
+      { who: "them", fr: "Très bien. Vous faites quelle taille ?", en: "Very good. What's your size?" },
+      { who: "you",  fr: "Un mètre quatre-vingts. Et je dois aussi louer un casque.", en: "1m80. And I also need to rent a helmet." },
+      { who: "them", fr: "Pas de problème. Vous devez signer ici.", en: "No problem. You must sign here." },
+      { who: "you",  fr: "D'accord. Je peux payer par carte ?", en: "OK. Can I pay by card?" }
+    ],
+    notes: "Great use of all three modals: <em>je voudrais</em> (polite want), <em>je dois</em> (obligation), <em>je peux</em> (asking permission). <strong>Quel est votre niveau ?</strong> — memorise this full phrase."
+  },
+  {
+    title: "Au restaurant de montagne",
+    ctx: "Lunch at a mountain restaurant like Le Pleney after a morning's skiing.",
+    lines: [
+      { who: "them", fr: "Bonjour, vous avez réservé ?", en: "Hello, do you have a reservation?" },
+      { who: "you",  fr: "Non, nous sommes deux. On peut manger en terrasse ?", en: "No, we're two people. Can we eat on the terrace?" },
+      { who: "them", fr: "Oui, suivez-moi. Voici la carte.", en: "Yes, follow me. Here's the menu." },
+      { who: "you",  fr: "Merci. Qu'est-ce que vous recommandez ?", en: "Thanks. What do you recommend?" },
+      { who: "them", fr: "La tartiflette est excellente aujourd'hui.", en: "The tartiflette is excellent today." },
+      { who: "you",  fr: "Parfait. Deux tartiflettes et deux bières, s'il vous plaît.", en: "Perfect. Two tartiflettes and two beers, please." },
+      { who: "them", fr: "Très bien. Ce sera tout ?", en: "Very good. Will that be all?" },
+      { who: "you",  fr: "Oui, pour l'instant. Merci !", en: "Yes, for now. Thanks!" }
+    ],
+    notes: "Note <strong>on peut</strong> — in spoken French, 'on' replaces 'nous' in almost all situations. <em>Suivez-moi</em> is the imperative vous-form of suivre (to follow). <strong>Ce sera tout ?</strong> is stock restaurant phrasing — you'll hear it constantly."
+  },
+  {
+    title: "Au bar, après le ski",
+    ctx: "Meeting someone at a bar in town for an après-ski drink.",
+    lines: [
+      { who: "them", fr: "Salut ! Qu'est-ce que tu as fait aujourd'hui ?", en: "Hi! What did you do today?" },
+      { who: "you",  fr: "Salut ! J'ai skié toute la journée. Et toi ?", en: "Hi! I skied all day. And you?" },
+      { who: "them", fr: "Moi aussi ! Les pistes étaient super.", en: "Me too! The pistes were great." },
+      { who: "you",  fr: "Oui, mais il y a plus de monde que la semaine dernière.", en: "Yes, but there are more people than last week." },
+      { who: "them", fr: "C'est vrai. Tu veux boire quelque chose ?", en: "That's true. Do you want something to drink?" },
+      { who: "you",  fr: "Oui, je voudrais une bière, s'il te plaît. Et toi ?", en: "Yes, I'd like a beer please. And you?" },
+      { who: "them", fr: "Un vin chaud pour moi. On commande ?", en: "A mulled wine for me. Shall we order?" }
+    ],
+    notes: "<strong>Il y a plus de monde que...</strong> uses the comparison rule for nouns: <em>plus DE + noun + que</em>. Note <em>s'il te plaît</em> (tu) vs <em>s'il vous plaît</em> (vous) — you'll use 'te' with someone you know well."
+  },
+  {
+    title: "Chez le voisin",
+    ctx: "A neighbour knocks at your chalet door.",
+    lines: [
+      { who: "them", fr: "Bonjour ! Excusez-moi de vous déranger.", en: "Hello! Sorry to bother you." },
+      { who: "you",  fr: "Pas de problème. Qu'est-ce qui se passe ?", en: "No problem. What's going on?" },
+      { who: "them", fr: "C'est votre voiture, la rouge ? Elle bloque la sortie.", en: "Is that your car, the red one? It's blocking the exit." },
+      { who: "you",  fr: "Oui, c'est ma voiture. Désolé, je la déplace tout de suite.", en: "Yes, that's my car. Sorry, I'll move it right away." },
+      { who: "them", fr: "Merci beaucoup !", en: "Thank you very much!" },
+      { who: "you",  fr: "Au fait, comment vous vous appelez ? Je m'appelle Martyn.", en: "By the way, what's your name? I'm Martyn." },
+      { who: "them", fr: "Moi, c'est Pierre. Enchanté !", en: "I'm Pierre. Nice to meet you!" }
+    ],
+    notes: "<strong>Qu'est-ce qui se passe ?</strong> = 'what's happening' — very useful phrase. <em>Je la déplace tout de suite</em> uses the object pronoun 'la' (meaning 'it' referring to the car). <strong>Au fait</strong> = by the way."
+  },
+  {
+    title: "À l'office de tourisme",
+    ctx: "You've just arrived in Morzine and need information.",
+    lines: [
+      { who: "you",  fr: "Bonjour ! On peut faire du ski aujourd'hui ?", en: "Hello! Can one go skiing today?" },
+      { who: "them", fr: "Oui, vous pouvez skier sur 15 pistes !", en: "Yes, you can ski on 15 pistes!" },
+      { who: "you",  fr: "Est-ce qu'on doit réserver à l'avance ?", en: "Do we need to book in advance?" },
+      { who: "them", fr: "Vous devez acheter un forfait, mais vous pouvez le faire en ligne.", en: "You must buy a pass, but you can do it online." },
+      { who: "you",  fr: "On peut louer des skis ici ?", en: "Can we rent skis here?" },
+      { who: "them", fr: "Vous pouvez louer au magasin Morzine Sports, à deux minutes à pied.", en: "You can rent at Morzine Sports, two minutes on foot." },
+      { who: "you",  fr: "Parfait, merci beaucoup !", en: "Perfect, thank you very much!" }
+    ],
+    notes: "Straight from your lesson sheet. Classic back-and-forth of <strong>on peut / vous pouvez</strong> (possibility) and <strong>on doit / vous devez</strong> (obligation). Notice the polite 'vous' from the tourism office."
+  },
+  {
+    title: "Comparer la vie ici",
+    ctx: "Chatting with a French friend about how Morzine compares to your old life.",
+    lines: [
+      { who: "them", fr: "Tu préfères vivre ici ou en Angleterre ?", en: "Do you prefer living here or in England?" },
+      { who: "you",  fr: "J'aime beaucoup Morzine. C'est plus calme qu'en Angleterre.", en: "I love Morzine. It's calmer than in England." },
+      { who: "them", fr: "Et la nourriture ?", en: "And the food?" },
+      { who: "you",  fr: "La nourriture française est meilleure ! Mais le thé est moins bon.", en: "French food is better! But the tea is less good." },
+      { who: "them", fr: "Haha ! Et le travail ?", en: "Haha! And work?" },
+      { who: "you",  fr: "Je travaille autant qu'avant, mais je suis plus heureux.", en: "I work as much as before, but I'm happier." },
+      { who: "them", fr: "C'est l'essentiel !", en: "That's what matters!" }
+    ],
+    notes: "This one is a workout for comparisons: <strong>plus calme que</strong> (adjective), <strong>meilleure</strong> (exception for 'plus bonne'), <strong>moins bon</strong> (correct — 'pire' is only for 'plus mauvais'), <strong>autant que</strong> (verb comparison = as much as). Use 'plus heureux' because 'bon' ≠ happy."
+  }
+];
+
+// ---------- GRAMMAR NOTES ----------
+const grammar = [
+  {
+    title: "The comparison — plus / moins / aussi",
+    body: `<p>The formula depends on what type of word follows:</p>
+      <div class="gr-box"><span class="label">With an adjective or adverb</span>plus / moins / aussi + adjective + <em>que</em><br>
+      <em>Il est plus grand que son frère.</em></div>
+      <div class="gr-box"><span class="label">With a verb</span>verb + plus / moins / autant + <em>que</em> (no 'de')<br>
+      <em>Je dors plus que toi.</em></div>
+      <div class="gr-box"><span class="label">With a noun</span>plus <strong>de</strong> / moins <strong>de</strong> / autant <strong>de</strong> + noun + <em>que</em><br>
+      <em>J'ai plus de neige que toi.</em></div>
+      <p><strong>Exceptions:</strong> never say 'plus bon' — use <em>meilleur(e)</em>. And 'plus mauvais' can become <em>pire</em>.</p>`
+  },
+  {
+    title: "Modal verbs — pouvoir, devoir, vouloir",
+    body: `<p>These three do almost all the heavy lifting in everyday conversation. Each is followed by an <strong>infinitive</strong>.</p>
+      <table class="gr-table">
+        <tr><th></th><th class="fr">pouvoir</th><th class="fr">devoir</th><th class="fr">vouloir</th></tr>
+        <tr><td>je</td><td class="fr">peux</td><td class="fr">dois</td><td class="fr">veux</td></tr>
+        <tr><td>tu</td><td class="fr">peux</td><td class="fr">dois</td><td class="fr">veux</td></tr>
+        <tr><td>il/elle</td><td class="fr">peut</td><td class="fr">doit</td><td class="fr">veut</td></tr>
+        <tr><td>nous</td><td class="fr">pouvons</td><td class="fr">devons</td><td class="fr">voulons</td></tr>
+        <tr><td>vous</td><td class="fr">pouvez</td><td class="fr">devez</td><td class="fr">voulez</td></tr>
+        <tr><td>ils/elles</td><td class="fr">peuvent</td><td class="fr">doivent</td><td class="fr">veulent</td></tr>
+      </table>
+      <p><strong>pouvoir</strong> = can / be able to / permission · <strong>devoir</strong> = must / have to · <strong>vouloir</strong> = want</p>
+      <p>Tip: <em>je voudrais</em> (conditional of vouloir) = 'I would like'. Use it in shops, restaurants, anywhere polite. You <strong>never</strong> ask for things with 'je veux' — it sounds rude.</p>`
+  },
+  {
+    title: "Possessive adjectives — mon, ton, son...",
+    body: `<p>They agree with the thing owned, <strong>not</strong> the owner.</p>
+      <table class="gr-table">
+        <tr><th></th><th>masc. sing.</th><th>fem. sing.</th><th>plural</th></tr>
+        <tr><td>my</td><td class="fr">mon</td><td class="fr">ma</td><td class="fr">mes</td></tr>
+        <tr><td>your (tu)</td><td class="fr">ton</td><td class="fr">ta</td><td class="fr">tes</td></tr>
+        <tr><td>his/her</td><td class="fr">son</td><td class="fr">sa</td><td class="fr">ses</td></tr>
+        <tr><td>our</td><td class="fr" colspan="2">notre</td><td class="fr">nos</td></tr>
+        <tr><td>your (vous)</td><td class="fr" colspan="2">votre</td><td class="fr">vos</td></tr>
+        <tr><td>their</td><td class="fr" colspan="2">leur</td><td class="fr">leurs</td></tr>
+      </table>
+      <p><strong>Critical rule:</strong> before a feminine word starting with a vowel (or silent h), use the masculine form for sound. So it's <em>mon école</em>, <em>son amie</em>, <em>ton histoire</em> — not ma/sa/ta.</p>
+      <p><strong>son vs leur:</strong> son/sa/ses = one owner; leur/leurs = multiple owners. 'La voiture de Jean et Brigitte' → c'est <em>leur</em> voiture (two owners, one car).</p>`
+  },
+  {
+    title: "Question words",
+    body: `<p>Three ways to ask a question: rising intonation ('Tu viens ?'), <em>est-ce que</em>, or inversion ('Viens-tu ?').</p>
+      <table class="gr-table">
+        <tr><th>Word</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td class="fr">qui</td><td>who</td><td><em>Qui parle ?</em></td></tr>
+        <tr><td class="fr">quoi / que</td><td>what</td><td><em>Tu fais quoi ?</em></td></tr>
+        <tr><td class="fr">où</td><td>where</td><td><em>Où vas-tu ?</em></td></tr>
+        <tr><td class="fr">quand</td><td>when</td><td><em>Quand pars-tu ?</em></td></tr>
+        <tr><td class="fr">pourquoi</td><td>why</td><td><em>Pourquoi ?</em></td></tr>
+        <tr><td class="fr">comment</td><td>how</td><td><em>Comment ça va ?</em></td></tr>
+        <tr><td class="fr">combien (de)</td><td>how much/many</td><td><em>Combien ça coûte ?</em></td></tr>
+        <tr><td class="fr">quel(le/s)</td><td>which/what</td><td><em>Quel âge as-tu ?</em></td></tr>
+      </table>
+      <p><strong>Quel</strong> agrees with its noun: quel (m), quelle (f), quels/quelles (pl).</p>`
+  },
+  {
+    title: "Adverbs of time & sequence",
+    body: `<p>These are your discourse glue — they connect sentences into real narrative.</p>
+      <div class="gr-box"><span class="label">Sequence</span>
+        <em>d'abord</em> (first) → <em>ensuite</em> (next) / <em>puis</em> (then) → <em>enfin</em> (finally)</div>
+      <div class="gr-box"><span class="label">Frequency</span>
+        <em>toujours</em> (always) · <em>souvent</em> (often) · <em>parfois</em> (sometimes) · <em>jamais</em> (never)</div>
+      <div class="gr-box"><span class="label">Time & consequence</span>
+        <em>maintenant</em> (now) · <em>alors</em> (so/then)</div>
+      <p><strong>Jamais</strong> usually pairs with <em>ne</em>: <em>Je ne mange jamais de viande.</em></p>`
+  },
+  {
+    title: "Pronunciation cheats",
+    body: `<p>The things that trip up English speakers most in Morzine conversations:</p>
+      <p><strong>Silent endings:</strong> final consonants are usually silent. <em>Parlent</em> sounds like 'parl'. <em>Veulent</em> sounds like 'veul'. <em>Ils peuvent</em> sounds like 'il peuv'.</p>
+      <p><strong>Liaisons:</strong> a silent final consonant activates when the next word starts with a vowel. <em>Vous avez</em> → 'vooz-avay'. <em>Les amis</em> → 'layz-amee'.</p>
+      <p><strong>The -ent ending on verbs is silent.</strong> <em>Ils mangent</em> = 'eel monzh'. <em>Elles dansent</em> = 'ell donss'.</p>
+      <p><strong>R</strong> is pronounced at the back of the throat, not rolled. Think of clearing your throat softly.</p>
+      <p><strong>U vs OU:</strong> 'tu' and 'tout' are different sounds. U = round your lips and say 'ee'. OU = English 'oo'.</p>`
+  },
+  {
+    title: "Mistakes to watch for",
+    body: `<p>Based on your own lesson sheets — these are your patterns:</p>
+      <p><strong>Word order with 'plus de + noun':</strong> it's <em>Jules fait moins DE sport QUE Annabelle</em> — not 'Jules fait sport moins que'. The 'de' comes before the noun.</p>
+      <p><strong>Plus bon → meilleur:</strong> never say 'plus bon'. It's always <em>meilleur(e)</em>.</p>
+      <p><strong>Son amie, not sa amie:</strong> feminine word starting with a vowel → use the masculine form. <em>son amie, mon école, ton histoire.</em></p>
+      <p><strong>Leur vs son:</strong> when two people own one thing, it's <em>leur</em>, not son/sa. <em>La voiture de Jean et Brigitte → leur voiture.</em></p>
+      <p><strong>Conjugate after vouloir/pouvoir/devoir:</strong> the second verb stays as infinitive. <em>Je veux aller</em> — not 'je veux va'. <em>Elle veut aller au ski</em>, not 'elle veut au ski'.</p>`
+  }
+];
+
+// ---------- DAILY 10 (rotating set of practical speaking prompts) ----------
+// Each item has a category so the UI can filter by theme.
+// Categories: 'general', 'meeting', 'shop', 'bar', 'supermarket'
+const dailyDrills = [
+  // ===== GENERAL / EVERYDAY =====
+  { cat: 'general', en: "Say: I want a coffee, please.", fr: "Je voudrais un café, s'il vous plaît.", note: "Je voudrais is the polite form of je veux." },
+  { cat: 'general', en: "Ask: Can you help me?", fr: "Vous pouvez m'aider ?", note: "'vous pouvez' — polite, stock phrase." },
+  { cat: 'general', en: "Say: I have to go to the supermarket.", fr: "Je dois aller au supermarché.", note: "devoir + infinitive." },
+  { cat: 'general', en: "Say: I ski more than my brother.", fr: "Je skie plus que mon frère.", note: "verb + plus + que (no 'de' with a verb)." },
+  { cat: 'general', en: "Say: There are more people here than yesterday.", fr: "Il y a plus de monde ici qu'hier.", note: "plus DE + noun + que." },
+  { cat: 'general', en: "Say: This restaurant is better than the other.", fr: "Ce restaurant est meilleur que l'autre.", note: "meilleur, not 'plus bon'." },
+  { cat: 'general', en: "Say: My neighbours are really nice.", fr: "Mes voisins sont très sympas.", note: "plural noun → mes + plural adjective (sympas)." },
+  { cat: 'general', en: "Say: I never work on Sundays.", fr: "Je ne travaille jamais le dimanche.", note: "ne + verb + jamais sandwich." },
+  { cat: 'general', en: "Say: First I eat breakfast, then I go to work.", fr: "D'abord je prends mon petit-déjeuner, puis je vais au travail.", note: "d'abord ... puis — connects steps." },
+  { cat: 'general', en: "Say: I would like to try the raclette.", fr: "Je voudrais essayer la raclette.", note: "Polite want + infinitive." },
+  { cat: 'general', en: "Say: Sorry, I don't understand.", fr: "Désolé, je ne comprends pas.", note: "Use this constantly. No shame." },
+  { cat: 'general', en: "Say: I'm learning French because I live in Morzine.", fr: "J'apprends le français parce que j'habite à Morzine.", note: "parce que = because." },
+  { cat: 'general', en: "Say: I have been here for two years.", fr: "Je suis ici depuis deux ans.", note: "depuis = 'for' (ongoing time)." },
+  { cat: 'general', en: "Say: It's too expensive for me.", fr: "C'est trop cher pour moi.", note: "trop = too (much)." },
+  { cat: 'general', en: "Ask: What time does it open?", fr: "À quelle heure ça ouvre ?", note: "à quelle heure — one chunk." },
+  { cat: 'general', en: "Say: The pistes are closed today.", fr: "Les pistes sont fermées aujourd'hui.", note: "fermées agrees with 'les pistes' (fem. pl.)." },
+
+  // ===== MEETING SOMEONE NEW =====
+  { cat: 'meeting', en: "Say: Hello, nice to meet you.", fr: "Bonjour, enchanté.", note: "Women say 'enchantée'. Shake hands; use 'bise' (cheek kisses) with friends." },
+  { cat: 'meeting', en: "Say: My name is Martyn.", fr: "Je m'appelle Martyn.", note: "Literally 'I call myself' — reflexive verb." },
+  { cat: 'meeting', en: "Ask: What's your name?", fr: "Comment vous vous appelez ?", note: "Informal version: Comment tu t'appelles ?" },
+  { cat: 'meeting', en: "Ask: Where do you come from?", fr: "Vous venez d'où ?", note: "Or more formal: D'où venez-vous ?" },
+  { cat: 'meeting', en: "Say: I'm English but I live here.", fr: "Je suis anglais mais j'habite ici.", note: "Women say 'anglaise'. No 'un/une' before nationality." },
+  { cat: 'meeting', en: "Say: I live in Morzine for two years.", fr: "J'habite à Morzine depuis deux ans.", note: "depuis + present tense = ongoing 'for'." },
+  { cat: 'meeting', en: "Ask: What do you do (for work)?", fr: "Qu'est-ce que vous faites dans la vie ?", note: "Literally 'what do you do in life'. Very natural phrasing." },
+  { cat: 'meeting', en: "Say: I run a business, I'm a director.", fr: "Je dirige une entreprise, je suis directeur.", note: "No 'un' before profession. 'Directrice' if female." },
+  { cat: 'meeting', en: "Ask: How long have you lived here?", fr: "Depuis combien de temps vous habitez ici ?", note: "Literally 'since how much time' — the French way." },
+  { cat: 'meeting', en: "Say: It's a pleasure to meet you.", fr: "Ravi de vous rencontrer.", note: "'Ravi' = delighted. Women: 'ravie'." },
+  { cat: 'meeting', en: "Ask: Do you have children?", fr: "Vous avez des enfants ?", note: "'des' = some (the plural indefinite)." },
+  { cat: 'meeting', en: "Say: We can switch to 'tu' if you like.", fr: "On peut se tutoyer, si tu veux.", note: "'se tutoyer' = to address each other informally. Big social moment in France." },
+  { cat: 'meeting', en: "Say: Excuse me for my bad French!", fr: "Excusez-moi pour mon mauvais français !", note: "Disarming and polite. Always gets a smile." },
+  { cat: 'meeting', en: "Ask: Can you speak more slowly please?", fr: "Vous pouvez parler plus lentement, s'il vous plaît ?", note: "plus lentement = more slowly. Essential." },
+  { cat: 'meeting', en: "Say: See you soon!", fr: "À bientôt !", note: "Or: à plus tard (later), à demain (tomorrow)." },
+
+  // ===== SHOPS (general, non-supermarket) =====
+  { cat: 'shop', en: "Say: Hello, I'm just looking.", fr: "Bonjour, je regarde juste.", note: "Polite brush-off when you don't want help immediately." },
+  { cat: 'shop', en: "Ask: Do you have this in another size?", fr: "Vous avez ça dans une autre taille ?", note: "taille = size (clothes). For shoes say 'pointure'." },
+  { cat: 'shop', en: "Ask: Can I try it on?", fr: "Je peux l'essayer ?", note: "'l'' = it (replaces the object). 'essayer' = to try." },
+  { cat: 'shop', en: "Say: It's too small.", fr: "C'est trop petit.", note: "trop = too. For 'too big' → trop grand." },
+  { cat: 'shop', en: "Ask: How much does it cost?", fr: "Ça coûte combien ?", note: "Or: combien ça coûte / c'est combien." },
+  { cat: 'shop', en: "Say: I'll think about it, thanks.", fr: "Je vais réfléchir, merci.", note: "Graceful exit. 'réfléchir' = to think about." },
+  { cat: 'shop', en: "Say: I'll take it.", fr: "Je le prends.", note: "Use 'la prends' for feminine items. 'le' / 'la' = it." },
+  { cat: 'shop', en: "Ask: Can I pay by card?", fr: "Je peux payer par carte ?", note: "pouvoir = permission. Usually yes in France now." },
+  { cat: 'shop', en: "Ask: Do you have a bag?", fr: "Vous avez un sac ?", note: "Most shops charge a few cents. Often they ask first." },
+  { cat: 'shop', en: "Say: No bag, thanks, I have one.", fr: "Non merci, j'en ai un.", note: "'en' = 'of them / one of those'. Tricky but useful." },
+  { cat: 'shop', en: "Ask: Do you have a loyalty card?", fr: "Vous avez une carte de fidélité ?", note: "They'll ask YOU this all the time. Answer: non merci." },
+  { cat: 'shop', en: "Say: Can you gift-wrap it?", fr: "Vous pouvez me faire un paquet cadeau ?", note: "Free in most French shops, very common." },
+  { cat: 'shop', en: "Ask: Is there a discount?", fr: "Il y a une réduction ?", note: "réduction = discount. Or 'solde' during sale periods." },
+  { cat: 'shop', en: "Say: That's all, thanks.", fr: "Ce sera tout, merci.", note: "Stock phrase at the till. 'Sera' is future of être." },
+  { cat: 'shop', en: "Say: Here you go (handing over money).", fr: "Voilà.", note: "Magic word. Works for 'here you are', 'there you go', 'done'." },
+
+  // ===== SUPERMARKET =====
+  { cat: 'supermarket', en: "Ask: Where is the bread?", fr: "Où est le pain ?", note: "Or: 'Où se trouve le pain ?' (literally 'where finds itself')." },
+  { cat: 'supermarket', en: "Ask: Where is the dairy section?", fr: "Où est le rayon crèmerie ?", note: "'rayon' = aisle / section. Rayon boucherie, rayon fromage, etc." },
+  { cat: 'supermarket', en: "Say: I'm looking for baking powder.", fr: "Je cherche de la levure chimique.", note: "chercher = to look for (don't translate 'for'). Useful: 'je cherche...'." },
+  { cat: 'supermarket', en: "Say: Do you have any fresh milk?", fr: "Vous avez du lait frais ?", note: "French default is UHT; 'frais' = fresh. In the cold section." },
+  { cat: 'supermarket', en: "Ask: How much is the reblochon?", fr: "Combien coûte le reblochon ?", note: "You can also just hand it to them and they'll tell you." },
+  { cat: 'supermarket', en: "Say: Two hundred grams, please.", fr: "Deux cents grammes, s'il vous plaît.", note: "At the cheese or deli counter. 200g = classic portion." },
+  { cat: 'supermarket', en: "Say: A slice of ham, thin please.", fr: "Une tranche de jambon, fine s'il vous plaît.", note: "tranche = slice. 'fine' = thin (feminine agrees with tranche)." },
+  { cat: 'supermarket', en: "Ask: Is it a ripe (ready-to-eat) one?", fr: "Il est mûr ?", note: "For fruit/cheese. 'mûr' = ripe. Essential for French cheese shopping." },
+  { cat: 'supermarket', en: "Say: Can I have a bag for my vegetables?", fr: "Je peux avoir un sac pour mes légumes ?", note: "Many supermarkets have paper bags at the scales." },
+  { cat: 'supermarket', en: "Say: I don't have change.", fr: "Je n'ai pas de monnaie.", note: "'monnaie' = coins/change, NOT 'argent' (money in general)." },
+  { cat: 'supermarket', en: "Ask: Do you accept contactless?", fr: "Vous acceptez le sans contact ?", note: "'sans contact' = contactless. Nearly everywhere does." },
+  { cat: 'supermarket', en: "Say: The receipt, please.", fr: "Le ticket, s'il vous plaît.", note: "'ticket' (not 'reçu') for supermarket receipts." },
+  { cat: 'supermarket', en: "Say: Is this self-service?", fr: "C'est en libre-service ?", note: "libre-service = self-service. At cheese / charcuterie sometimes." },
+  { cat: 'supermarket', en: "Say: I'll put my basket back.", fr: "Je remets mon panier.", note: "panier = basket, chariot = trolley. 'remettre' = to put back." },
+  { cat: 'supermarket', en: "Ask: What's this? (pointing)", fr: "C'est quoi, ça ?", note: "Very informal but totally fine. Point, they'll explain." },
+
+  // ===== BAR / CAFÉ / RESTAURANT =====
+  { cat: 'bar', en: "Ask: Do you have a table for two?", fr: "Vous avez une table pour deux ?", note: "Add 'en terrasse' if you want outside." },
+  { cat: 'bar', en: "Say: I'll have a beer please.", fr: "Je vais prendre une bière, s'il vous plaît.", note: "'Je vais prendre' = 'I'll have'. More natural than 'je veux'." },
+  { cat: 'bar', en: "Ask: What do you have on draft?", fr: "Qu'est-ce que vous avez à la pression ?", note: "'à la pression' = on draft/tap." },
+  { cat: 'bar', en: "Say: A small / large beer please.", fr: "Un demi / une pinte, s'il vous plaît.", note: "'un demi' = 25cl (standard French size). 'une pinte' = 50cl." },
+  { cat: 'bar', en: "Ask: What do you recommend?", fr: "Qu'est-ce que vous me recommandez ?", note: "Always get a good answer. 'me' = to me." },
+  { cat: 'bar', en: "Say: The same for me.", fr: "La même chose pour moi.", note: "Or: 'Moi aussi' / 'pareil'. Handy in groups." },
+  { cat: 'bar', en: "Ask: Is it spicy?", fr: "C'est épicé ?", note: "French food is rarely very spicy, but good to check." },
+  { cat: 'bar', en: "Say: I'm allergic to nuts.", fr: "Je suis allergique aux fruits à coque.", note: "'fruits à coque' = tree nuts. 'aux arachides' = peanuts." },
+  { cat: 'bar', en: "Say: Rare / medium / well done.", fr: "Saignant / à point / bien cuit.", note: "For steak. 'Saignant' literally = bleeding. French 'well done' is still pinker than UK." },
+  { cat: 'bar', en: "Ask: Can we have the menu?", fr: "On peut avoir la carte ?", note: "'la carte' = menu. 'Le menu' = fixed-price set menu." },
+  { cat: 'bar', en: "Ask: Can we have some water please?", fr: "Une carafe d'eau, s'il vous plaît ?", note: "'carafe' = free tap water. 'Eau plate/gazeuse' = still/sparkling (paid)." },
+  { cat: 'bar', en: "Say: That was delicious.", fr: "C'était délicieux.", note: "'était' = past tense of être. Staff love hearing this." },
+  { cat: 'bar', en: "Ask: Can we have the bill?", fr: "L'addition, s'il vous plaît ?", note: "'addition' = bill. Never ask for 'la facture' in a restaurant — that's a commercial invoice." },
+  { cat: 'bar', en: "Say: Keep the change.", fr: "Gardez la monnaie.", note: "French tipping is small and optional. 1-2€ on drinks is generous." },
+  { cat: 'bar', en: "Say: Cheers!", fr: "Santé !", note: "Look everyone in the eye when you clink — it's a real thing in France." }
+];
+
+// Categories metadata for the UI
+const drillCategories = [
+  { key: 'all', label: 'Mix' },
+  { key: 'meeting', label: 'Meeting people' },
+  { key: 'shop', label: 'Shops' },
+  { key: 'supermarket', label: 'Supermarket' },
+  { key: 'bar', label: 'Bar & Café' },
+  { key: 'general', label: 'Everyday' }
+];
+
+// ---------- SHORT STORIES ----------
+// Syntax: [[french|english|optional grammar note]] becomes a tappable word/phrase.
+// Keep tooltips short — they appear in a popover.
+const stories = [
+  {
+    title: "Une matinée à Morzine",
+    blurb: "A simple morning routine — sequence words, daily verbs",
+    level: "A1",
+    tags: ["sequence words", "daily verbs", "present tense"],
+    focus: [
+      "<em>D'abord, ensuite, puis, enfin</em> — the sequence glue",
+      "Present tense of <em>être, avoir, faire, aller, prendre</em>",
+      "Simple negation with <em>ne … pas</em>"
+    ],
+    body: `
+      <p>[[Tous les matins|Every morning|the 's' on 'matin' makes it plural]], je me [[réveille|wake up|reflexive verb]] à sept heures. [[D'abord|First]], je [[prends|take / have|'prendre' = to take]] une douche [[chaude|hot|adjective agrees with 'douche' (fem.)]], [[puis|then]] je [[descends|go down]] dans la cuisine.</p>
+      <p>[[Ensuite|Next]], je [[prépare|prepare]] mon petit-déjeuner. [[Aujourd'hui|Today]], je [[mange|eat]] du [[pain|bread]] avec du [[beurre|butter]] et de la [[confiture|jam]]. Je [[bois|drink|'boire' = to drink]] aussi un café. Il est très [[fort|strong]] !</p>
+      <p>[[Après|After]], je [[regarde|look at / watch]] par la [[fenêtre|window]]. Les [[montagnes|mountains]] sont [[magnifiques|magnificent]] [[quand|when]] il y a de la [[neige|snow]]. [[Parfois|Sometimes]], je [[vois|see|'voir' = to see]] des [[skieurs|skiers]] sur les pistes.</p>
+      <p>[[Enfin|Finally]], je [[mets|put on|'mettre' = to put]] mes [[bottes|boots]] et ma [[veste|jacket]], et je [[sors|go out|'sortir' = to leave/go out]]. Il fait [[froid|cold]], mais je suis [[content|happy]]. La [[journée|day]] [[commence bien|starts well]] !</p>
+    `,
+    translation: `
+      <p>Every morning, I wake up at seven. First, I take a hot shower, then I go down to the kitchen.</p>
+      <p>Next, I prepare my breakfast. Today, I'm eating bread with butter and jam. I also drink a coffee. It's very strong!</p>
+      <p>After, I look out of the window. The mountains are magnificent when there is snow. Sometimes, I see skiers on the slopes.</p>
+      <p>Finally, I put on my boots and my jacket, and I go out. It's cold, but I'm happy. The day starts well!</p>
+    `
+  },
+  {
+    title: "Au marché du mercredi",
+    blurb: "Wednesday market — comparisons, shopping vocabulary",
+    level: "A1",
+    tags: ["comparisons", "market vocab", "numbers"],
+    focus: [
+      "Comparisons with adjectives: <em>plus … que, moins … que, aussi … que</em>",
+      "Comparisons with nouns: <em>plus DE … que</em>",
+      "The exception: <em>meilleur</em> (not 'plus bon')"
+    ],
+    body: `
+      <p>[[Le mercredi matin|Wednesday morning]], je [[vais|go]] au marché à Morzine. Il y a [[beaucoup de|lots of]] [[monde|people]] et [[beaucoup de choses|lots of things]] à [[acheter|buy]].</p>
+      <p>[[D'abord|First]], je [[choisis|choose|'choisir' = to choose]] des [[fruits|fruits]]. Les [[pommes|apples]] sont [[plus chères que|more expensive than]] la [[semaine dernière|last week]], mais elles sont [[meilleures|better|exception: NEVER 'plus bonnes']] ! Le [[vendeur|seller / vendor]] est très [[sympa|nice]].</p>
+      <p>[[Ensuite|Next]], je [[regarde|look at]] les [[fromages|cheeses]]. Il y a [[plus de choix|more choice|'plus DE' + noun]] ici [[qu'au|than at the|qu' = que + vowel]] [[supermarché|supermarket]]. Le [[reblochon|reblochon (Alpine cheese)]] est [[délicieux|delicious]] et [[moins cher qu'à Paris|cheaper than in Paris]].</p>
+      <p>[[Après|After]], je [[prends|buy / take]] du [[pain|bread]] à la [[boulangerie|bakery]]. La [[baguette tradition|traditional baguette]] est [[aussi bonne que|as good as]] celle de ma [[boulangerie préférée|favourite bakery]].</p>
+      <p>[[À la fin|At the end]], [[mon sac est plus lourd que|my bag is heavier than]] [[d'habitude|usual]] ! [[Mais ça va|But it's fine]] — [[je mange mieux|I eat better]] [[quand|when]] je [[cuisine|cook]] [[moi-même|myself]]. [[La prochaine fois|Next time]], je [[veux|want]] [[essayer|to try]] le [[saucisson|dry sausage]].</p>
+    `,
+    translation: `
+      <p>Wednesday morning, I go to the market in Morzine. There are lots of people and lots of things to buy.</p>
+      <p>First, I choose some fruits. The apples are more expensive than last week, but they are better! The vendor is very nice.</p>
+      <p>Next, I look at the cheeses. There's more choice here than at the supermarket. The reblochon is delicious and cheaper than in Paris.</p>
+      <p>After, I get some bread at the bakery. The traditional baguette is as good as the one from my favourite bakery.</p>
+      <p>At the end, my bag is heavier than usual! But it's fine — I eat better when I cook myself. Next time, I want to try the dry sausage.</p>
+    `
+  },
+  {
+    title: "La première leçon de ski",
+    blurb: "Pierre's first ski lesson — modal verbs in action",
+    level: "A2",
+    tags: ["pouvoir / devoir / vouloir", "ski vocabulary", "polite requests"],
+    focus: [
+      "<em>Pouvoir</em> (can), <em>devoir</em> (must), <em>vouloir</em> (want) — all three modals",
+      "<em>Je voudrais</em> for polite requests",
+      "Modal + infinitive construction"
+    ],
+    body: `
+      <p>Pierre [[est arrivé|arrived|passé composé with être]] à Morzine [[hier soir|last night]]. C'est la [[première fois|first time]] qu'il [[essaie|tries]] le ski. [[Ce matin|This morning]], il [[doit|must]] [[aller|go]] au magasin [[pour|to / in order to]] [[louer|rent]] [[son équipement|his equipment]].</p>
+      <p>— [[Bonjour|Hello]] ! [[Je voudrais|I would like|polite form of 'je veux']] [[louer|to rent]] des skis, [[dit-il|he says]] [[au vendeur|to the seller]].</p>
+      <p>— [[Bien sûr|Of course]]. [[Quel est votre niveau|What's your level]] ?</p>
+      <p>— [[Je suis débutant|I'm a beginner]]. [[Je ne peux pas|I can't|pouvoir + infinitive]] [[encore|yet]] [[skier|ski]] sur les pistes [[difficiles|difficult]].</p>
+      <p>— [[Pas de problème|No problem]]. Vous [[devez|must]] [[prendre|take]] des skis [[courts|short]]. Et vous [[devez absolument|must absolutely]] [[porter|wear]] un [[casque|helmet]] !</p>
+      <p>Pierre [[veut aussi|also wants]] [[acheter|to buy]] un [[forfait|ski pass]]. Il [[peut|can]] [[skier|ski]] sur [[quinze pistes|fifteen pistes]] [[pendant|during]] [[trois jours|three days]]. [[C'est parfait|It's perfect]] !</p>
+      <p>[[Plus tard|Later]], à [[l'école de ski|the ski school]], son [[moniteur|instructor]] [[lui dit|says to him]] :</p>
+      <p>— [[Tu peux|You can]] [[essayer|try]] [[doucement|gently]]. [[Si tu tombes|If you fall]], [[tu dois|you must]] [[te relever|get yourself up]] [[sans paniquer|without panicking]]. [[Et si|And if]] [[tu as peur|you're afraid]], [[tu peux|you can]] [[m'appeler|call me]].</p>
+      <p>[[À la fin de la journée|At the end of the day]], Pierre est [[fatigué|tired]] mais [[heureux|happy]]. Il [[veut|wants]] [[revenir|to come back]] [[demain|tomorrow]] !</p>
+    `,
+    translation: `
+      <p>Pierre arrived in Morzine last night. It's the first time he's trying skiing. This morning, he must go to the shop to rent his equipment.</p>
+      <p>— "Hello! I would like to rent some skis," he says to the seller.</p>
+      <p>— "Of course. What's your level?"</p>
+      <p>— "I'm a beginner. I can't yet ski on the difficult pistes."</p>
+      <p>— "No problem. You must take short skis. And you must absolutely wear a helmet!"</p>
+      <p>Pierre also wants to buy a ski pass. He can ski on fifteen pistes during three days. It's perfect!</p>
+      <p>Later, at the ski school, his instructor says to him:</p>
+      <p>— "You can try gently. If you fall, you must get up without panicking. And if you're afraid, you can call me."</p>
+      <p>At the end of the day, Pierre is tired but happy. He wants to come back tomorrow!</p>
+    `
+  },
+  {
+    title: "La famille de Sophie",
+    blurb: "Sophie introduces her family — possessive adjectives",
+    level: "A1",
+    tags: ["possessive adjectives", "family vocab", "adjective agreement"],
+    focus: [
+      "All possessives: <em>mon/ma/mes, ton/ta/tes, son/sa/ses, notre/nos, votre/vos, leur/leurs</em>",
+      "The trick: <em>son amie</em> (not <em>sa</em>) because 'amie' starts with a vowel",
+      "<em>Leur</em> vs <em>son</em>: multiple vs single owners"
+    ],
+    body: `
+      <p>[[Je m'appelle|My name is]] Sophie et [[j'habite|I live]] à Morzine [[avec ma famille|with my family]]. [[Nous sommes|We are]] [[quatre|four]] à la [[maison|house]].</p>
+      <p>[[Mon père|My father]] [[s'appelle|is called]] Thomas. [[Il est médecin|He's a doctor|no 'un' before profession]] à l'[[hôpital|hospital]] de [[Thonon|Thonon (a nearby town)]]. [[Ses patients|His patients]] l'[[aiment bien|like him a lot]] [[parce qu'il|because he]] est [[patient|patient]] et [[sympa|nice]]. [[Il travaille|He works]] [[beaucoup|a lot]], mais [[le week-end|on the weekend]], il [[aime|likes]] [[faire du ski|to go skiing]] [[avec nous|with us]].</p>
+      <p>[[Ma mère|My mother]] [[s'appelle|is called]] Claire. [[Elle est professeure|She's a teacher]] [[à l'école primaire|at the primary school]]. [[Ses élèves|Her pupils]] sont [[adorables|adorable]] et [[elle adore|she loves]] [[son métier|her job]]. [[Le soir|In the evening]], elle [[lit|reads]] [[ses livres|her books]] devant [[la cheminée|the fireplace]].</p>
+      <p>[[Mon frère|My brother]] [[s'appelle|is called]] Lucas. [[Il a|He is]] [[quinze ans|fifteen years old|literally "has 15 years"]]. [[Son passe-temps préféré|His favourite hobby]] est [[le snowboard|snowboarding]]. [[Ses amis|His friends]] [[viennent|come]] [[souvent|often]] à la [[maison|house]] pour [[jouer|to play]] aux [[jeux vidéo|video games]].</p>
+      <p>Et [[moi|me]] ? [[J'ai|I have]] [[une meilleure amie|a best friend (fem.)]] qui [[s'appelle|is called]] Léa. [[C'est ma voisine|She's my neighbour]]. [[Nous aimons|We like]] [[faire nos devoirs|doing our homework]] [[ensemble|together]] et [[partager nos secrets|sharing our secrets]].</p>
+      <p>[[Mes parents|My parents]] [[ont|have]] aussi [[deux chats|two cats]] : [[leur chat|their cat]] [[s'appelle|is called]] Minou et [[leur chatte|their cat (fem.)]] [[s'appelle|is called]] Poupette. [[Leurs couleurs|Their colours]] [[sont différentes|are different]] mais [[ils dorment|they sleep]] [[toujours ensemble|always together]] !</p>
+    `,
+    translation: `
+      <p>My name is Sophie and I live in Morzine with my family. There are four of us at home.</p>
+      <p>My father is called Thomas. He's a doctor at the hospital in Thonon. His patients like him a lot because he is patient and nice. He works a lot, but on the weekend, he likes to go skiing with us.</p>
+      <p>My mother is called Claire. She's a teacher at the primary school. Her pupils are adorable and she loves her job. In the evening, she reads her books in front of the fireplace.</p>
+      <p>My brother is called Lucas. He is fifteen years old. His favourite hobby is snowboarding. His friends often come to the house to play video games.</p>
+      <p>And me? I have a best friend called Léa. She's my neighbour. We like doing our homework together and sharing our secrets.</p>
+      <p>My parents also have two cats: their cat is called Minou and their female cat is called Poupette. Their colours are different but they always sleep together!</p>
+    `
+  },
+  {
+    title: "Un dîner entre amis",
+    blurb: "A dinner with friends — questions, comparisons, modals",
+    level: "A2",
+    tags: ["question words", "comparisons", "modals", "conversation"],
+    focus: [
+      "Questions with <em>qui, où, pourquoi, combien, quel, comment</em>",
+      "Natural use of modals in conversation",
+      "Comparisons in real dialogue"
+    ],
+    body: `
+      <p>[[Samedi soir|Saturday evening]], [[mes amis et moi|my friends and I]] [[allons dîner|are going to have dinner]] [[au restaurant|at the restaurant]] « Le Clin d'Œil » [[au centre|in the centre]] de Morzine. [[Nous sommes|We are]] [[six|six people]].</p>
+      <p>[[À l'entrée|At the entrance]], le [[serveur|waiter]] [[nous demande|asks us]] :</p>
+      <p>— [[Bonsoir|Good evening]] ! [[Vous avez réservé|Have you booked|literally "you have reserved"]] ?</p>
+      <p>— [[Oui|Yes]], [[au nom de|in the name of]] Martyn, [[pour six personnes|for six people]].</p>
+      <p>[[Pendant|During]] [[l'apéritif|the aperitif]], [[tout le monde parle|everyone is talking]]. Pierre [[me demande|asks me]] :</p>
+      <p>— [[Alors|So]], [[pourquoi|why]] [[est-ce que tu as choisi|did you choose]] [[de vivre|to live]] à Morzine ?</p>
+      <p>— [[Parce que|Because]] [[c'est plus calme|it's calmer]] qu'en [[Angleterre|England]] et les [[montagnes|mountains]] sont [[magnifiques|magnificent]]. [[Et toi|And you]], [[depuis combien de temps|since how long / for how long]] tu [[habites|live]] ici ?</p>
+      <p>— [[Depuis|For]] [[dix ans|ten years]] ! [[Je ne peux plus|I can no longer|ne … plus = no longer]] [[imaginer|imagine]] [[vivre ailleurs|living elsewhere]].</p>
+      <p>[[Quand|When]] le [[serveur|waiter]] [[revient|comes back|'revenir' = to come back]], [[il demande|he asks]] :</p>
+      <p>— [[Qu'est-ce que vous voulez|What do you want / would you like]] [[manger|to eat]] ? [[Je vous recommande|I recommend you]] la [[fondue savoyarde|Savoyard fondue]] — [[c'est notre spécialité|it's our specialty]].</p>
+      <p>— [[Combien ça coûte|How much does it cost]] ? [[demande|asks]] Julie.</p>
+      <p>— [[Vingt-cinq euros|Twenty-five euros]] [[par personne|per person]].</p>
+      <p>— [[C'est un peu cher|It's a bit expensive]], [[mais on doit|but we must]] [[essayer|try]] [[au moins une fois|at least once]] !</p>
+      <p>Le [[repas|meal]] est [[délicieux|delicious]]. [[Nous mangeons plus|We eat more]] et [[parlons plus fort|talk louder]] [[que d'habitude|than usual]]. [[À la fin|At the end]], Martyn [[dit|says]] :</p>
+      <p>— [[C'est la meilleure soirée|It's the best evening]] [[de la semaine|of the week]] ! [[Qui veut|Who wants]] [[un dernier verre|a last drink]] [[quelque part|somewhere]] ?</p>
+      <p>[[Tout le monde|Everyone]] [[répond|answers]] « [[oui|yes]] » [[en même temps|at the same time]].</p>
+    `,
+    translation: `
+      <p>Saturday evening, my friends and I are going to have dinner at "Le Clin d'Œil" restaurant in the centre of Morzine. There are six of us.</p>
+      <p>At the entrance, the waiter asks us:</p>
+      <p>— "Good evening! Have you booked?"</p>
+      <p>— "Yes, in the name of Martyn, for six people."</p>
+      <p>During the aperitif, everyone is talking. Pierre asks me:</p>
+      <p>— "So, why did you choose to live in Morzine?"</p>
+      <p>— "Because it's calmer than in England and the mountains are magnificent. And you, how long have you lived here?"</p>
+      <p>— "For ten years! I can no longer imagine living elsewhere."</p>
+      <p>When the waiter comes back, he asks:</p>
+      <p>— "What would you like to eat? I recommend the Savoyard fondue — it's our specialty."</p>
+      <p>— "How much does it cost?" asks Julie.</p>
+      <p>— "Twenty-five euros per person."</p>
+      <p>— "It's a bit expensive, but we must try it at least once!"</p>
+      <p>The meal is delicious. We eat more and talk louder than usual. At the end, Martyn says:</p>
+      <p>— "It's the best evening of the week! Who wants a last drink somewhere?"</p>
+      <p>Everyone answers "yes" at the same time.</p>
+    `
+  }
+];
+
+/* =========================================================
+   STATE + NAV
+   ========================================================= */
+
+let fcState = { deck: null, i: 0, flipped: false };
+let quizState = { quiz: null, i: 0, score: 0, answered: false };
+let conjState = { verb: null, queue: [], i: 0, asked: 0 };
+
+// Views that count as active practice time
+const PRACTICE_VIEWS = new Set([
+  'flashView',    // flashcards in session
+  'quizView',     // quiz in session
+  'conjView',     // conjugation drill in session
+  'roleplay',     // reading/practicing role-plays
+  'drills',       // daily 10
+  'storyView'     // reading a story
+]);
+
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  if (id === 'decks') renderDeckList();
+  if (id === 'quizPicker') renderQuizList();
+  if (id === 'conjPicker') renderConjList();
+  if (id === 'roleplay') renderRoleplay();
+  if (id === 'grammar') renderGrammar();
+  if (id === 'drills') renderDrills();
+  if (id === 'storyPicker') renderStoryPicker();
+
+  // Toggle time tracking based on whether we're in a practice view
+  if (typeof setPracticeActive === 'function') {
+    setPracticeActive(PRACTICE_VIEWS.has(id));
+  }
+
+  // When returning home, refresh the tracker so they see any time just earned
+  if (id === 'home' && typeof renderTracker === 'function') {
+    renderTracker();
+  }
+}
+
+/* ====================== FLASHCARDS ====================== */
+
+function renderDeckList() {
+  const list = document.getElementById('deckList');
+  list.innerHTML = '';
+  Object.entries(decks).forEach(([key, deck]) => {
+    const btn = document.createElement('button');
+    btn.className = 'deck-item';
+    btn.innerHTML = `
+      <div>
+        <div class="deck-name">${deck.name}</div>
+        <div class="deck-meta">${deck.category}</div>
+      </div>
+      <div class="deck-count">${deck.cards.length}</div>
+    `;
+    btn.onclick = () => startDeck(key);
+    list.appendChild(btn);
+  });
+}
+
+function startDeck(key) {
+  fcState = { deck: key, i: 0, flipped: false, cards: [...decks[key].cards].sort(() => Math.random() - 0.5) };
+  document.getElementById('fcDeckTitle').textContent = decks[key].name;
+  document.getElementById('fcDeckSub').textContent = `${decks[key].category} · ${fcState.cards.length} cards`;
+  // Rebuild DOM in case end card replaced it from a previous deck
+  document.querySelector('#flashView .fc-wrap').innerHTML = `
+    <div class="fc-progress">
+      <span id="fcIndex">1 / 10</span>
+      <div class="fc-bar"><div class="fc-bar-fill" id="fcBar" style="width:10%"></div></div>
+    </div>
+    <div class="flashcard" id="fcCard" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <div class="fc-face front">
+          <div class="fc-category" id="fcCatFront">—</div>
+          <div class="fc-word" id="fcFront">—</div>
+          <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcFront').textContent)" aria-label="Listen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+          </button>
+          <div class="fc-hint">tap to reveal →</div>
+        </div>
+        <div class="fc-face back">
+          <div class="fc-category" id="fcCatBack">—</div>
+          <div class="fc-word" id="fcBack">—</div>
+          <div class="fc-example" id="fcExample"></div>
+          <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcBack').textContent)" aria-label="Listen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="fc-actions">
+      <button class="fc-action" data-rate="again" onclick="rateCard('again')">Again</button>
+      <button class="fc-action" data-rate="good" onclick="rateCard('good')">Good</button>
+      <button class="fc-action" data-rate="easy" onclick="rateCard('easy')">Easy</button>
+    </div>
+  `;
+  showView('flashView');
+  renderCard();
+}
+
+function renderCard() {
+  const card = fcState.cards[fcState.i];
+  document.getElementById('fcFront').textContent = card.fr;
+  document.getElementById('fcBack').textContent = card.en;
+  document.getElementById('fcExample').textContent = card.ex || '';
+  document.getElementById('fcCatFront').textContent = decks[fcState.deck].category;
+  document.getElementById('fcCatBack').textContent = 'translation';
+  document.getElementById('fcIndex').textContent = `${fcState.i + 1} / ${fcState.cards.length}`;
+  document.getElementById('fcBar').style.width = ((fcState.i + 1) / fcState.cards.length * 100) + '%';
+  document.getElementById('fcCard').classList.remove('flipped');
+  fcState.flipped = false;
+}
+
+function flipCard() {
+  fcState.flipped = !fcState.flipped;
+  document.getElementById('fcCard').classList.toggle('flipped', fcState.flipped);
+}
+
+function rateCard(rating) {
+  if (rating === 'again') {
+    // push card to end of queue
+    const c = fcState.cards[fcState.i];
+    fcState.cards.push(c);
+  }
+  fcState.i++;
+  if (fcState.i >= fcState.cards.length) {
+    showFcEnd();
+    return;
+  }
+  renderCard();
+}
+
+function showFcEnd() {
+  const wrap = document.querySelector('#flashView .fc-wrap');
+  wrap.innerHTML = `
+    <div class="end-card">
+      <h3>Bien joué !</h3>
+      <p>You finished the ${decks[fcState.deck].name} deck.</p>
+      <div class="end-score">${fcState.cards.length}<span class="of"> cards</span></div>
+      <div class="end-actions">
+        <button class="end-btn" onclick="startDeck('${fcState.deck}')">Again</button>
+        <button class="end-btn primary" onclick="showView('decks')">Pick another</button>
+      </div>
+    </div>`;
+}
+
+/* ====================== QUIZ ====================== */
+
+function renderQuizList() {
+  const list = document.getElementById('quizList');
+  list.innerHTML = '';
+  Object.entries(quizzes).forEach(([key, q]) => {
+    const btn = document.createElement('button');
+    btn.className = 'deck-item';
+    btn.innerHTML = `
+      <div>
+        <div class="deck-name">${q.title}</div>
+        <div class="deck-meta">Quiz · ${q.qs.length} questions</div>
+      </div>
+      <div class="deck-count">${q.qs.length}</div>
+    `;
+    btn.onclick = () => startQuiz(key);
+    list.appendChild(btn);
+  });
+}
+
+function startQuiz(key) {
+  quizState = { key, i: 0, score: 0, answered: false, qs: [...quizzes[key].qs].sort(() => Math.random() - 0.5) };
+  document.getElementById('qTitle').textContent = quizzes[key].title;
+  document.getElementById('qTotal').textContent = quizState.qs.length;
+  // rebuild DOM in case end card replaced it
+  document.querySelector('#quizView .quiz-wrap').innerHTML = `
+    <div class="quiz-question">
+      <div class="quiz-prompt" id="qPrompt"></div>
+      <div class="quiz-translation" id="qTrans"></div>
+    </div>
+    <div class="quiz-options" id="qOptions"></div>
+    <div class="quiz-feedback" id="qFb"></div>
+    <button class="quiz-next" id="qNext" onclick="nextQuiz()">Next →</button>
+  `;
+  showView('quizView');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = quizState.qs[quizState.i];
+  document.getElementById('qIdx').textContent = quizState.i + 1;
+  document.getElementById('qPrompt').innerHTML = q.prompt.replace(/___/g, '<span class="blank">______</span>');
+  document.getElementById('qTrans').textContent = q.en;
+  const optsEl = document.getElementById('qOptions');
+  optsEl.innerHTML = '';
+  q.opts.forEach((opt, idx) => {
+    const b = document.createElement('button');
+    b.className = 'quiz-option';
+    b.textContent = opt;
+    b.onclick = () => answerQuiz(idx);
+    optsEl.appendChild(b);
+  });
+  document.getElementById('qFb').className = 'quiz-feedback';
+  document.getElementById('qFb').textContent = '';
+  document.getElementById('qNext').className = 'quiz-next';
+  quizState.answered = false;
+}
+
+function answerQuiz(idx) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = quizState.qs[quizState.i];
+  const opts = document.querySelectorAll('#qOptions .quiz-option');
+  opts.forEach((o, i) => {
+    o.disabled = true;
+    if (i === q.a) o.classList.add('correct');
+    if (i === idx && idx !== q.a) o.classList.add('wrong');
+  });
+  // reveal blanks
+  document.querySelectorAll('#qPrompt .blank').forEach(b => {
+    b.textContent = q.opts[q.a];
+    b.classList.add('revealed');
+  });
+  const fb = document.getElementById('qFb');
+  const correct = idx === q.a;
+  if (correct) quizState.score++;
+  fb.className = 'quiz-feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = (correct ? '<strong>Correct !</strong> ' : `<strong>Not quite.</strong> The answer is <em>${q.opts[q.a]}</em>. `) + q.note;
+  document.getElementById('qNext').classList.add('show');
+  document.getElementById('qNext').textContent = quizState.i === quizState.qs.length - 1 ? 'See results →' : 'Next →';
+}
+
+function nextQuiz() {
+  quizState.i++;
+  if (quizState.i >= quizState.qs.length) return showQuizEnd();
+  renderQuestion();
+}
+
+function showQuizEnd() {
+  const wrap = document.querySelector('#quizView .quiz-wrap');
+  const pct = Math.round(quizState.score / quizState.qs.length * 100);
+  let msg = "Keep going — répétez, répétez !";
+  if (pct >= 90) msg = "Excellent ! Vraiment impressionnant.";
+  else if (pct >= 70) msg = "Très bien ! You're on the right track.";
+  else if (pct >= 50) msg = "Pas mal ! Review the ones you missed.";
+  wrap.innerHTML = `
+    <div class="end-card">
+      <h3>${msg}</h3>
+      <div class="end-score">${quizState.score}<span class="of">/${quizState.qs.length}</span></div>
+      <p>${pct}%</p>
+      <div class="end-actions">
+        <button class="end-btn" onclick="startQuiz('${quizState.key}')">Retry</button>
+        <button class="end-btn primary" onclick="showView('quizPicker')">Another topic</button>
+      </div>
+    </div>`;
+}
+
+/* ====================== CONJUGATION DRILL ====================== */
+
+function renderConjList() {
+  const list = document.getElementById('conjList');
+  list.innerHTML = '';
+  Object.entries(verbTables).forEach(([key, v]) => {
+    const btn = document.createElement('button');
+    btn.className = 'deck-item';
+    btn.innerHTML = `
+      <div>
+        <div class="deck-name" style="font-style:italic">${key}</div>
+        <div class="deck-meta">${v.meaning}</div>
+      </div>
+      <div class="deck-count">6</div>
+    `;
+    btn.onclick = () => startConj(key);
+    list.appendChild(btn);
+  });
+  // Also offer a "random mix"
+  const mix = document.createElement('button');
+  mix.className = 'deck-item';
+  mix.innerHTML = `
+    <div>
+      <div class="deck-name" style="color:var(--ember)">Mix all verbs</div>
+      <div class="deck-meta">All 10 verbs, random order</div>
+    </div>
+    <div class="deck-count">20</div>
+  `;
+  mix.onclick = () => startConj('__mix__');
+  list.appendChild(mix);
+}
+
+function startConj(verbKey) {
+  let queue = [];
+  if (verbKey === '__mix__') {
+    Object.entries(verbTables).forEach(([vk, v]) => {
+      Object.entries(v.forms).forEach(([pr, fm]) => queue.push({ verb: vk, meaning: v.meaning, pr, fm }));
+    });
+    queue.sort(() => Math.random() - 0.5);
+    queue = queue.slice(0, 20);
+  } else {
+    const v = verbTables[verbKey];
+    Object.entries(v.forms).forEach(([pr, fm]) => queue.push({ verb: verbKey, meaning: v.meaning, pr, fm }));
+    queue.sort(() => Math.random() - 0.5);
+  }
+  conjState = { verbKey, i: 0, queue, correct: 0 };
+  document.getElementById('conjTitle').textContent = verbKey === '__mix__' ? 'Mixed verb drill' : `Conjugate: ${verbKey}`;
+  document.getElementById('conjTotal').textContent = queue.length;
+  // reset DOM
+  document.querySelector('#conjView .conj-wrap').innerHTML = `
+    <div class="conj-verb" id="conjVerb"></div>
+    <div class="conj-meaning" id="conjMeaning"></div>
+    <div class="conj-pronoun" id="conjPronoun"></div>
+    <input class="conj-input" id="conjInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type here...">
+    <div class="conj-answer" id="conjAns"></div>
+    <div class="conj-full" id="conjFull" style="display:none"><div class="conj-full-title">Full conjugation</div><div id="conjFullBody"></div></div>
+  `;
+  showView('conjView');
+  nextConj();
+}
+
+function nextConj() {
+  if (conjState.i >= conjState.queue.length) return showConjEnd();
+  const cur = conjState.queue[conjState.i];
+  document.getElementById('conjIdx').textContent = conjState.i + 1;
+  document.getElementById('conjVerb').textContent = cur.verb;
+  document.getElementById('conjMeaning').textContent = cur.meaning;
+  document.getElementById('conjPronoun').textContent = cur.pr;
+  const inp = document.getElementById('conjInput');
+  inp.value = '';
+  inp.className = 'conj-input';
+  inp.focus();
+  document.getElementById('conjAns').innerHTML = '';
+  document.getElementById('conjFull').style.display = 'none';
+  inp.onkeydown = (e) => { if (e.key === 'Enter') checkConj(); };
+}
+
+function normalize(s) {
+  return s.trim().toLowerCase()
+    .replace(/[éèêë]/g, 'e')
+    .replace(/[àâä]/g, 'a')
+    .replace(/[îï]/g, 'i')
+    .replace(/[ôö]/g, 'o')
+    .replace(/[ûü]/g, 'u')
+    .replace(/ç/g, 'c');
+}
+
+function checkConj() {
+  const cur = conjState.queue[conjState.i];
+  const inp = document.getElementById('conjInput');
+  const given = inp.value;
+  const correct = normalize(given) === normalize(cur.fm);
+  inp.className = 'conj-input ' + (correct ? 'correct' : 'wrong');
+  if (correct) {
+    conjState.correct++;
+    document.getElementById('conjAns').innerHTML = `<strong>${cur.fm}</strong> — parfait !`;
+  } else {
+    document.getElementById('conjAns').innerHTML = `Correct answer: <strong>${cur.fm}</strong>`;
+    // show full table so you see the pattern
+    const fullBody = document.getElementById('conjFullBody');
+    fullBody.innerHTML = '';
+    Object.entries(verbTables[cur.verb].forms).forEach(([pr, fm]) => {
+      const row = document.createElement('div');
+      row.className = 'conj-full-row';
+      row.innerHTML = `<span class="pr">${pr}</span><span class="fm">${fm}</span>`;
+      fullBody.appendChild(row);
+    });
+    document.getElementById('conjFull').style.display = 'block';
+  }
+  setTimeout(() => {
+    conjState.i++;
+    nextConj();
+  }, correct ? 900 : 2400);
+}
+
+function showConjEnd() {
+  const wrap = document.querySelector('#conjView .conj-wrap');
+  const pct = Math.round(conjState.correct / conjState.queue.length * 100);
+  wrap.innerHTML = `
+    <div class="end-card">
+      <h3>Drill complete</h3>
+      <div class="end-score">${conjState.correct}<span class="of">/${conjState.queue.length}</span></div>
+      <p>${pct}% correct</p>
+      <div class="end-actions">
+        <button class="end-btn" onclick="startConj('${conjState.verbKey}')">Again</button>
+        <button class="end-btn primary" onclick="showView('conjPicker')">Another verb</button>
+      </div>
+    </div>`;
+}
+
+/* ====================== ROLE-PLAY ====================== */
+
+function renderRoleplay() {
+  const wrap = document.getElementById('rpWrap');
+  wrap.innerHTML = '';
+  roleplays.forEach((rp) => {
+    const scene = document.createElement('div');
+    scene.className = 'rp-scene';
+    scene.innerHTML = `
+      <div class="rp-scene-head">
+        <div class="rp-scene-title">${rp.title}</div>
+        <div class="rp-scene-ctx">${rp.ctx}</div>
+      </div>
+      <div class="rp-dialogue">
+        ${rp.lines.map(line => `
+          <div class="rp-line ${line.who === 'you' ? 'you-line' : ''}">
+            <div class="rp-speaker ${line.who}">${line.who === 'you' ? 'Y' : ''}</div>
+            <div class="rp-bubble">
+              <div class="rp-fr">${escapeHtml(line.fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(line.fr)}\`)" aria-label="Listen">🔊</button></div>
+              <div class="rp-en">${escapeHtml(line.en)}</div>
+            </div>
+          </div>
+        `).join('')}
+        <div class="rp-notes">${rp.notes}</div>
+      </div>
+    `;
+    wrap.appendChild(scene);
+  });
+}
+
+/* ====================== GRAMMAR ====================== */
+
+function renderGrammar() {
+  const wrap = document.getElementById('grWrap');
+  wrap.innerHTML = '';
+  grammar.forEach((t) => {
+    const topic = document.createElement('div');
+    topic.className = 'gr-topic';
+    topic.innerHTML = `
+      <button class="gr-topic-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="gr-topic-title">${t.title}</div>
+        <div class="gr-chev">▸</div>
+      </button>
+      <div class="gr-body">${t.body}</div>
+    `;
+    wrap.appendChild(topic);
+  });
+}
+
+/* ====================== DAILY DRILLS ====================== */
+
+let currentDrillCat = 'all';
+
+function renderDrills() {
+  const wrap = document.getElementById('drWrap');
+  // Filter by category
+  let pool = currentDrillCat === 'all'
+    ? [...dailyDrills]
+    : dailyDrills.filter(d => d.cat === currentDrillCat);
+
+  // Pick 10 at random from the pool
+  const today = pool.sort(() => Math.random() - 0.5).slice(0, 10);
+
+  // Category picker
+  const catsHtml = drillCategories.map(c =>
+    `<button class="st-ctrl ${c.key === currentDrillCat ? 'active' : ''}" onclick="pickDrillCat('${c.key}')">${escapeHtml(c.label)}</button>`
+  ).join('');
+
+  // Intro message changes by category
+  const introMsgs = {
+    all: { h: 'Say each sentence out loud', p: 'Read the English. Try it in French. Then reveal and compare. Tap 🔊 to hear the native pronunciation.' },
+    meeting: { h: 'Meeting someone new', p: 'The phrases you\'ll use when being introduced or making small talk. Practice aloud before your next chat with a neighbour.' },
+    shop: { h: 'At the shop', p: 'Clothes shops, boutiques, tourist shops. All the essentials to browse, try things, and check out.' },
+    supermarket: { h: 'At the supermarket', p: 'Navigating the supermarché — finding things, weighing, paying. The stuff you use at Sherpa every week.' },
+    bar: { h: 'Bar, café & restaurant', p: 'From ordering a drink to asking for the bill. Works in any café, bar or restaurant in Morzine.' },
+    general: { h: 'Everyday essentials', p: 'Core phrases for daily life that don\'t fit a specific place — time, numbers, negotiation, apologies.' }
+  };
+  const intro = introMsgs[currentDrillCat] || introMsgs.all;
+
+  wrap.innerHTML = `
+    <div class="dr-intro">
+      <div class="eyebrow">Daily 10</div>
+      <h3>${escapeHtml(intro.h)}</h3>
+      <p>${escapeHtml(intro.p)}</p>
+    </div>
+
+    <div class="st-controls" style="margin-bottom:20px">${catsHtml}</div>
+
+    ${today.length === 0 ? '<p style="color:var(--slate);text-align:center;padding:20px">No sentences in this category yet.</p>' : ''}
+
+    ${today.map((d, i) => `
+      <div class="dr-prompt">
+        <div class="dr-en"><strong>${i + 1}.</strong> ${escapeHtml(d.en)}</div>
+        <div class="dr-your-turn">
+          <button class="dr-reveal" onclick="this.nextElementSibling.classList.add('show'); this.style.display='none'">Reveal</button>
+          <div class="dr-answer">
+            <div class="dr-fr">${escapeHtml(d.fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(d.fr)}\`)" aria-label="Listen">🔊</button></div>
+            <div class="dr-note">${d.note}</div>
+          </div>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function pickDrillCat(key) {
+  currentDrillCat = key;
+  renderDrills();
+  // scroll back to top of drills section
+  document.querySelector('#drills .view-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ====================== STORIES ====================== */
+
+let storyTipEl = null;
+
+function renderStoryPicker() {
+  const list = document.getElementById('spList');
+  list.innerHTML = '';
+  stories.forEach((s, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'sp-item';
+    btn.innerHTML = `
+      <div class="sp-level">${s.level}</div>
+      <div class="sp-body">
+        <div class="sp-title">${escapeHtml(s.title)}</div>
+        <div class="sp-meta">${escapeHtml(s.blurb)}</div>
+        <div class="sp-tags">
+          ${s.tags.map(t => `<span class="sp-tag">${escapeHtml(t)}</span>`).join('')}
+        </div>
+      </div>
+    `;
+    btn.onclick = () => openStory(idx);
+    list.appendChild(btn);
+  });
+}
+
+function openStory(idx) {
+  const s = stories[idx];
+  document.getElementById('stTitle').textContent = s.title;
+  document.getElementById('stSub').textContent = `${s.level} · ${s.blurb}`;
+
+  // Parse [[fr|en|note]] syntax into spans
+  const parsedBody = s.body.replace(/\[\[([^\]|]+)\|([^\]|]+)(?:\|([^\]]+))?\]\]/g, (m, fr, en, note) => {
+    const noteAttr = note ? ` data-note="${escapeHtml(note)}"` : '';
+    return `<span class="hl" data-en="${escapeHtml(en)}"${noteAttr}>${escapeHtml(fr)}</span>`;
+  });
+
+  const wrap = document.getElementById('stWrap');
+  wrap.innerHTML = `
+    <div class="st-intro">
+      <div class="eyebrow">${s.level} · story</div>
+      <h3>${escapeHtml(s.title)}</h3>
+      <p>Tap any <u>underlined</u> word or phrase to see its translation. Read each paragraph out loud before you look things up.</p>
+    </div>
+
+    <div class="st-controls">
+      <button class="st-ctrl" id="stBtnListen" onclick="readStoryAloud()">🔊 Read aloud</button>
+      <button class="st-ctrl" id="stBtnShowAll" onclick="toggleShowAll(this)">Highlight all</button>
+      <button class="st-ctrl" id="stBtnTrans" onclick="toggleTranslation(this)">English version</button>
+    </div>
+
+    <div class="st-body" id="stBody">${parsedBody}</div>
+
+    <div class="st-focus">
+      <h4>Grammar focus</h4>
+      <ul>${s.focus.map(f => `<li>${f}</li>`).join('')}</ul>
+    </div>
+
+    <div class="st-translation" id="stTrans">
+      <h4>Full English translation</h4>
+      ${s.translation}
+    </div>
+  `;
+
+  // Attach click handlers to all highlighted words
+  wrap.querySelectorAll('.hl').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showStoryTip(el);
+    });
+  });
+
+  // Click anywhere else to close tip
+  document.addEventListener('click', closeStoryTip);
+
+  showView('storyView');
+}
+
+function showStoryTip(el) {
+  closeStoryTip();
+  const tip = document.createElement('div');
+  tip.className = 'st-tip';
+  const en = el.getAttribute('data-en');
+  const note = el.getAttribute('data-note');
+  tip.innerHTML = `<span class="tip-en">${escapeHtml(en)}</span>${note ? `<span class="tip-note">${escapeHtml(note)}</span>` : ''}`;
+  document.body.appendChild(tip);
+
+  // Position the tip above the word, or below if too close to top
+  const rect = el.getBoundingClientRect();
+  const tipRect = tip.getBoundingClientRect();
+  let left = rect.left + rect.width / 2 - tipRect.width / 2 + window.scrollX;
+  left = Math.max(12, Math.min(left, window.innerWidth - tipRect.width - 12));
+  let top = rect.top + window.scrollY - tipRect.height - 10;
+
+  if (top < window.scrollY + 10) {
+    // Not enough room above — place below
+    top = rect.bottom + window.scrollY + 10;
+    tip.classList.add('below');
+  }
+
+  tip.style.left = left + 'px';
+  tip.style.top = top + 'px';
+
+  requestAnimationFrame(() => tip.classList.add('show'));
+  storyTipEl = tip;
+  el.classList.add('revealed');
+}
+
+function closeStoryTip() {
+  if (storyTipEl && storyTipEl.parentNode) {
+    storyTipEl.parentNode.removeChild(storyTipEl);
+  }
+  storyTipEl = null;
+}
+
+function toggleShowAll(btn) {
+  const body = document.getElementById('stBody');
+  body.classList.toggle('show-all');
+  btn.classList.toggle('active');
+  btn.textContent = body.classList.contains('show-all') ? 'Hide highlights' : 'Highlight all';
+}
+
+function toggleTranslation(btn) {
+  const trans = document.getElementById('stTrans');
+  trans.classList.toggle('show');
+  btn.classList.toggle('active');
+  btn.textContent = trans.classList.contains('show') ? 'Hide English' : 'English version';
+}
+
+function readStoryAloud() {
+  const body = document.getElementById('stBody');
+  // Get just the French text (the <span> innerText is already French)
+  const text = body.innerText.replace(/\s+/g, ' ').trim();
+  speak(text);
+}
+
+/* ====================== SPEECH ====================== */
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'fr-FR';
+  u.rate = 0.9;
+  // prefer a French voice
+  const voices = window.speechSynthesis.getVoices();
+  const frVoice = voices.find(v => v.lang === 'fr-FR' || v.lang.startsWith('fr'));
+  if (frVoice) u.voice = frVoice;
+  window.speechSynthesis.speak(u);
+}
+
+// Pre-load voices
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+/* ====================== UTILS ====================== */
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function escapeJs(s) {
+  return s.replace(/[`\\$]/g, c => '\\' + c);
+}
+
+/* ====================== PHRASE OF DAY + STREAK ====================== */
+
+const phrases = [
+  { fr: "Ça a l'air bon !", en: "That looks/sounds good!" },
+  { fr: "Je m'en occupe.", en: "I'll take care of it." },
+  { fr: "Tu veux qu'on se fasse la bise ?", en: "Shall we do the cheek-kiss greeting?" },
+  { fr: "On se dit tu ?", en: "Shall we switch to 'tu'?" },
+  { fr: "Je ne suis pas du coin.", en: "I'm not from around here." },
+  { fr: "C'est bon à savoir.", en: "That's good to know." },
+  { fr: "Ça ne me dit rien.", en: "That doesn't ring a bell / I don't fancy it." },
+  { fr: "Je n'en peux plus !", en: "I can't take any more!" },
+  { fr: "Comme tu veux.", en: "As you wish." },
+  { fr: "On verra bien.", en: "We'll see." },
+  { fr: "Tu parles !", en: "Yeah right! / No way!" },
+  { fr: "Je te tiens au courant.", en: "I'll keep you posted." },
+  { fr: "Ça ne sert à rien.", en: "It's pointless." },
+  { fr: "J'ai la flemme.", en: "I can't be bothered." },
+  { fr: "Ça marche !", en: "Sounds good! / Deal!" }
+];
+
+(function initPhrase() {
+  // rotate phrase by date so it's stable across the day
+  const d = new Date();
+  const idx = (d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate()) % phrases.length;
+  document.getElementById('podFr').textContent = phrases[idx].fr;
+  document.getElementById('podEn').textContent = phrases[idx].en;
+
+  // simple streak: stored in localStorage
+  try {
+    const today = new Date().toDateString();
+    const last = localStorage.getItem('fr_last');
+    let streak = parseInt(localStorage.getItem('fr_streak') || '0');
+    if (last !== today) {
+      const lastDate = last ? new Date(last) : null;
+      const oneDay = 1000 * 60 * 60 * 24;
+      if (lastDate && (new Date(today) - lastDate) / oneDay <= 1.5) streak++;
+      else streak = 1;
+      localStorage.setItem('fr_last', today);
+      localStorage.setItem('fr_streak', String(streak));
+    }
+    document.getElementById('streakLabel').innerHTML = `day <strong>${streak}</strong>`;
+  } catch (e) {}
+})();
+
+/* ====================== TIME TRACKING ======================
+   Stored in localStorage under 'fr_time' as { "YYYY-MM-DD": seconds }.
+   Session ticks every 5 seconds while the tab is visible AND there
+   has been user activity within the last 60 seconds. This means
+   the app doesn't inflate your numbers if you leave it open on a
+   phone and walk away.
+============================================================ */
+
+const GOAL_MINUTES = 15;
+const TICK_INTERVAL = 5000;   // ms — add 5 seconds each tick
+const IDLE_TIMEOUT = 60000;   // ms — consider idle after 60s of no activity
+
+let timeState = {
+  lastActivity: Date.now(),
+  active: true,
+  tickTimer: null,
+  practiceActive: false   // only tick when inside an exercise view
+};
+
+function setPracticeActive(active) {
+  timeState.practiceActive = active;
+  // Reset activity clock when entering a practice view so we don't
+  // lose the first minute to the idle check
+  if (active) registerActivity();
+}
+
+function dateKey(d) {
+  d = d || new Date();
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+}
+
+function loadTime() {
+  try {
+    return JSON.parse(localStorage.getItem('fr_time') || '{}');
+  } catch (e) { return {}; }
+}
+
+function saveTime(obj) {
+  try { localStorage.setItem('fr_time', JSON.stringify(obj)); } catch (e) {}
+}
+
+function addSeconds(seconds) {
+  const all = loadTime();
+  const key = dateKey();
+  all[key] = (all[key] || 0) + seconds;
+  // Prune older than 30 days to keep storage clean
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  Object.keys(all).forEach(k => {
+    if (new Date(k) < cutoff) delete all[k];
+  });
+  saveTime(all);
+  // Only repaint the ring if home is visible — we'll refresh on return to home anyway
+  if (document.getElementById('home').classList.contains('active')) {
+    renderTracker();
+  }
+}
+
+function getTodaySeconds() {
+  const all = loadTime();
+  return all[dateKey()] || 0;
+}
+
+function renderTracker() {
+  const todaySec = getTodaySeconds();
+  const todayMin = Math.floor(todaySec / 60);
+  const goalSec = GOAL_MINUTES * 60;
+  const pct = Math.min(1, todaySec / goalSec);
+
+  // Ring
+  const ringEl = document.getElementById('trackerRing');
+  const fg = document.getElementById('trackerFg');
+  if (!fg) return;  // tracker not in DOM yet
+  const circumference = 2 * Math.PI * 30;  // r=30
+  fg.setAttribute('stroke-dasharray', circumference);
+  fg.setAttribute('stroke-dashoffset', circumference * (1 - pct));
+
+  const numEl = document.getElementById('trackerNum');
+  const unitEl = document.getElementById('trackerUnit');
+  const msgEl = document.getElementById('trackerMsg');
+  const subEl = document.getElementById('trackerSub');
+
+  if (todayMin < 1 && todaySec > 0) {
+    numEl.textContent = todaySec;
+    unitEl.textContent = 'sec';
+  } else {
+    numEl.textContent = todayMin;
+    unitEl.textContent = 'min';
+  }
+
+  const met = todaySec >= goalSec;
+  ringEl.classList.toggle('met', met);
+
+  if (todaySec === 0) {
+    msgEl.textContent = 'Prêt à commencer ?';
+    subEl.textContent = 'Goal: 15 minutes today';
+  } else if (met) {
+    const bonusMin = todayMin - GOAL_MINUTES;
+    msgEl.textContent = 'Goal hit — bravo !';
+    subEl.textContent = bonusMin > 0
+      ? `${GOAL_MINUTES} min goal reached · +${bonusMin} bonus`
+      : `${GOAL_MINUTES} min goal reached`;
+  } else {
+    const remaining = GOAL_MINUTES - todayMin;
+    msgEl.textContent = `${Math.round(pct * 100)}% there`;
+    subEl.textContent = `${remaining} min to your daily goal`;
+  }
+
+  // Week view — last 7 days, oldest → today
+  const weekEl = document.getElementById('trackerWeek');
+  weekEl.innerHTML = '';
+  const all = loadTime();
+  const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const maxSecThisWeek = Math.max(goalSec, ...Array.from({length: 7}, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return all[dateKey(d)] || 0;
+  }));
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const sec = all[dateKey(d)] || 0;
+    const isToday = i === 0;
+    const dayMet = sec >= goalSec;
+    const heightPct = Math.min(100, (sec / maxSecThisWeek) * 100);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'week-day' + (isToday ? ' today' : '');
+    wrap.innerHTML = `
+      <div class="week-bar ${dayMet ? 'met' : ''} ${isToday ? 'today' : ''}">
+        <div class="week-bar-fill" style="height:${heightPct}%"></div>
+      </div>
+      <div class="week-label">${dayLabels[d.getDay()]}</div>
+    `;
+    weekEl.appendChild(wrap);
+  }
+}
+
+function registerActivity() {
+  timeState.lastActivity = Date.now();
+}
+
+function startTracking() {
+  if (timeState.tickTimer) return;
+  timeState.tickTimer = setInterval(() => {
+    // Only count if we're in a practice view AND tab is visible AND recent activity
+    const tabVisible = document.visibilityState !== 'hidden';
+    const recentlyActive = (Date.now() - timeState.lastActivity) < IDLE_TIMEOUT;
+    if (timeState.practiceActive && tabVisible && recentlyActive) {
+      addSeconds(TICK_INTERVAL / 1000);
+    }
+  }, TICK_INTERVAL);
+}
+
+function stopTracking() {
+  if (timeState.tickTimer) {
+    clearInterval(timeState.tickTimer);
+    timeState.tickTimer = null;
+  }
+}
+
+// Activity listeners
+['click', 'touchstart', 'keydown', 'scroll', 'mousemove'].forEach(evt => {
+  document.addEventListener(evt, registerActivity, { passive: true });
+});
+
+// Pause when tab goes hidden, resume when visible
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    stopTracking();
+  } else {
+    registerActivity();
+    startTracking();
+  }
+});
+
+// Initial render and start
+renderTracker();
+startTracking();
+
+</script>
+</body>
+</html>

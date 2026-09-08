@@ -10665,25 +10665,26 @@ async function requestReminderPermission() {
 
 const GUIDE_TOPICS = [
   {
-    icon: '💾',
-    title: 'Your progress lives on this device',
-    body: `<p>Everything — your streak, practice time, mastery levels, custom flashcards, reminder settings — is stored <strong>in your browser on this device</strong>. Nothing is sent to any server. No account, no sign-in, no tracking.</p>
-      <p>This means: <strong>each device is separate</strong> (phone and laptop don't auto-sync), <strong>each person is separate</strong> (friends who open the same link have their own isolated progress), and <strong>clearing browser data deletes your progress</strong>.</p>`
+    icon: '📸',
+    title: 'Uploading your own lesson material',
+    body: `<p>Open <strong>Upload Material</strong> from the home screen. You can photograph a worksheet, attach a PDF, or paste text straight in.</p>
+      <p>Claude reads it and builds what the material supports: vocabulary decks, conjugation tables, gap-fill quizzes, English-to-French drills, grammar explainers, role-plays, short stories. It won't invent a story from a bare word list — empty categories stay empty.</p>
+      <p>You can add an instruction too, like <em>"only the left-hand page"</em> or <em>"go easy on the quizzes"</em>. Whatever it builds joins your normal practice and spaced repetition straight away.</p>
+      <p><strong>For photos:</strong> flat, well lit, whole page in frame. If a word can't be read, it's left out rather than guessed at.</p>`
+  },
+  {
+    icon: '☁️',
+    title: 'Your progress follows your account',
+    body: `<p>Your streak, practice time, mastery levels, custom flashcards and settings are stored against <strong>your account</strong>, not this device. Sign in on your phone and your laptop and you'll see the same progress on both.</p>
+      <p>It saves in the background a couple of seconds after you stop answering, and again when you close the tab. If you're offline it keeps the work queued and sends it next time you have a connection.</p>
+      <p>Everyone with an account has their own separate progress and their own uploads. The built-in decks and workbook are shared; nothing you upload is visible to anyone else.</p>`
   },
   {
     icon: '🏠',
     title: 'Add to home screen (for app-like experience)',
-    body: `<p><strong>iPhone:</strong> open the URL in Safari (not Chrome — iOS limitation). Tap Share button → scroll down → Add to Home Screen → Add. Tap the new icon: opens fullscreen, looks like a real app.</p>
+    body: `<p><strong>iPhone:</strong> open the URL in Safari (not Chrome — iOS limitation). Tap Share → scroll down → Add to Home Screen → Add. Tap the new icon: opens fullscreen, looks like a real app.</p>
       <p><strong>Android:</strong> open in Chrome → three-dot menu → Add to Home screen → Confirm.</p>
       <p><strong>Laptop:</strong> works directly in any browser. Chrome/Edge show an install icon in the address bar. On Mac, Safari has File → Add to Dock.</p>`
-  },
-  {
-    icon: '🔄',
-    title: 'Back up your progress regularly',
-    body: `<p>Because storage is local, <strong>back up every 2–3 weeks</strong>. This guards against Safari clearing storage after long inactivity and lets you sync to other devices.</p>
-      <p><strong>To back up:</strong> My Material → scroll to "Sync across devices" → Export everything. A <code>.json</code> file downloads — email it to yourself or save to Dropbox.</p>
-      <p><strong>To restore or sync:</strong> on the other device, My Material → Import from file. Smart-merge: takes the more-advanced record per item.</p>
-      <p>The app warns you on the sync screen if it's been 14+ days since your last backup.</p>`
   },
   {
     icon: '⚙️',
@@ -10694,9 +10695,15 @@ const GUIDE_TOPICS = [
   },
   {
     icon: '👥',
-    title: 'Sharing with others',
-    body: `<p>Just send them the URL. They open it on their device, configure their own settings, and they have their own personal version. No setup on your end. No mixing of data.</p>
-      <p>Each person's streak, progress, and custom material is isolated to their own browser on their own device.</p>`
+    title: 'Adding another learner',
+    body: `<p>Send them the URL and they create their own account. Their progress, their uploads and their plan are entirely separate from yours.</p>
+      <p>If an invite code was set up for this app, they'll need that too — it stops strangers signing up and running up the Claude bill.</p>`
+  },
+  {
+    icon: '🔄',
+    title: 'Backups',
+    body: `<p>You no longer need to back up to avoid losing progress — it lives in the database, not in your browser.</p>
+      <p>The export in My Material is still there if you want a copy of your own for peace of mind, or to move material between accounts. It exports your mastery records, streak, practice time and custom material as a <code>.json</code> file, and importing merges rather than overwrites.</p>`
   },
   {
     icon: '🔔',
@@ -10708,15 +10715,16 @@ const GUIDE_TOPICS = [
   {
     icon: '🔒',
     title: 'Privacy',
-    body: `<p>The app runs entirely in your browser. It doesn't know who you are. It doesn't talk to any server after the initial page load (which just loads the HTML file from GitHub Pages).</p>
-      <p>No analytics, no cookies, no trackers, no third-party scripts — only Google Fonts for the typography, which is a cacheable static resource.</p>`
+    body: `<p>There's no analytics, no tracking and no third-party scripts — only Google Fonts for the typography.</p>
+      <p>What does leave your browser: your email and password (stored hashed, so nobody can read it back), your practice progress, and anything you upload. Those go to the app's own database, which only your accounts can reach.</p>
+      <p>Material you upload is sent to Anthropic's API for Claude to read and turn into exercises. Bear that in mind before photographing anything genuinely private — a lesson worksheet is fine, a bank statement is not.</p>`
   },
   {
     icon: '🔧',
     title: 'When the app gets updates',
-    body: `<p>The author ships new versions by replacing the <code>index.html</code> file on GitHub. When this happens:</p>
+    body: `<p>New versions deploy automatically when the code changes. When that happens:</p>
       <p>• Your progress is preserved (it lives in your account, not in the app code)<br>
-      • Your custom material is preserved<br>
+      • Your uploads and custom material are preserved<br>
       • Your settings are preserved<br>
       • You get new features or bug fixes the next time you open the app</p>
       <p>You might need to refresh the page once to see an update. For home-screen apps, closing and reopening does this.</p>`
@@ -10724,10 +10732,10 @@ const GUIDE_TOPICS = [
   {
     icon: '🆘',
     title: 'Troubleshooting',
-    body: `<p><strong>Streak disappeared:</strong> Safari cleared storage, or browser data was wiped. Restore from a backup if you have one. Next time, back up monthly.</p>
-      <p><strong>404 error:</strong> URLs are case-sensitive. Check capitalisation and trailing slash.</p>
-      <p><strong>Conjugation answer not submitting:</strong> tap the Check Answer button under the input field instead of just the keyboard Return key.</p>
-      <p><strong>Lost progress after a break:</strong> without a backup, there's no way to recover. Set a monthly calendar reminder to export.</p>`
+    body: `<p><strong>An upload failed:</strong> the Upload Material screen shows why, with a button to try again — no need to re-upload the file. Blurry or badly lit photos are the usual cause.</p>
+      <p><strong>Signed out unexpectedly:</strong> sign in again. Nothing is lost; your progress is on the server, not in the browser.</p>
+      <p><strong>Progress looks out of date on another device:</strong> pull down to refresh. Syncing happens a couple of seconds after you stop answering, so a very recent answer may not have gone up before you switched.</p>
+      <p><strong>Conjugation answer not submitting:</strong> tap the Check Answer button under the input field instead of just the keyboard Return key.</p>`
   }
 ];
 
@@ -10770,10 +10778,17 @@ function showWelcomeModal(manual) {
         </div>
         <div class="welcome-body">
           <div class="welcome-point">
-            <div class="welcome-point-icon">💾</div>
+            <div class="welcome-point-icon">📸</div>
             <div class="welcome-point-body">
-              <div class="welcome-point-title">Your progress lives on this device</div>
-              <div class="welcome-point-text">No account needed. No tracking. Everything is stored locally in your browser.</div>
+              <div class="welcome-point-title">Upload your lessons</div>
+              <div class="welcome-point-text">Photograph a worksheet, attach a PDF, or paste your notes. Claude reads it and builds decks, drills and quizzes from it.</div>
+            </div>
+          </div>
+          <div class="welcome-point">
+            <div class="welcome-point-icon">☁️</div>
+            <div class="welcome-point-body">
+              <div class="welcome-point-title">Your progress follows your account</div>
+              <div class="welcome-point-text">Practise on your phone, pick it up on your laptop. Nothing to back up, nothing to lose.</div>
             </div>
           </div>
           <div class="welcome-point">
@@ -10781,13 +10796,6 @@ function showWelcomeModal(manual) {
             <div class="welcome-point-body">
               <div class="welcome-point-title">Add it to your home screen</div>
               <div class="welcome-point-text">On iPhone: Safari → Share → Add to Home Screen. It becomes a fullscreen app.</div>
-            </div>
-          </div>
-          <div class="welcome-point">
-            <div class="welcome-point-icon">🔄</div>
-            <div class="welcome-point-body">
-              <div class="welcome-point-title">Back up every few weeks</div>
-              <div class="welcome-point-text">Export a backup from My Material. Browser storage can clear after long breaks.</div>
             </div>
           </div>
           <div class="welcome-point">
@@ -10801,7 +10809,7 @@ function showWelcomeModal(manual) {
             <div class="welcome-point-icon">📖</div>
             <div class="welcome-point-body">
               <div class="welcome-point-title">Full guide in Settings</div>
-              <div class="welcome-point-text">Tap the gear icon any time to find the full guide — backups, syncing, privacy, troubleshooting.</div>
+              <div class="welcome-point-text">Tap the gear icon any time — uploading, syncing, reminders, privacy.</div>
             </div>
           </div>
         </div>
@@ -12322,10 +12330,10 @@ function renderMyMaterial() {
     <div id="myTabContent"></div>
 
     <div class="my-export" style="border-left:3px solid var(--gold); background:linear-gradient(135deg, rgba(212,162,76,0.08), rgba(212,162,76,0.02))">
-      <div class="my-export-title" style="color:var(--ember)">🔄 Sync across devices</div>
+      <div class="my-export-title" style="color:var(--ember)">🔄 Keep a copy</div>
       <div class="my-export-text">
-        <strong>Move your progress between phone, laptop, and tablet.</strong> Export a file from one device, email or AirDrop it to the other, then import. Everything comes across: custom material, streak, tracked time, mastery levels, reminder settings.
-        ${(() => { const d = daysSinceLastBackup(); return d !== null && d >= 14 ? `<br><span style="color:var(--ember);font-weight:700">⚠️ It's been ${d} days since your last backup. Safari can clear storage after weeks of inactivity — a quick export now is good insurance.</span>` : ''; })()}
+        <strong>Your phone and laptop already stay in step</strong> — progress lives in your account, so there's nothing you need to do to sync them, and nothing to lose if a browser clears its storage.
+        <br><br>This is here if you want a copy of your own anyway, or to move material into a different account. It exports your custom material, streak, tracked time, mastery levels and reminder settings; importing merges with what's already there rather than replacing it.
       </div>
       <div class="my-export-actions">
         <button class="my-export-btn" style="background:var(--ink);color:var(--paper);border-color:var(--ink)" onclick="exportFullBackup()">Export everything</button>
@@ -12776,14 +12784,6 @@ function importFullBackupFile(event) {
   };
   reader.readAsText(file);
   event.target.value = '';
-}
-
-function daysSinceLastBackup() {
-  try {
-    const last = Store.getItem('fr_last_backup');
-    if (!last) return null;
-    return daysBetween(dateKey(), last);
-  } catch (e) { return null; }
 }
 
 /* ====================== WEEKLY PLAN & TODAY ====================== */

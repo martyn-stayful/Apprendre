@@ -7638,7 +7638,13 @@
     window.__user = me.user;
 
     if (!me.user) {
+      // /api/auth/me answers without touching the database when there's no
+      // session cookie, so a missing database only shows up on submit. Check
+      // before offering a sign-in form that cannot possibly work.
+      var setup = null;
+      try { setup = await Api.get('/api/setup'); } catch (e) {}
       setSplash(null);
+      if (setup && !setup.ready) return showSetupNeeded(setup);
       showGate('login');
       return;
     }

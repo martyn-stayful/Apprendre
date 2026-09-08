@@ -14,7 +14,8 @@ export default route('POST', withAuth(async (req, res, user) => {
   if (!id) return bad(res, 'Which upload? Pass an id.');
 
   const [source] = await sql`
-    select id, input_type, title, files, raw_text, status, stats
+    select id, input_type, title, files, raw_text, status, stats,
+           file_url, file_data, mime_type
       from sources where id = ${id}::uuid and user_id = ${user.id}::uuid limit 1`;
 
   if (!source) return bad(res, 'No such upload', 404);
@@ -27,7 +28,9 @@ export default route('POST', withAuth(async (req, res, user) => {
     const files = source.input_type === 'text' ? [] : await loadPages(source);
 
     if (source.input_type !== 'text' && !files.length) {
-      throw new Error('No pages were attached to this upload');
+      throw new Error(
+        'No pages are attached to this upload. Remove it and upload the photos again.'
+      );
     }
 
     const { content, usage } = await parseMaterial({
@@ -73,12 +76,29 @@ export default route('POST', withAuth(async (req, res, user) => {
  * that isn't configured, inline on the row itself.
  */
 async function loadPages(source) {
-  const pages = source.files || [];
+  let pages = source.files || [];
+
+  // Uploads made before an upload could hold several pages kept their single
+  // file in its own columns. Read those as a one-page upload so they can still
+  // be retried rather than being stranded.
+  if (!pages.length && (source.file_data || source.file_url)) {
+    pages = [{
+      data: source.file_data || undefined,
+      url: source.file_url || undefined,
+      mimeType: source.mime_type || 'image/jpeg',
+    }];
+  }
+
   return Promise.all(pages.map(async (page, i) => {
     if (page.data) return { base64: page.data, mimeType: page.mimeType };
     if (!page.url) throw new Error(`Page ${i + 1} of this upload is missing`);
     const resp = await fetch(page.url);
-    if (!resp.ok) throw new Error(`Could not read page ${i + 1} (${resp.status})`);
+    if (!resp.ok) {
+      throw new Error(
+        `Page ${i + 1} could not be loaded from storage (${resp.status}). ` +
+        'Remove this upload and add the photos again.'
+      );
+    }
     const buf = Buffer.from(await resp.arrayBuffer());
     return { base64: buf.toString('base64'), mimeType: page.mimeType };
   }));

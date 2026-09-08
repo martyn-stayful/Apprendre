@@ -1,28 +1,64 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "api/uploads/parse.js": { "maxDuration": 300 },
-    "api/uploads/index.js": { "maxDuration": 60 },
-    "api/content.js": { "maxDuration": 30 },
-    "api/state.js": { "maxDuration": 30 },
-    "api/mastery.js": { "maxDuration": 30 },
-    "api/auth/signup.js": { "maxDuration": 30 },
-    "api/auth/login.js": { "maxDuration": 30 },
-    "api/auth/logout.js": { "maxDuration": 10 },
-    "api/auth/me.js": { "maxDuration": 10 }
+    "api/uploads/parse.js": {
+      "maxDuration": 300
+    },
+    "api/setup.js": {
+      "maxDuration": 30
+    },
+    "api/uploads/index.js": {
+      "maxDuration": 60
+    },
+    "api/content.js": {
+      "maxDuration": 30
+    },
+    "api/state.js": {
+      "maxDuration": 30
+    },
+    "api/mastery.js": {
+      "maxDuration": 30
+    },
+    "api/auth/signup.js": {
+      "maxDuration": 30
+    },
+    "api/auth/login.js": {
+      "maxDuration": 30
+    },
+    "api/auth/logout.js": {
+      "maxDuration": 10
+    },
+    "api/auth/me.js": {
+      "maxDuration": 10
+    }
   },
   "headers": [
     {
       "source": "/api/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     },
     {
       "source": "/index.html",
-      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     },
     {
       "source": "/",
-      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     }
   ]
 }

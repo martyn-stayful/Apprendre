@@ -6207,6 +6207,52 @@
     text-decoration: underline;
   }
 
+  .setup-card { max-width: 460px; }
+
+  .setup-list { margin: 20px 0 18px; }
+
+  .setup-item {
+    display: flex;
+    gap: 11px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(26, 35, 50, 0.08);
+  }
+
+  .setup-mark {
+    flex-shrink: 0;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+    margin-top: 1px;
+  }
+
+  .setup-item.done .setup-mark     { background: rgba(42, 74, 60, 0.14); color: var(--pine-deep); }
+  .setup-item.todo .setup-mark     { background: rgba(198, 75, 59, 0.14); color: var(--ember-deep); }
+  .setup-item.optional .setup-mark { background: rgba(122, 138, 154, 0.16); color: var(--slate); }
+
+  .setup-text { display: flex; flex-direction: column; gap: 2px; font-size: 13.5px; }
+  .setup-text strong { color: var(--ink); }
+
+  .setup-text code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px;
+    color: var(--slate);
+  }
+
+  .setup-detail { color: var(--ink-soft); line-height: 1.5; }
+
+  .setup-help {
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
   /* ========== UPLOAD ========== */
   .up-wrap { padding: 16px 24px 40px; }
 
@@ -7477,6 +7523,36 @@
 
   /* ------------------------------------------------------ boot ------- */
 
+  /** Shown when the deployment is up but not yet configured. */
+  function showSetupNeeded(setup) {
+    var gateEl = el('authGate');
+    gateEl.style.display = 'flex';
+    gateEl.innerHTML =
+      '<div class="auth-card setup-card">' +
+        '<h2>Nearly there</h2>' +
+        '<p class="auth-sub">Apprendre is deployed, but a couple of things still ' +
+        'need setting up before you can sign in.</p>' +
+        '<div class="setup-list">' +
+          setup.checks.map(function (c) {
+            var state = c.ok ? 'done' : (c.required ? 'todo' : 'optional');
+            var mark = c.ok ? '✓' : (c.required ? '!' : '–');
+            return '<div class="setup-item ' + state + '">' +
+              '<span class="setup-mark">' + mark + '</span>' +
+              '<span class="setup-text">' +
+                '<strong>' + c.label + '</strong>' +
+                '<code>' + c.key + '</code>' +
+                '<span class="setup-detail">' + c.detail + '</span>' +
+              '</span>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+        '<p class="setup-help">Add the missing values under <strong>Project → ' +
+        'Settings → Environment Variables</strong> on Vercel, redeploy, then ' +
+        'reload this page. The README has the full walkthrough.</p>' +
+        '<button class="auth-submit" onclick="location.reload()">Check again</button>' +
+      '</div>';
+  }
+
   function setSplash(message) {
     var s = el('bootSplash');
     if (!s) return;
@@ -7519,7 +7595,12 @@
     try {
       me = await Api.get('/api/auth/me');
     } catch (err) {
+      // Most likely the app hasn't been configured yet. Ask the server what
+      // is missing rather than showing a dead end.
+      var setup = null;
+      try { setup = await Api.get('/api/setup'); } catch (e) {}
       setSplash(null);
+      if (setup && !setup.ready) return showSetupNeeded(setup);
       showGate('login');
       el('authError').textContent =
         'Could not reach the server. Check your connection and reload.';

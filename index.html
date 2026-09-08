@@ -1693,6 +1693,7 @@
 
   /* ========== CONCEPTS ========== */
   .mode-card[data-tone="concepts" i] .icon { background: rgba(212, 162, 76, 0.16); color: var(--gold); }
+  .mode-card[data-tone="upload" i] .icon { background: rgba(198, 75, 59, 0.14); color: var(--ember); }
 
   .cpt-intro {
     padding: 12px 24px 18px;
@@ -6075,6 +6076,480 @@
     .view-header { padding: 14px 20px 6px; }
     .quiz-options { grid-template-columns: 1fr; }
   }
+
+  /* ========== BOOT SPLASH & AUTH GATE ========== */
+  .boot-splash, .auth-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background:
+      radial-gradient(ellipse 700px 400px at 70% -5%, rgba(212, 162, 76, 0.16), transparent),
+      radial-gradient(ellipse 600px 500px at -10% 40%, rgba(42, 74, 60, 0.10), transparent),
+      var(--snow);
+  }
+
+  .boot-splash { flex-direction: column; gap: 18px; }
+
+  .boot-splash-mark { width: 46px; height: 46px; opacity: 0.9; }
+
+  .boot-splash-msg {
+    font-size: 13px;
+    color: var(--slate);
+    letter-spacing: 0.03em;
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-radius: 18px;
+    padding: 32px 26px 26px;
+    box-shadow: 0 18px 50px var(--shadow);
+  }
+
+  .auth-mark { width: 38px; height: 38px; margin-bottom: 16px; }
+
+  .auth-card h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 25px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .auth-sub {
+    font-size: 13.5px;
+    color: var(--slate);
+    line-height: 1.55;
+    margin-bottom: 22px;
+  }
+
+  .auth-row { margin-bottom: 14px; }
+
+  .auth-row label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 6px;
+  }
+
+  .auth-row input {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid var(--slate-soft);
+    border-radius: 10px;
+    background: var(--snow);
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    transition: border-color 0.15s;
+  }
+
+  .auth-row input:focus {
+    outline: none;
+    border-color: var(--pine);
+  }
+
+  .auth-submit {
+    width: 100%;
+    margin-top: 8px;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: var(--pine);
+    color: var(--paper);
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .auth-submit:hover:not(:disabled) { background: var(--pine-deep); }
+  .auth-submit:disabled { opacity: 0.55; cursor: default; }
+
+  .auth-error {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ember-deep);
+    line-height: 1.5;
+    min-height: 1px;
+  }
+
+  .auth-toggle {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(26, 35, 50, 0.08);
+    font-size: 13px;
+    color: var(--slate);
+    text-align: center;
+  }
+
+  .auth-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--pine);
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* ========== UPLOAD ========== */
+  .up-wrap { padding: 16px 24px 40px; }
+
+  .up-intro p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+  }
+
+  .up-tabs {
+    display: flex;
+    gap: 6px;
+    background: rgba(26, 35, 50, 0.05);
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
+  .up-tab {
+    flex: 1;
+    padding: 9px 6px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    font-family: 'Lato', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--slate);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .up-tab.active {
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 1px 4px var(--shadow);
+  }
+
+  .up-panel { margin-bottom: 18px; }
+
+  .up-drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 38px 22px;
+    border: 1.5px dashed var(--slate-soft);
+    border-radius: 14px;
+    background: var(--paper);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .up-drop:hover { border-color: var(--pine); background: var(--cream); }
+
+  .up-drop-icon { color: var(--pine); opacity: 0.8; }
+
+  .up-drop-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--ink);
+  }
+
+  .up-drop-sub {
+    font-size: 12.5px;
+    color: var(--slate);
+    line-height: 1.5;
+    max-width: 260px;
+  }
+
+  .up-file-input { display: none; }
+
+  .up-preview {
+    border: 1px solid rgba(26, 35, 50, 0.1);
+    border-radius: 14px;
+    background: var(--paper);
+    padding: 14px;
+    text-align: center;
+  }
+
+  .up-preview img {
+    max-width: 100%;
+    max-height: 260px;
+    border-radius: 9px;
+    display: block;
+    margin: 0 auto 12px;
+  }
+
+  .up-pdf-icon {
+    width: 62px;
+    height: 78px;
+    margin: 4px auto 12px;
+    border-radius: 7px;
+    background: var(--ember);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+  }
+
+  .up-preview-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    word-break: break-all;
+  }
+
+  .up-preview-size { font-size: 12px; color: var(--slate); margin-top: 2px; }
+
+  .up-clear {
+    margin-top: 12px;
+    padding: 8px 14px;
+    border: 1px solid var(--slate-soft);
+    border-radius: 8px;
+    background: transparent;
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--slate);
+    cursor: pointer;
+  }
+
+  .up-clear:hover { border-color: var(--pine); color: var(--pine); }
+
+  .up-textarea, .up-field textarea, .up-field input {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid var(--slate-soft);
+    border-radius: 11px;
+    background: var(--paper);
+    font-family: 'Lato', sans-serif;
+    font-size: 14.5px;
+    color: var(--ink);
+    line-height: 1.55;
+    resize: vertical;
+  }
+
+  .up-textarea:focus, .up-field textarea:focus, .up-field input:focus {
+    outline: none;
+    border-color: var(--pine);
+  }
+
+  .up-field { margin-bottom: 14px; }
+
+  .up-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 6px;
+  }
+
+  .up-optional {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 0.7;
+  }
+
+  .up-submit {
+    width: 100%;
+    margin-top: 6px;
+    padding: 14px;
+    border: none;
+    border-radius: 11px;
+    background: var(--ember);
+    color: var(--paper);
+    font-family: 'Lato', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .up-submit:hover:not(:disabled) { background: var(--ember-deep); }
+  .up-submit:disabled { opacity: 0.6; cursor: default; }
+
+  .up-status:empty { display: none; }
+
+  .up-status {
+    margin-top: 16px;
+    padding: 15px 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    border: 1px solid rgba(26, 35, 50, 0.1);
+    background: var(--paper);
+    color: var(--ink-soft);
+  }
+
+  .up-status.working { border-color: rgba(212, 162, 76, 0.45); background: rgba(212, 162, 76, 0.09); }
+  .up-status.done    { border-color: rgba(42, 74, 60, 0.3); background: rgba(42, 74, 60, 0.07); }
+  .up-status.error   { border-color: rgba(198, 75, 59, 0.35); background: rgba(198, 75, 59, 0.07); }
+
+  .up-done-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .up-spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    border: 2px solid rgba(42, 74, 60, 0.25);
+    border-top-color: var(--pine);
+    border-radius: 50%;
+    animation: up-spin 0.7s linear infinite;
+    vertical-align: -1px;
+  }
+
+  @keyframes up-spin { to { transform: rotate(360deg); } }
+
+  .up-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+  .up-chip {
+    font-size: 11.5px;
+    padding: 4px 9px;
+    border-radius: 20px;
+    background: rgba(42, 74, 60, 0.1);
+    color: var(--pine-deep);
+  }
+
+  .up-chip strong { font-weight: 900; }
+
+  .up-empty {
+    padding: 22px 18px;
+    border: 1px dashed var(--slate-soft);
+    border-radius: 12px;
+    font-size: 13.5px;
+    color: var(--slate);
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .up-row {
+    position: relative;
+    padding: 16px 16px 14px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(26, 35, 50, 0.09);
+    border-radius: 13px;
+    background: var(--paper);
+  }
+
+  .up-row-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .up-row-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .up-row-meta { font-size: 12px; color: var(--slate); margin-top: 3px; }
+
+  .up-row-summary {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-top: 9px;
+  }
+
+  .up-row-error {
+    font-size: 13px;
+    color: var(--ember-deep);
+    line-height: 1.55;
+    margin-top: 9px;
+  }
+
+  .up-badge {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 20px;
+  }
+
+  .up-badge.ready   { background: rgba(42, 74, 60, 0.12); color: var(--pine-deep); }
+  .up-badge.failed  { background: rgba(198, 75, 59, 0.12); color: var(--ember-deep); }
+  .up-badge.working { background: rgba(212, 162, 76, 0.18); color: #8a6420; }
+  .up-badge.pending { background: rgba(122, 138, 154, 0.14); color: var(--slate); }
+
+  .up-retry, .up-delete {
+    margin-top: 10px;
+    padding: 7px 12px;
+    border: 1px solid var(--slate-soft);
+    border-radius: 8px;
+    background: transparent;
+    font-family: 'Lato', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--slate);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .up-retry:hover { border-color: var(--pine); color: var(--pine); }
+  .up-delete:hover { border-color: var(--ember); color: var(--ember); }
+  .up-delete { margin-right: 0; }
+
+  .account-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid rgba(26, 35, 50, 0.09);
+    border-radius: 12px;
+    background: var(--paper);
+    margin-bottom: 18px;
+  }
+
+  .account-email { font-size: 13.5px; color: var(--ink); font-weight: 700; }
+  .account-label {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 2px;
+  }
+
 </style>
 </head>
 
@@ -6255,6 +6730,14 @@
         </div>
         <div class="mode-title">Translate</div>
         <div class="mode-sub">Look up a word · add to flashcards</div>
+      </button>
+
+      <button class="mode-card" data-tone="upload" onclick="showView('upload')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4a7.48 7.48 0 0 0-6.63 4.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+        </div>
+        <div class="mode-title">Upload Material</div>
+        <div class="mode-sub">Photo, PDF or notes · Claude builds the exercises</div>
       </button>
 
       <button class="mode-card" data-tone="mine" onclick="showView('myStuff')">
@@ -6468,6 +6951,17 @@
   </section>
 
   <!-- ================ MY MATERIAL ================ -->
+  <section class="view" id="upload">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Upload Material</div>
+        <div class="view-sub">Turn a worksheet, PDF or your notes into exercises</div>
+      </div>
+    </div>
+    <div class="up-wrap" id="uploadBody"></div>
+  </section>
+
   <section class="view" id="myStuff">
     <div class="view-header">
       <button class="back-btn" onclick="showView('home')">←</button>
@@ -6591,755 +7085,487 @@
 
 </div>
 
+
+<div class="boot-splash" id="bootSplash" style="display:flex">
+  <svg class="boot-splash-mark" viewBox="0 0 32 32" fill="none">
+    <circle cx="16" cy="16" r="14" stroke="#2a4a3c" stroke-width="1.5" opacity="0.35"/>
+    <path d="M16 7v18M9 12h14" stroke="#c64b3b" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <div class="boot-splash-msg" id="bootSplashMsg">Starting up…</div>
+</div>
+
+<div class="auth-gate" id="authGate">
+  <form class="auth-card" onsubmit="submitAuth(event)">
+    <svg class="auth-mark" viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="14" stroke="#2a4a3c" stroke-width="1.5" opacity="0.35"/>
+      <path d="M16 7v18M9 12h14" stroke="#c64b3b" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <h2 id="authTitle">Welcome back</h2>
+    <p class="auth-sub" id="authSub">Sign in to pick up where you left off.</p>
+
+    <div class="auth-row" id="authNameRow" style="display:none">
+      <label for="authName">Your name</label>
+      <input type="text" id="authName" autocomplete="name" placeholder="Martyn">
+    </div>
+
+    <div class="auth-row">
+      <label for="authEmail">Email</label>
+      <input type="email" id="authEmail" autocomplete="email" required placeholder="you@example.com">
+    </div>
+
+    <div class="auth-row">
+      <label for="authPassword">Password</label>
+      <input type="password" id="authPassword" autocomplete="current-password" required
+             minlength="8" placeholder="At least 8 characters">
+    </div>
+
+    <div class="auth-row" id="authCodeRow" style="display:none">
+      <label for="authCode">Invite code</label>
+      <input type="text" id="authCode" placeholder="Ask whoever runs this app">
+    </div>
+
+    <button type="submit" class="auth-submit" id="authSubmit">Sign in</button>
+    <div class="auth-error" id="authError"></div>
+    <div class="auth-toggle" id="authToggle"></div>
+  </form>
+</div>
+
+<script>
+/* =========================================================
+   BOOTSTRAP — accounts, server sync, and uploading material.
+
+   This runs before the main app script. It provides two globals the app
+   depends on:
+
+     Store — a drop-in stand-in for localStorage that also syncs the keys
+             that matter to Neon, so progress follows you between devices.
+     Api   — a thin fetch wrapper for /api/*.
+
+   The app itself doesn't start until someone is signed in and their content
+   and progress have arrived; bootApp() (defined at the end of the main
+   script) is the handover point.
+   ========================================================= */
+(function () {
+  'use strict';
+
+  // Keys that belong to the account rather than the device. Everything else
+  // (translation cache, for instance) stays local.
+  var SYNC_KEYS = [
+    'fr_settings', 'fr_streak', 'fr_last', 'fr_time', 'fr_workbook',
+    'fr_custom', 'fr_today_done', 'fr_reminder', 'fr_welcomed',
+    'fr_translate_history', 'fr_last_backup'
+  ];
+  var SYNC = {};
+  SYNC_KEYS.forEach(function (k) { SYNC[k] = true; });
+
+  var MASTERY_KEY = 'fr_mastery_v1';
+  var FLUSH_DELAY = 2500;
+
+  /* ---------------------------------------------------------- API ------ */
+
+  async function request(method, path, payload) {
+    var opts = { method: method, headers: {}, credentials: 'same-origin' };
+    if (payload !== undefined) {
+      opts.headers['Content-Type'] = 'application/json';
+      opts.body = JSON.stringify(payload);
+    }
+    var resp = await fetch(path, opts);
+    var data = {};
+    try { data = await resp.json(); } catch (e) {}
+    if (!resp.ok) {
+      var err = new Error(data.error || ('Request failed (' + resp.status + ')'));
+      err.status = resp.status;
+      throw err;
+    }
+    return data;
+  }
+
+  var Api = {
+    get: function (p) { return request('GET', p); },
+    post: function (p, b) { return request('POST', p, b || {}); },
+    put: function (p, b) { return request('PUT', p, b || {}); },
+    del: function (p) { return request('DELETE', p); }
+  };
+  window.Api = Api;
+
+  /* -------------------------------------------------------- Store ------ */
+
+  function localGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function localSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function localDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+  var Store = {
+    mem: {},
+    dirtyKeys: {},
+    masteryDirty: false,
+    lastPushedMastery: {},
+    timer: null,
+    signedIn: false,
+
+    getItem: function (k) {
+      if (Object.prototype.hasOwnProperty.call(this.mem, k)) return this.mem[k];
+      return localGet(k);
+    },
+
+    setItem: function (k, v) {
+      v = String(v);
+      this.mem[k] = v;
+      localSet(k, v);
+      this.markDirty(k);
+    },
+
+    removeItem: function (k) {
+      delete this.mem[k];
+      localDel(k);
+      this.markDirty(k);
+    },
+
+    markDirty: function (k) {
+      if (!this.signedIn) return;
+      if (SYNC[k]) this.dirtyKeys[k] = true;
+      else if (k === MASTERY_KEY) this.masteryDirty = true;
+      else return;
+      this.schedule();
+    },
+
+    schedule: function () {
+      var self = this;
+      if (this.timer) clearTimeout(this.timer);
+      this.timer = setTimeout(function () { self.flush(); }, FLUSH_DELAY);
+    },
+
+    /** Push whatever has changed. Safe to call at any time. */
+    flush: async function (keepalive) {
+      if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+      if (!this.signedIn) return;
+
+      var keys = Object.keys(this.dirtyKeys);
+      this.dirtyKeys = {};
+      var wasMasteryDirty = this.masteryDirty;
+      this.masteryDirty = false;
+
+      var jobs = [];
+
+      if (keys.length) {
+        var entries = {};
+        for (var i = 0; i < keys.length; i++) {
+          var raw = this.getItem(keys[i]);
+          entries[keys[i]] = raw === null ? null : parseMaybe(raw);
+        }
+        jobs.push(send('PUT', '/api/state', { entries: entries }, keepalive));
+      }
+
+      if (wasMasteryDirty) {
+        var changed = this.masteryDiff();
+        if (Object.keys(changed).length) {
+          jobs.push(send('PUT', '/api/mastery', { records: changed }, keepalive));
+        }
+      }
+
+      try {
+        await Promise.all(jobs);
+      } catch (err) {
+        // Offline, or the page is going away mid-request. Either way, put the
+        // work back on the queue so the next flush picks it up.
+        if (document.visibilityState !== 'hidden') console.warn('Sync failed, will retry', err);
+        keys.forEach(function (k) { Store.dirtyKeys[k] = true; });
+        if (wasMasteryDirty) this.masteryDirty = true;
+      }
+    },
+
+    /** Only the mastery records whose values actually moved since last push. */
+    masteryDiff: function () {
+      var all = parseMaybe(this.getItem(MASTERY_KEY)) || {};
+      var changed = {};
+      for (var id in all) {
+        if (!Object.prototype.hasOwnProperty.call(all, id)) continue;
+        var encoded = JSON.stringify(all[id]);
+        if (this.lastPushedMastery[id] !== encoded) {
+          changed[id] = all[id];
+          this.lastPushedMastery[id] = encoded;
+        }
+      }
+      return changed;
+    },
+
+    /** Seed memory from the server, pushing up anything only this device has. */
+    hydrate: function (state, mastery) {
+      var pushUp = {};
+
+      for (var i = 0; i < SYNC_KEYS.length; i++) {
+        var key = SYNC_KEYS[i];
+        if (state && Object.prototype.hasOwnProperty.call(state, key) && state[key] !== null) {
+          var value = JSON.stringify(state[key]);
+          this.mem[key] = value;
+          localSet(key, value);
+        } else {
+          // Nothing on the server yet — carry this device's copy up. This is
+          // what migrates someone who used the app before it had accounts.
+          var local = localGet(key);
+          if (local !== null) {
+            this.mem[key] = local;
+            pushUp[key] = parseMaybe(local);
+          }
+        }
+      }
+
+      var serverMastery = mastery || {};
+      var localMastery = parseMaybe(localGet(MASTERY_KEY)) || {};
+      var merged = {};
+      var id;
+      for (id in localMastery) merged[id] = localMastery[id];
+      // The server is the shared truth where the two disagree.
+      for (id in serverMastery) merged[id] = serverMastery[id];
+
+      var encodedMastery = JSON.stringify(merged);
+      this.mem[MASTERY_KEY] = encodedMastery;
+      localSet(MASTERY_KEY, encodedMastery);
+
+      for (id in merged) this.lastPushedMastery[id] = JSON.stringify(merged[id]);
+      // Anything the device knew that the server didn't needs pushing.
+      for (id in localMastery) {
+        if (!Object.prototype.hasOwnProperty.call(serverMastery, id)) {
+          this.lastPushedMastery[id] = '';
+        }
+      }
+
+      this.signedIn = true;
+
+      if (Object.keys(pushUp).length) {
+        send('PUT', '/api/state', { entries: pushUp }).catch(function () {});
+      }
+      var leftover = this.masteryDiff();
+      if (Object.keys(leftover).length) {
+        send('PUT', '/api/mastery', { records: leftover }).catch(function () {});
+      }
+    },
+
+    reset: function () {
+      this.mem = {};
+      this.dirtyKeys = {};
+      this.lastPushedMastery = {};
+      this.masteryDirty = false;
+      this.signedIn = false;
+    }
+  };
+  window.Store = Store;
+
+  function parseMaybe(raw) {
+    if (raw === null || raw === undefined) return null;
+    try { return JSON.parse(raw); } catch (e) { return raw; }
+  }
+
+  function send(method, path, payload, keepalive) {
+    return fetch(path, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      credentials: 'same-origin',
+      keepalive: Boolean(keepalive)
+    }).then(function (r) {
+      if (!r.ok) throw new Error('Sync rejected (' + r.status + ')');
+      return r;
+    });
+  }
+
+  // Don't lose the last few answers when the tab is closed or backgrounded.
+  window.addEventListener('pagehide', function () { Store.flush(true); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') Store.flush(true);
+  });
+
+  /* --------------------------------------------------- content ------ */
+
+  function applyContent(c) {
+    window.decks = c.decks || {};
+    window.quizzes = c.quizzes || {};
+    window.verbTables = c.verbTables || {};
+    window.workbook = c.workbook || {};
+    window.concepts = c.concepts || {};
+    window.dailyDrills = c.dailyDrills || [];
+    window.stories = c.stories || [];
+    window.roleplays = c.roleplays || [];
+    window.grammar = c.grammar || [];
+  }
+
+  /** Pull content again after an upload, and repaint whatever is on screen. */
+  async function refreshContent() {
+    var data = await Api.get('/api/content');
+    applyContent(data.content);
+    var active = document.querySelector('.view.active');
+    // The upload screen is left alone: it repaints its own list, and a full
+    // re-render here would wipe the result message the learner is reading.
+    if (active && active.id !== 'upload' && typeof window.showView === 'function') {
+      window.showView(active.id);
+    }
+  }
+  window.refreshContent = refreshContent;
+
+  /* ------------------------------------------------------ gate ------- */
+
+  var gate = null;
+  function el(id) { return document.getElementById(id); }
+
+  function showGate(mode) {
+    gate = el('authGate');
+    gate.style.display = 'flex';
+    el('authError').textContent = '';
+    setAuthMode(mode || 'login');
+  }
+
+  function setAuthMode(mode) {
+    var isSignup = mode === 'signup';
+    el('authTitle').textContent = isSignup ? 'Create your account' : 'Welcome back';
+    el('authSub').textContent = isSignup
+      ? 'Your lessons, your uploads, your progress — on every device you use.'
+      : 'Sign in to pick up where you left off.';
+    el('authSubmit').textContent = isSignup ? 'Create account' : 'Sign in';
+    el('authToggle').innerHTML = isSignup
+      ? 'Already have an account? <button type="button" class="auth-link" onclick="authSetMode(\'login\')">Sign in</button>'
+      : 'New here? <button type="button" class="auth-link" onclick="authSetMode(\'signup\')">Create an account</button>';
+    el('authNameRow').style.display = isSignup ? 'block' : 'none';
+    el('authCodeRow').style.display =
+      isSignup && window.__signupCodeRequired ? 'block' : 'none';
+    gate.dataset.mode = isSignup ? 'signup' : 'login';
+    el('authError').textContent = '';
+  }
+  window.authSetMode = setAuthMode;
+
+  async function submitAuth(event) {
+    if (event) event.preventDefault();
+    var isSignup = gate.dataset.mode === 'signup';
+    var button = el('authSubmit');
+    var error = el('authError');
+
+    var payload = {
+      email: el('authEmail').value.trim(),
+      password: el('authPassword').value
+    };
+    if (isSignup) {
+      payload.name = el('authName').value.trim();
+      payload.code = el('authCode').value.trim();
+    }
+
+    button.disabled = true;
+    button.textContent = isSignup ? 'Creating…' : 'Signing in…';
+    error.textContent = '';
+
+    try {
+      var result = await Api.post(isSignup ? '/api/auth/signup' : '/api/auth/login', payload);
+      // Settings reads this to show who is signed in.
+      window.__user = result.user;
+      gate.style.display = 'none';
+      el('authPassword').value = '';
+      await startApp();
+    } catch (err) {
+      // Reset the form first: setAuthMode clears the error box, so the message
+      // has to be written after it, not before.
+      setAuthMode(isSignup ? 'signup' : 'login');
+      error.textContent = err.message;
+      button.disabled = false;
+    }
+  }
+  window.submitAuth = submitAuth;
+
+  async function signOut() {
+    await Store.flush();
+    try { await Api.post('/api/auth/logout'); } catch (e) {}
+    Store.reset();
+    location.reload();
+  }
+  window.signOut = signOut;
+
+  /* ------------------------------------------------------ boot ------- */
+
+  function setSplash(message) {
+    var s = el('bootSplash');
+    if (!s) return;
+    s.style.display = message ? 'flex' : 'none';
+    if (message) el('bootSplashMsg').textContent = message;
+  }
+
+  var started = false;
+
+  async function startApp() {
+    setSplash('Loading your material…');
+    try {
+      var results = await Promise.all([
+        Api.get('/api/content'),
+        Api.get('/api/state'),
+        Api.get('/api/mastery')
+      ]);
+      applyContent(results[0].content);
+      Store.hydrate(results[1].state, results[2].mastery);
+    } catch (err) {
+      setSplash(null);
+      el('authGate').style.display = 'flex';
+      el('authError').textContent =
+        'Could not load your material: ' + err.message;
+      return;
+    }
+
+    setSplash(null);
+    if (!started) {
+      started = true;
+      if (typeof window.bootApp === 'function') window.bootApp();
+    } else if (typeof window.showView === 'function') {
+      window.showView('home');
+    }
+  }
+
+  async function boot() {
+    setSplash('Starting up…');
+    var me;
+    try {
+      me = await Api.get('/api/auth/me');
+    } catch (err) {
+      setSplash(null);
+      showGate('login');
+      el('authError').textContent =
+        'Could not reach the server. Check your connection and reload.';
+      return;
+    }
+
+    window.__signupCodeRequired = Boolean(me.signupCodeRequired);
+    window.__user = me.user;
+
+    if (!me.user) {
+      setSplash(null);
+      showGate('login');
+      return;
+    }
+    await startApp();
+  }
+
+  document.addEventListener('DOMContentLoaded', boot);
+})();
+
+</script>
+
 <script>
 /* =========================================================
    DATA — all pulled from your lesson sheets
    ========================================================= */
 
 // ---------- FLASHCARD DECKS ----------
-const decks = {
-  taille: {
-    name: "Size & shape",
-    category: "Adjectives",
-    cards: [
-      { fr: "grand(e)", en: "big / tall", ex: "Il est plus grand que moi." },
-      { fr: "petit(e)", en: "small", ex: "La maison est plus petite que le château." },
-      { fr: "long(ue)", en: "long", ex: "La route est longue." },
-      { fr: "court(e)", en: "short", ex: "Cette jupe est trop courte." },
-      { fr: "haut(e)", en: "high", ex: "Les montagnes sont hautes à Morzine." },
-      { fr: "bas(se)", en: "low", ex: "Le plafond est bas." },
-      { fr: "large", en: "wide", ex: "La piste est large." },
-      { fr: "étroit(e)", en: "narrow", ex: "La rue est étroite." },
-      { fr: "épais(se)", en: "thick", ex: "La neige est épaisse." },
-      { fr: "mince / fin(e)", en: "thin", ex: "Une fine couche de glace." },
-      { fr: "profond(e)", en: "deep", ex: "Le lac est profond." }
-    ]
-  },
-  qualite: {
-    name: "Quality",
-    category: "Adjectives",
-    cards: [
-      { fr: "bon(ne)", en: "good", ex: "Ce vin est bon." },
-      { fr: "mauvais(e)", en: "bad", ex: "Le temps est mauvais." },
-      { fr: "beau / belle", en: "beautiful", ex: "La vue est belle." },
-      { fr: "laid(e)", en: "ugly", ex: "C'est un peu laid." },
-      { fr: "facile", en: "easy", ex: "La piste bleue est facile." },
-      { fr: "difficile", en: "difficult", ex: "Le français est difficile." },
-      { fr: "propre", en: "clean", ex: "La chambre est propre." },
-      { fr: "sale", en: "dirty", ex: "Mes gants sont sales." },
-      { fr: "intéressant(e)", en: "interesting", ex: "Le livre est intéressant." },
-      { fr: "ennuyeux(-se)", en: "boring", ex: "Ce film est ennuyeux." }
-    ]
-  },
-  age: {
-    name: "Age",
-    category: "Adjectives",
-    cards: [
-      { fr: "vieux / vieille", en: "old (thing or person)", ex: "Une vieille maison." },
-      { fr: "jeune", en: "young", ex: "Un jeune skieur." },
-      { fr: "ancien(ne)", en: "old / former", ex: "Un ancien chalet." },
-      { fr: "moderne / neuf", en: "modern / new", ex: "Un ski neuf." },
-      { fr: "âgé(e)", en: "old (person)", ex: "Une personne âgée." },
-      { fr: "usé(e)", en: "worn out", ex: "Mes bottes sont usées." }
-    ]
-  },
-  prix: {
-    name: "Price",
-    category: "Adjectives",
-    cards: [
-      { fr: "cher / chère", en: "expensive", ex: "Le forfait est cher." },
-      { fr: "bon marché", en: "cheap", ex: "Ce restaurant est bon marché." },
-      { fr: "coûteux(-se)", en: "costly", ex: "Un hôtel coûteux." },
-      { fr: "abordable", en: "affordable", ex: "Un prix abordable." },
-      { fr: "luxueux(-se)", en: "luxury", ex: "Un chalet luxueux." },
-      { fr: "simple / basique", en: "basic", ex: "Un menu simple." },
-      { fr: "rare / unique", en: "rare / unique", ex: "Une pièce rare." },
-      { fr: "courant(e)", en: "common", ex: "Un modèle courant." }
-    ]
-  },
-  vitesse: {
-    name: "Speed & efficiency",
-    category: "Adjectives",
-    cards: [
-      { fr: "rapide", en: "fast", ex: "Le télésiège est rapide." },
-      { fr: "lent(e)", en: "slow", ex: "Le service est lent." },
-      { fr: "agile", en: "agile", ex: "Un skieur agile." },
-      { fr: "maladroit(e)", en: "clumsy", ex: "Je suis maladroit sur la glace." },
-      { fr: "actif(-ve)", en: "active", ex: "Une vie active." },
-      { fr: "passif(-ve)", en: "passive", ex: "Un rôle passif." },
-      { fr: "efficace", en: "efficient", ex: "Un système efficace." },
-      { fr: "inefficace", en: "inefficient", ex: "Une méthode inefficace." }
-    ]
-  },
-  poids: {
-    name: "Weight",
-    category: "Adjectives",
-    cards: [
-      { fr: "lourd(e)", en: "heavy", ex: "Mon sac est lourd." },
-      { fr: "léger / légère", en: "light", ex: "Une veste légère." },
-      { fr: "gros(se)", en: "big / fat", ex: "Un gros chien." },
-      { fr: "mince", en: "thin / slim", ex: "Elle est mince." },
-      { fr: "plein(e)", en: "full", ex: "La piste est pleine." },
-      { fr: "vide", en: "empty", ex: "Le verre est vide." },
-      { fr: "solide", en: "strong / solid", ex: "Une corde solide." },
-      { fr: "fragile", en: "fragile", ex: "C'est fragile." }
-    ]
-  },
-  temperature: {
-    name: "Weather & temperature",
-    category: "Adjectives",
-    cards: [
-      { fr: "chaud(e)", en: "hot", ex: "Le chocolat chaud." },
-      { fr: "froid(e)", en: "cold", ex: "Il fait froid dehors." },
-      { fr: "brûlant(e)", en: "burning", ex: "Le café est brûlant." },
-      { fr: "glacé(e)", en: "icy", ex: "La route est glacée." },
-      { fr: "tiède", en: "warm / lukewarm", ex: "L'eau est tiède." },
-      { fr: "frais / fraîche", en: "fresh / cool", ex: "Du pain frais." },
-      { fr: "ensoleillé(e)", en: "sunny", ex: "Une journée ensoleillée." },
-      { fr: "nuageux(-se)", en: "cloudy", ex: "Le ciel est nuageux." }
-    ]
-  },
-  personnalite: {
-    name: "Personality",
-    category: "Adjectives",
-    cards: [
-      { fr: "sympa / gentil(le)", en: "nice / kind", ex: "Le voisin est sympa." },
-      { fr: "méchant(e)", en: "mean / not nice", ex: "Ce chien est méchant." },
-      { fr: "calme", en: "calm", ex: "Un village calme." },
-      { fr: "nerveux(-se)", en: "nervous", ex: "Je suis nerveux avant l'examen." },
-      { fr: "courageux(-se)", en: "brave", ex: "Un skieur courageux." },
-      { fr: "timide", en: "shy", ex: "Elle est timide." },
-      { fr: "sérieux(-se)", en: "serious", ex: "C'est sérieux." },
-      { fr: "drôle / amusant(e)", en: "funny", ex: "Mon frère est drôle." },
-      { fr: "bavard(e)", en: "chatty", ex: "Le moniteur est bavard." },
-      { fr: "silencieux(-se)", en: "silent", ex: "Un enfant silencieux." }
-    ]
-  },
-  apparence: {
-    name: "Appearance",
-    category: "Adjectives",
-    cards: [
-      { fr: "clair(e)", en: "light (colour)", ex: "Un ciel clair." },
-      { fr: "sombre / foncé(e)", en: "dark", ex: "Une veste foncée." },
-      { fr: "brillant(e)", en: "shiny", ex: "La neige brillante." },
-      { fr: "terne", en: "dull", ex: "Des couleurs ternes." },
-      { fr: "neuf / neuve", en: "new", ex: "Des skis neufs." },
-      { fr: "lisse", en: "smooth", ex: "Une surface lisse." },
-      { fr: "rugueux(-se)", en: "rough", ex: "Une peau rugueuse." },
-      { fr: "coloré(e)", en: "colourful", ex: "Une veste colorée." }
-    ]
-  },
-  distance: {
-    name: "Distance & space",
-    category: "Adjectives",
-    cards: [
-      { fr: "proche / près", en: "near / close", ex: "La piste est proche." },
-      { fr: "loin / éloigné(e)", en: "far", ex: "C'est loin d'ici." },
-      { fr: "ouvert(e)", en: "open", ex: "Le magasin est ouvert." },
-      { fr: "fermé(e)", en: "closed", ex: "Les pistes sont fermées." },
-      { fr: "droit(e)", en: "straight", ex: "Une ligne droite." },
-      { fr: "courbe / tordu(e)", en: "curved / winding", ex: "Une route courbe." },
-      { fr: "plat(e)", en: "flat", ex: "Un terrain plat." },
-      { fr: "montagneux(-se)", en: "mountainous", ex: "Une région montagneuse." },
-      { fr: "spacieux(-se)", en: "spacious", ex: "Un chalet spacieux." },
-      { fr: "étroit(e)", en: "narrow", ex: "Une rue étroite." }
-    ]
-  },
-  invariables: {
-    name: "Time & sequence words",
-    category: "Adverbs",
-    cards: [
-      { fr: "toujours", en: "always", ex: "Je vais toujours au marché le mercredi." },
-      { fr: "jamais", en: "never", ex: "Il ne pleut jamais en été ici." },
-      { fr: "souvent", en: "often", ex: "Je vais souvent au collège à pied." },
-      { fr: "parfois", en: "sometimes", ex: "Parfois, j'oublie mes affaires." },
-      { fr: "maintenant", en: "now", ex: "Maintenant, je comprends la leçon." },
-      { fr: "ensuite", en: "next", ex: "Ensuite, je prends mon petit-déjeuner." },
-      { fr: "alors", en: "so / then", ex: "Alors, nous pourrons jouer." },
-      { fr: "puis", en: "then", ex: "D'abord tu lis, puis tu réponds." },
-      { fr: "enfin", en: "finally", ex: "Enfin, nous partons ensemble." },
-      { fr: "d'abord", en: "first", ex: "D'abord, il faut lire la consigne." }
-    ]
-  },
-  verbes: {
-    name: "Essential verbs (daily)",
-    category: "Verbs",
-    cards: [
-      { fr: "être", en: "to be", ex: "Je suis fatigué." },
-      { fr: "avoir", en: "to have", ex: "J'ai un chat." },
-      { fr: "faire", en: "to do / make", ex: "Je fais du sport." },
-      { fr: "aller", en: "to go", ex: "Je vais à l'école." },
-      { fr: "venir", en: "to come", ex: "Tu viens avec moi ?" },
-      { fr: "pouvoir", en: "to be able to / can", ex: "Je peux t'aider." },
-      { fr: "vouloir", en: "to want", ex: "Je veux un café." },
-      { fr: "devoir", en: "to have to / must", ex: "Je dois partir." },
-      { fr: "savoir", en: "to know (how)", ex: "Je sais nager." },
-      { fr: "prendre", en: "to take", ex: "Je prends le bus." }
-    ]
-  },
-  communication: {
-    name: "Communication verbs",
-    category: "Verbs",
-    cards: [
-      { fr: "parler", en: "to speak / talk", ex: "Je parle français." },
-      { fr: "dire", en: "to say / tell", ex: "Qu'est-ce que tu dis ?" },
-      { fr: "demander", en: "to ask", ex: "Je demande de l'aide." },
-      { fr: "répondre", en: "to answer", ex: "Réponds à ma question." },
-      { fr: "écouter", en: "to listen", ex: "J'écoute de la musique." }
-    ]
-  },
-  possessifs: {
-    name: "Possessive adjectives",
-    category: "Grammar",
-    cards: [
-      { fr: "mon / ma / mes", en: "my", ex: "mon sac · ma voiture · mes clés" },
-      { fr: "ton / ta / tes", en: "your (informal)", ex: "ton livre · ta maison · tes amis" },
-      { fr: "son / sa / ses", en: "his/her/its", ex: "son chien · sa mère · ses enfants" },
-      { fr: "notre / nos", en: "our", ex: "notre chalet · nos voisins" },
-      { fr: "votre / vos", en: "your (formal/plural)", ex: "votre passeport · vos documents" },
-      { fr: "leur / leurs", en: "their", ex: "leur voiture · leurs affaires" }
-    ]
-  },
-  questions: {
-    name: "Question words",
-    category: "Grammar",
-    cards: [
-      { fr: "qui", en: "who", ex: "Avec qui est-ce que tu habites ?" },
-      { fr: "quoi / que", en: "what", ex: "Qu'est-ce que tu fais ?" },
-      { fr: "où", en: "where", ex: "Où vas-tu en vacances ?" },
-      { fr: "quand", en: "when", ex: "Quand part ton avion ?" },
-      { fr: "pourquoi", en: "why", ex: "Pourquoi tu apprends le français ?" },
-      { fr: "comment", en: "how", ex: "Comment voyagez-vous ?" },
-      { fr: "combien", en: "how much / many", ex: "Combien de chiens as-tu ?" },
-      { fr: "quel(le)", en: "which", ex: "Quel est ton loisir préféré ?" }
-    ]
-  },
-  pc_regulars: {
-    name: "Passé composé — regulars",
-    category: "Grammar — past tense",
-    cards: [
-      { fr: "j'ai mangé", en: "I ate", ex: "J'ai mangé une tarte hier." },
-      { fr: "tu as regardé", en: "you watched", ex: "Tu as regardé un film hier soir ?" },
-      { fr: "il a fini", en: "he finished", ex: "Il a fini son travail." },
-      { fr: "nous avons écouté", en: "we listened to", ex: "Nous avons écouté une émission à la radio." },
-      { fr: "vous avez noté", en: "you noted", ex: "Vous avez noté mon numéro de téléphone ?" },
-      { fr: "elles ont vendu", en: "they sold", ex: "Elles ont vendu la voiture." },
-      { fr: "j'ai aimé", en: "I liked", ex: "J'ai aimé le film." },
-      { fr: "elle a décidé", en: "she decided", ex: "Elle a décidé de déménager." },
-      { fr: "nous avons préparé", en: "we prepared", ex: "Nous avons préparé le dîner." },
-      { fr: "ils ont choisi", en: "they chose", ex: "Ils ont choisi le menu." }
-    ]
-  },
-  pc_irregulars: {
-    name: "Passé composé — irregulars",
-    category: "Grammar — past tense",
-    cards: [
-      { fr: "j'ai été", en: "I was / I've been", ex: "J'ai été malade hier." },
-      { fr: "j'ai eu", en: "I had", ex: "J'ai eu de la chance !" },
-      { fr: "j'ai fait", en: "I did / made", ex: "Hier soir, j'ai fait du kayak." },
-      { fr: "j'ai vécu", en: "I lived", ex: "J'ai vécu à Paris pendant deux ans." },
-      { fr: "j'ai pris", en: "I took", ex: "J'ai pris le train pour Lyon." },
-      { fr: "j'ai vu", en: "I saw", ex: "J'ai vu un bon film." },
-      { fr: "j'ai bu", en: "I drank", ex: "J'ai bu un café ce matin." },
-      { fr: "j'ai dit", en: "I said", ex: "J'ai dit la vérité." },
-      { fr: "j'ai mis", en: "I put", ex: "J'ai mis les clés sur la table." },
-      { fr: "j'ai lu", en: "I read", ex: "J'ai lu le journal." },
-      { fr: "j'ai pu", en: "I could / was able", ex: "J'ai pu finir à temps." },
-      { fr: "j'ai dû", en: "I had to", ex: "J'ai dû partir tôt." },
-      { fr: "j'ai voulu", en: "I wanted", ex: "J'ai voulu t'appeler." },
-      { fr: "j'ai su", en: "I knew / found out", ex: "J'ai su la nouvelle hier." },
-      { fr: "j'ai connu", en: "I met / knew", ex: "J'ai connu Paul à la fac." },
-      { fr: "j'ai ouvert", en: "I opened", ex: "J'ai ouvert la fenêtre." },
-      { fr: "j'ai écrit", en: "I wrote", ex: "J'ai écrit une lettre." },
-      { fr: "j'ai compris", en: "I understood", ex: "J'ai compris la règle." },
-      { fr: "j'ai reçu", en: "I received", ex: "J'ai reçu un cadeau." },
-      { fr: "j'ai offert", en: "I offered / gave", ex: "Je lui ai offert des fleurs." }
-    ]
-  },
-  alphabet: {
-    name: "French alphabet",
-    category: "Foundations",
-    cards: [
-      { fr: "A", en: "ah" },
-      { fr: "B", en: "bay" },
-      { fr: "C", en: "say" },
-      { fr: "D", en: "day" },
-      { fr: "E", en: "uh (like the 'e' in 'the')" },
-      { fr: "F", en: "eff" },
-      { fr: "G", en: "zhay (like 's' in pleasure)" },
-      { fr: "H", en: "ash (always silent in words)" },
-      { fr: "I", en: "ee" },
-      { fr: "J", en: "zhee" },
-      { fr: "K", en: "kah" },
-      { fr: "L", en: "ell" },
-      { fr: "M", en: "emm" },
-      { fr: "N", en: "enn" },
-      { fr: "O", en: "oh" },
-      { fr: "P", en: "pay" },
-      { fr: "Q", en: "koo" },
-      { fr: "R", en: "err (the trilled/guttural French R)" },
-      { fr: "S", en: "ess" },
-      { fr: "T", en: "tay" },
-      { fr: "U", en: "oo (lips rounded, pursed — unique French sound)" },
-      { fr: "V", en: "vay" },
-      { fr: "W", en: "doo-bluh-vay (double-V)" },
-      { fr: "X", en: "eeks" },
-      { fr: "Y", en: "ee-grek (Greek I)" },
-      { fr: "Z", en: "zed" },
-      { fr: "é", en: "e accent aigu (closed 'ay')" },
-      { fr: "è", en: "e accent grave (open 'eh')" },
-      { fr: "ê", en: "e accent circonflexe (open 'eh')" },
-      { fr: "ç", en: "c cédille (soft 's' sound)" }
-    ]
-  },
-  numbers_0_20: {
-    name: "Numbers 0–20",
-    category: "Foundations",
-    cards: [
-      { fr: "zéro", en: "0" },
-      { fr: "un / une", en: "1" },
-      { fr: "deux", en: "2" },
-      { fr: "trois", en: "3" },
-      { fr: "quatre", en: "4" },
-      { fr: "cinq", en: "5" },
-      { fr: "six", en: "6" },
-      { fr: "sept", en: "7" },
-      { fr: "huit", en: "8" },
-      { fr: "neuf", en: "9" },
-      { fr: "dix", en: "10" },
-      { fr: "onze", en: "11" },
-      { fr: "douze", en: "12" },
-      { fr: "treize", en: "13" },
-      { fr: "quatorze", en: "14" },
-      { fr: "quinze", en: "15" },
-      { fr: "seize", en: "16" },
-      { fr: "dix-sept", en: "17" },
-      { fr: "dix-huit", en: "18" },
-      { fr: "dix-neuf", en: "19" },
-      { fr: "vingt", en: "20" }
-    ]
-  },
-  numbers_20_100: {
-    name: "Numbers 20–100",
-    category: "Foundations",
-    cards: [
-      { fr: "vingt", en: "20" },
-      { fr: "vingt et un", en: "21" },
-      { fr: "vingt-deux", en: "22" },
-      { fr: "trente", en: "30" },
-      { fr: "trente et un", en: "31" },
-      { fr: "quarante", en: "40" },
-      { fr: "cinquante", en: "50" },
-      { fr: "soixante", en: "60" },
-      { fr: "soixante-dix", en: "70 (literally 'sixty-ten')" },
-      { fr: "soixante et onze", en: "71" },
-      { fr: "soixante-quinze", en: "75" },
-      { fr: "quatre-vingts", en: "80 (literally 'four twenties')" },
-      { fr: "quatre-vingt-un", en: "81" },
-      { fr: "quatre-vingt-dix", en: "90 (literally 'four-twenty-ten')" },
-      { fr: "quatre-vingt-quinze", en: "95" },
-      { fr: "quatre-vingt-dix-neuf", en: "99" },
-      { fr: "cent", en: "100" }
-    ]
-  },
-  numbers_big: {
-    name: "Numbers — big numbers",
-    category: "Foundations",
-    cards: [
-      { fr: "cent", en: "100" },
-      { fr: "cent un", en: "101" },
-      { fr: "deux cents", en: "200" },
-      { fr: "cinq cents", en: "500" },
-      { fr: "mille", en: "1 000 (note: no 'un' before mille)" },
-      { fr: "mille neuf cent quatre-vingt-douze", en: "1992" },
-      { fr: "deux mille", en: "2 000" },
-      { fr: "deux mille vingt-six", en: "2026" },
-      { fr: "dix mille", en: "10 000" },
-      { fr: "cent mille", en: "100 000" },
-      { fr: "un million", en: "1 000 000" },
-      { fr: "un milliard", en: "1 billion (1 000 000 000)" }
-    ]
-  }
-};
+var decks = {};   // filled from Neon by bootstrapContent()
 
 // ---------- QUIZ POOLS ----------
-const quizzes = {
-  comparisons: {
-    title: "Comparisons (plus/moins/aussi)",
-    qs: [
-      { prompt: "La girafe est ___ grande ___ le chien.", en: "The giraffe is taller than the dog.", opts: ["plus … que", "aussi … que", "moins … que", "plus … de"], a: 0, note: "plus + adjective + que = more ... than" },
-      { prompt: "Ce livre est ___ intéressant ___ le film.", en: "The book is as interesting as the film.", opts: ["plus … que", "aussi … que", "moins … que", "autant de … que"], a: 1, note: "aussi + adjective + que = as ... as" },
-      { prompt: "Ma voiture est ___ rapide ___ le train.", en: "My car is less fast than the train.", opts: ["plus … que", "aussi … que", "moins … que", "plus … de"], a: 2, note: "moins + adjective + que = less ... than" },
-      { prompt: "Batman mange ___ chips que Superman.", en: "Batman eats more chips than Superman.", opts: ["plus de", "plus", "plus que", "plus … que"], a: 0, note: "With a NOUN, use plus DE / moins DE / autant DE + noun + que." },
-      { prompt: "Je dors ___ mon frère.", en: "I sleep more than my brother.", opts: ["plus de", "plus que", "aussi que", "plus"], a: 1, note: "With a VERB, use verb + plus/moins/autant + que — no 'de'." },
-      { prompt: "Le thé est ___ ___ le café. (bon)", en: "The tea is better than the coffee.", opts: ["plus bon que", "meilleur que", "plus meilleur que", "mieux que"], a: 1, note: "EXCEPTION: plus bon(ne) → meilleur(e). Never say 'plus bon'." },
-      { prompt: "Ce restaurant est ___ ___ l'autre. (mauvais)", en: "This restaurant is worse than the other.", opts: ["plus mauvais que", "pire que", "moins bon que", "pire que ou plus mauvais que (les deux)"], a: 3, note: "plus mauvais → pire. BOTH are correct." },
-      { prompt: "Pierre est plus grand ___ sa sœur.", en: "Pierre is taller than his sister.", opts: ["que", "de", "comme", "à"], a: 0, note: "The second part is always 'que', not 'de'." },
-      { prompt: "Marie est aussi rapide ___ Léo.", en: "Marie is as fast as Léo.", opts: ["comme", "que", "de", "à"], a: 1, note: "aussi ... QUE — never 'comme' for comparisons of equality." },
-      { prompt: "Il y a ___ neige à Morzine ___ à Paris.", en: "There is more snow in Morzine than in Paris.", opts: ["plus que", "plus de … que", "plus … que", "autant que"], a: 1, note: "plus DE neige que — remember 'de' before the noun." }
-    ]
-  },
-  modaux: {
-    title: "Modal verbs (pouvoir / devoir / vouloir)",
-    qs: [
-      { prompt: "Je ___ apprendre à skier hors-piste.", en: "I want to learn to ski off-piste.", opts: ["peux", "dois", "veux", "voudrais"], a: 2, note: "vouloir = desire. Je veux = I want." },
-      { prompt: "Vous ___ montrer votre forfait à l'entrée.", en: "You must show your ski pass at the entrance.", opts: ["pouvez", "devez", "voulez", "savez"], a: 1, note: "devoir = obligation. Vous devez = you must." },
-      { prompt: "Nous ___ réserver une table ?", en: "Must we book a table?", opts: ["pouvons", "devons", "voulons", "savons"], a: 1, note: "Context says 'restaurant often full' → obligation." },
-      { prompt: "On ne ___ pas skier aujourd'hui — les pistes sont fermées.", en: "We can't ski today — the pistes are closed.", opts: ["peut", "doit", "veut", "sait"], a: 0, note: "pouvoir = possibility/permission. On peut = we can." },
-      { prompt: "Tu ___ m'appeler si tu te perds ?", en: "Can you call me if you get lost?", opts: ["peux", "dois", "veux", "sais"], a: 0, note: "pouvoir = ability. Tu peux = you can." },
-      { prompt: "Elle ___ absolument essayer le snowboard !", en: "She absolutely wants to try snowboarding!", opts: ["peut", "doit", "veut", "sait"], a: 2, note: "vouloir — strong desire." },
-      { prompt: "Ils ___ louer un appartement pour la saison.", en: "They want to rent an apartment for the season.", opts: ["peuvent", "doivent", "veulent", "savent"], a: 2, note: "Ils veulent (vouloir, 3rd person plural)." },
-      { prompt: "Il ___ aller au spa — il a mal aux jambes.", en: "He wants to go to the spa — his legs hurt.", opts: ["peut", "doit", "veut", "sait"], a: 2, note: "The reason (sore legs) signals wanting, though 'doit' is also plausible. The lesson answer is 'veut'." },
-      { prompt: "Je ___ parler français.", en: "I can speak French.", opts: ["peux", "dois", "veux", "sais"], a: 0, note: "For ability 'I can', 'je peux' is used. (Some contexts prefer 'je sais parler' for skills, but pouvoir is the lesson answer.)" },
-      { prompt: "On ___ porter un casque sur les pistes.", en: "We must wear a helmet on the pistes.", opts: ["peut", "doit", "veut", "sait"], a: 1, note: "Safety rule = obligation = devoir." }
-    ]
-  },
-  possessifs: {
-    title: "Possessive adjectives",
-    qs: [
-      { prompt: "Les lunettes, elles sont à toi ? — Oui, ce sont ___ lunettes.", en: "The glasses, are they yours? — Yes, they are my glasses.", opts: ["ma", "mon", "mes", "mien"], a: 2, note: "Plural noun 'lunettes' → mes (regardless of gender)." },
-      { prompt: "Le panda, il est à lui ? — Oui, c'est ___ panda.", en: "The panda, is it his? — Yes, it's his panda.", opts: ["sa", "son", "ses", "leur"], a: 1, note: "panda = masculine singular → son." },
-      { prompt: "Vos enfants torturent mon chien ? — Oui, ce sont ___ enfants.", en: "Your children are torturing my dog? — Yes, they are our children.", opts: ["nos", "notre", "mes", "leur"], a: 0, note: "Plural noun 'enfants' → nos (our)." },
-      { prompt: "C'est la voiture de Jean et Brigitte ? — Oui, c'est ___ voiture.", en: "Is it Jean and Brigitte's car? — Yes, it's their car.", opts: ["sa", "son", "leur", "leurs"], a: 2, note: "TWO owners → leur. 'voiture' is singular, so leur (not leurs)." },
-      { prompt: "J'ai oublié ___ chaussettes.", en: "I forgot my socks.", opts: ["ma", "mon", "mes", "ton"], a: 2, note: "chaussettes is plural → mes." },
-      { prompt: "Est-ce que je peux inviter ___ voisins à notre mariage ?", en: "Can I invite my neighbours to our wedding?", opts: ["ma", "mon", "mes", "ton"], a: 2, note: "voisins plural → mes." },
-      { prompt: "J'ai adopté un tigre ! Je vais te montrer ___ photo.", en: "I adopted a tiger! I'll show you its photo.", opts: ["sa", "son", "ses", "ta"], a: 0, note: "photo = feminine singular → sa (the tiger's photo)." },
-      { prompt: "Bonjour Monsieur, montrez-moi ___ documents.", en: "Hello sir, show me your documents.", opts: ["ton", "tes", "votre", "vos"], a: 3, note: "Formal (Monsieur = vous) + plural (documents) = vos." },
-      { prompt: "C'est l'amie de Jean qui boit trop de bière ? — Oui, c'est ___ amie.", en: "Is that Jean's friend who drinks too much beer? — Yes, it's his friend.", opts: ["sa", "son", "ses", "leur"], a: 1, note: "Tricky: 'amie' is feminine BUT begins with a vowel → son (not sa) to avoid the vowel clash. Same as 'mon école'." },
-      { prompt: "Pourquoi ils sont heureux ? Parce qu'ils ont réussi ___ examen.", en: "Why are they happy? Because they passed their exam.", opts: ["son", "leur", "leurs", "sa"], a: 1, note: "'ils' = multiple people, 'examen' = singular → leur." }
-    ]
-  },
-  questions: {
-    title: "Question words",
-    qs: [
-      { prompt: "___ regardes-tu ce film ? — Parce que j'aime les super-héros.", en: "Why are you watching this film?", opts: ["Quand", "Pourquoi", "Comment", "Où"], a: 1, note: "Answer gives a reason → Pourquoi (why)." },
-      { prompt: "Cette Porsche coûte ___ ? — Seulement 67 000 €.", en: "How much does this Porsche cost?", opts: ["combien", "quel", "comment", "où"], a: 0, note: "Asking price → combien." },
-      { prompt: "Avec ___ est-ce que tu habites ? — Avec mon ami.", en: "Who do you live with?", opts: ["quoi", "qui", "comment", "où"], a: 1, note: "Person → qui." },
-      { prompt: "___ de chiens as-tu ? — Deux.", en: "How many dogs do you have?", opts: ["Quand", "Combien", "Quel", "Pourquoi"], a: 1, note: "combien DE + noun for quantity." },
-      { prompt: "Ton avion part ___ ? — Il part demain matin.", en: "When does your plane leave?", opts: ["combien", "pourquoi", "quand", "comment"], a: 2, note: "Time → quand." },
-      { prompt: "___ est-ce que tu apprends ? — Pour faire plaisir à mes parents.", en: "Why are you learning?", opts: ["Comment", "Pourquoi", "Quand", "Où"], a: 1, note: "Answer 'pour...' (in order to) → Pourquoi." },
-      { prompt: "___ est ton loisir préféré ? — Le sport.", en: "What is your favourite hobby?", opts: ["Quoi", "Quel", "Comment", "Qui"], a: 1, note: "'quel' + noun (loisir). Asking to choose among options = quel." },
-      { prompt: "___ voyagez-vous ? — En avion.", en: "How do you travel?", opts: ["Comment", "Où", "Quand", "Pourquoi"], a: 0, note: "Means/manner → comment." },
-      { prompt: "Tu fais ___ ? — Je surfe sur Internet.", en: "What are you doing?", opts: ["qui", "quoi", "où", "quand"], a: 1, note: "'Tu fais quoi' = informal. 'Qu'est-ce que tu fais' uses que/qu'." },
-      { prompt: "Quand tu as très faim, tu manges ___ ? — Des croissants.", en: "What do you eat when very hungry?", opts: ["qui", "quoi", "où", "combien"], a: 1, note: "Thing → quoi. At end of question = quoi (not que)." }
-    ]
-  },
-  invariables: {
-    title: "Adverbs of time & sequence",
-    qs: [
-      { prompt: "Je vais ___ au collège à pied.", en: "I often go to school on foot.", opts: ["toujours", "jamais", "souvent", "parfois"], a: 2, note: "'often' = souvent." },
-      { prompt: "Il ne pleut ___ en été dans cette région.", en: "It never rains in summer here.", opts: ["toujours", "jamais", "souvent", "maintenant"], a: 1, note: "ne ... jamais = never." },
-      { prompt: "___ nous allons faire les devoirs, ___ nous pourrons jouer.", en: "Now we'll do homework, then we can play.", opts: ["Parfois / enfin", "Maintenant / alors", "D'abord / jamais", "Souvent / puis"], a: 1, note: "Maintenant (now) + Alors (then/so)." },
-      { prompt: "Je vais ___ terminer cet exercice !", en: "I'm finally going to finish this exercise!", opts: ["d'abord", "ensuite", "enfin", "jamais"], a: 2, note: "'finally' = enfin." },
-      { prompt: "___, il faut lire la consigne.", en: "First, you must read the instructions.", opts: ["D'abord", "Enfin", "Alors", "Jamais"], a: 0, note: "'first' (as a step) = d'abord." },
-      { prompt: "Ce matin, je me réveille ___ très tôt.", en: "This morning, I wake up first thing very early.", opts: ["enfin", "d'abord", "jamais", "parfois"], a: 1, note: "Start of a sequence → d'abord." },
-      { prompt: "___, je prends mon petit-déjeuner.", en: "Next, I have breakfast.", opts: ["Ensuite", "D'abord", "Enfin", "Jamais"], a: 0, note: "'Next' = ensuite." },
-      { prompt: "Mon frère est ___ en retard !", en: "My brother is always late!", opts: ["jamais", "toujours", "parfois", "maintenant"], a: 1, note: "'always' = toujours." },
-      { prompt: "Moi, je suis ___ ponctuel.", en: "Me, I'm often punctual.", opts: ["parfois", "souvent", "jamais", "maintenant"], a: 1, note: "'often' = souvent." },
-      { prompt: "___, nous partons ensemble.", en: "Finally, we leave together.", opts: ["D'abord", "Ensuite", "Enfin", "Alors"], a: 2, note: "End of a sequence → enfin." }
-    ]
-  }
-};
+var quizzes = {};   // filled from Neon by bootstrapContent()
 
 // ---------- CONJUGATION DRILLS ----------
-const verbTables = {
-  etre:    { meaning: "to be",        forms: { "je": "suis", "tu": "es", "il/elle/on": "est", "nous": "sommes", "vous": "êtes", "ils/elles": "sont" } },
-  avoir:   { meaning: "to have",      forms: { "je": "ai", "tu": "as", "il/elle/on": "a", "nous": "avons", "vous": "avez", "ils/elles": "ont" } },
-  aller:   { meaning: "to go",        forms: { "je": "vais", "tu": "vas", "il/elle/on": "va", "nous": "allons", "vous": "allez", "ils/elles": "vont" } },
-  faire:   { meaning: "to do / make", forms: { "je": "fais", "tu": "fais", "il/elle/on": "fait", "nous": "faisons", "vous": "faites", "ils/elles": "font" } },
-  venir:   { meaning: "to come",      forms: { "je": "viens", "tu": "viens", "il/elle/on": "vient", "nous": "venons", "vous": "venez", "ils/elles": "viennent" } },
-  pouvoir: { meaning: "to be able / can", forms: { "je": "peux", "tu": "peux", "il/elle/on": "peut", "nous": "pouvons", "vous": "pouvez", "ils/elles": "peuvent" } },
-  devoir:  { meaning: "must / have to",  forms: { "je": "dois", "tu": "dois", "il/elle/on": "doit", "nous": "devons", "vous": "devez", "ils/elles": "doivent" } },
-  vouloir: { meaning: "to want",      forms: { "je": "veux", "tu": "veux", "il/elle/on": "veut", "nous": "voulons", "vous": "voulez", "ils/elles": "veulent" } },
-  savoir:  { meaning: "to know (how)", forms: { "je": "sais", "tu": "sais", "il/elle/on": "sait", "nous": "savons", "vous": "savez", "ils/elles": "savent" } },
-  prendre: { meaning: "to take",      forms: { "je": "prends", "tu": "prends", "il/elle/on": "prend", "nous": "prenons", "vous": "prenez", "ils/elles": "prennent" } }
-};
+var verbTables = {};   // filled from Neon by bootstrapContent()
 
 // ---------- ROLE-PLAYS (Morzine-specific) ----------
-const roleplays = [
-  {
-    title: "À la boulangerie",
-    ctx: "You walk into the bakery in Morzine for your morning bread.",
-    lines: [
-      { who: "them", fr: "Bonjour monsieur, qu'est-ce que je vous sers ?", en: "Hello sir, what can I get you?" },
-      { who: "you",  fr: "Bonjour ! Je voudrais une baguette, s'il vous plaît.", en: "Hello! I'd like a baguette, please." },
-      { who: "them", fr: "Tradition ou classique ?", en: "Tradition or classic?" },
-      { who: "you",  fr: "Une tradition, merci. Et deux croissants aussi.", en: "A tradition, thanks. And two croissants as well." },
-      { who: "them", fr: "Très bien. Ce sera tout ?", en: "Very good. Will that be all?" },
-      { who: "you",  fr: "Oui, c'est tout. Ça fait combien ?", en: "Yes, that's all. How much is it?" },
-      { who: "them", fr: "Cinq euros quarante, s'il vous plaît.", en: "Five euros forty, please." },
-      { who: "you",  fr: "Voilà. Bonne journée !", en: "Here you go. Have a good day!" }
-    ],
-    notes: "<strong>Je voudrais</strong> is the polite form of <em>je veux</em> — always use it in shops and restaurants. The reply to 'ça fait combien?' is pure listening practice — numbers are the hardest part of French retail."
-  },
-  {
-    title: "Au magasin de location de ski",
-    ctx: "You're renting skis for the week.",
-    lines: [
-      { who: "them", fr: "Bonjour ! Je peux vous aider ?", en: "Hello! Can I help you?" },
-      { who: "you",  fr: "Oui, je voudrais louer des skis pour la semaine.", en: "Yes, I'd like to rent skis for the week." },
-      { who: "them", fr: "Quel est votre niveau ?", en: "What's your level?" },
-      { who: "you",  fr: "Intermédiaire. Je veux skier sur les pistes rouges.", en: "Intermediate. I want to ski on red pistes." },
-      { who: "them", fr: "Très bien. Vous faites quelle taille ?", en: "Very good. What's your size?" },
-      { who: "you",  fr: "Un mètre quatre-vingts. Et je dois aussi louer un casque.", en: "1m80. And I also need to rent a helmet." },
-      { who: "them", fr: "Pas de problème. Vous devez signer ici.", en: "No problem. You must sign here." },
-      { who: "you",  fr: "D'accord. Je peux payer par carte ?", en: "OK. Can I pay by card?" }
-    ],
-    notes: "Great use of all three modals: <em>je voudrais</em> (polite want), <em>je dois</em> (obligation), <em>je peux</em> (asking permission). <strong>Quel est votre niveau ?</strong> — memorise this full phrase."
-  },
-  {
-    title: "Au restaurant de montagne",
-    ctx: "Lunch at a mountain restaurant like Le Pleney after a morning's skiing.",
-    lines: [
-      { who: "them", fr: "Bonjour, vous avez réservé ?", en: "Hello, do you have a reservation?" },
-      { who: "you",  fr: "Non, nous sommes deux. On peut manger en terrasse ?", en: "No, we're two people. Can we eat on the terrace?" },
-      { who: "them", fr: "Oui, suivez-moi. Voici la carte.", en: "Yes, follow me. Here's the menu." },
-      { who: "you",  fr: "Merci. Qu'est-ce que vous recommandez ?", en: "Thanks. What do you recommend?" },
-      { who: "them", fr: "La tartiflette est excellente aujourd'hui.", en: "The tartiflette is excellent today." },
-      { who: "you",  fr: "Parfait. Deux tartiflettes et deux bières, s'il vous plaît.", en: "Perfect. Two tartiflettes and two beers, please." },
-      { who: "them", fr: "Très bien. Ce sera tout ?", en: "Very good. Will that be all?" },
-      { who: "you",  fr: "Oui, pour l'instant. Merci !", en: "Yes, for now. Thanks!" }
-    ],
-    notes: "Note <strong>on peut</strong> — in spoken French, 'on' replaces 'nous' in almost all situations. <em>Suivez-moi</em> is the imperative vous-form of suivre (to follow). <strong>Ce sera tout ?</strong> is stock restaurant phrasing — you'll hear it constantly."
-  },
-  {
-    title: "Au bar, après le ski",
-    ctx: "Meeting someone at a bar in town for an après-ski drink.",
-    lines: [
-      { who: "them", fr: "Salut ! Qu'est-ce que tu as fait aujourd'hui ?", en: "Hi! What did you do today?" },
-      { who: "you",  fr: "Salut ! J'ai skié toute la journée. Et toi ?", en: "Hi! I skied all day. And you?" },
-      { who: "them", fr: "Moi aussi ! Les pistes étaient super.", en: "Me too! The pistes were great." },
-      { who: "you",  fr: "Oui, mais il y a plus de monde que la semaine dernière.", en: "Yes, but there are more people than last week." },
-      { who: "them", fr: "C'est vrai. Tu veux boire quelque chose ?", en: "That's true. Do you want something to drink?" },
-      { who: "you",  fr: "Oui, je voudrais une bière, s'il te plaît. Et toi ?", en: "Yes, I'd like a beer please. And you?" },
-      { who: "them", fr: "Un vin chaud pour moi. On commande ?", en: "A mulled wine for me. Shall we order?" }
-    ],
-    notes: "<strong>Il y a plus de monde que...</strong> uses the comparison rule for nouns: <em>plus DE + noun + que</em>. Note <em>s'il te plaît</em> (tu) vs <em>s'il vous plaît</em> (vous) — you'll use 'te' with someone you know well."
-  },
-  {
-    title: "Chez le voisin",
-    ctx: "A neighbour knocks at your chalet door.",
-    lines: [
-      { who: "them", fr: "Bonjour ! Excusez-moi de vous déranger.", en: "Hello! Sorry to bother you." },
-      { who: "you",  fr: "Pas de problème. Qu'est-ce qui se passe ?", en: "No problem. What's going on?" },
-      { who: "them", fr: "C'est votre voiture, la rouge ? Elle bloque la sortie.", en: "Is that your car, the red one? It's blocking the exit." },
-      { who: "you",  fr: "Oui, c'est ma voiture. Désolé, je la déplace tout de suite.", en: "Yes, that's my car. Sorry, I'll move it right away." },
-      { who: "them", fr: "Merci beaucoup !", en: "Thank you very much!" },
-      { who: "you",  fr: "Au fait, comment vous vous appelez ? Je m'appelle Martyn.", en: "By the way, what's your name? I'm Martyn." },
-      { who: "them", fr: "Moi, c'est Pierre. Enchanté !", en: "I'm Pierre. Nice to meet you!" }
-    ],
-    notes: "<strong>Qu'est-ce qui se passe ?</strong> = 'what's happening' — very useful phrase. <em>Je la déplace tout de suite</em> uses the object pronoun 'la' (meaning 'it' referring to the car). <strong>Au fait</strong> = by the way."
-  },
-  {
-    title: "À l'office de tourisme",
-    ctx: "You've just arrived in Morzine and need information.",
-    lines: [
-      { who: "you",  fr: "Bonjour ! On peut faire du ski aujourd'hui ?", en: "Hello! Can one go skiing today?" },
-      { who: "them", fr: "Oui, vous pouvez skier sur 15 pistes !", en: "Yes, you can ski on 15 pistes!" },
-      { who: "you",  fr: "Est-ce qu'on doit réserver à l'avance ?", en: "Do we need to book in advance?" },
-      { who: "them", fr: "Vous devez acheter un forfait, mais vous pouvez le faire en ligne.", en: "You must buy a pass, but you can do it online." },
-      { who: "you",  fr: "On peut louer des skis ici ?", en: "Can we rent skis here?" },
-      { who: "them", fr: "Vous pouvez louer au magasin Morzine Sports, à deux minutes à pied.", en: "You can rent at Morzine Sports, two minutes on foot." },
-      { who: "you",  fr: "Parfait, merci beaucoup !", en: "Perfect, thank you very much!" }
-    ],
-    notes: "Straight from your lesson sheet. Classic back-and-forth of <strong>on peut / vous pouvez</strong> (possibility) and <strong>on doit / vous devez</strong> (obligation). Notice the polite 'vous' from the tourism office."
-  },
-  {
-    title: "Comparer la vie ici",
-    ctx: "Chatting with a French friend about how Morzine compares to your old life.",
-    lines: [
-      { who: "them", fr: "Tu préfères vivre ici ou en Angleterre ?", en: "Do you prefer living here or in England?" },
-      { who: "you",  fr: "J'aime beaucoup Morzine. C'est plus calme qu'en Angleterre.", en: "I love Morzine. It's calmer than in England." },
-      { who: "them", fr: "Et la nourriture ?", en: "And the food?" },
-      { who: "you",  fr: "La nourriture française est meilleure ! Mais le thé est moins bon.", en: "French food is better! But the tea is less good." },
-      { who: "them", fr: "Haha ! Et le travail ?", en: "Haha! And work?" },
-      { who: "you",  fr: "Je travaille autant qu'avant, mais je suis plus heureux.", en: "I work as much as before, but I'm happier." },
-      { who: "them", fr: "C'est l'essentiel !", en: "That's what matters!" }
-    ],
-    notes: "This one is a workout for comparisons: <strong>plus calme que</strong> (adjective), <strong>meilleure</strong> (exception for 'plus bonne'), <strong>moins bon</strong> (correct — 'pire' is only for 'plus mauvais'), <strong>autant que</strong> (verb comparison = as much as). Use 'plus heureux' because 'bon' ≠ happy."
-  }
-];
+var roleplays = [];   // filled from Neon by bootstrapContent()
 
 // ---------- GRAMMAR NOTES ----------
-const grammar = [
-  {
-    title: "The comparison — plus / moins / aussi",
-    body: `<p>The formula depends on what type of word follows:</p>
-      <div class="gr-box"><span class="label">With an adjective or adverb</span>plus / moins / aussi + adjective + <em>que</em><br>
-      <em>Il est plus grand que son frère.</em></div>
-      <div class="gr-box"><span class="label">With a verb</span>verb + plus / moins / autant + <em>que</em> (no 'de')<br>
-      <em>Je dors plus que toi.</em></div>
-      <div class="gr-box"><span class="label">With a noun</span>plus <strong>de</strong> / moins <strong>de</strong> / autant <strong>de</strong> + noun + <em>que</em><br>
-      <em>J'ai plus de neige que toi.</em></div>
-      <p><strong>Exceptions:</strong> never say 'plus bon' — use <em>meilleur(e)</em>. And 'plus mauvais' can become <em>pire</em>.</p>`
-  },
-  {
-    title: "Modal verbs — pouvoir, devoir, vouloir",
-    body: `<p>These three do almost all the heavy lifting in everyday conversation. Each is followed by an <strong>infinitive</strong>.</p>
-      <table class="gr-table">
-        <tr><th></th><th class="fr">pouvoir</th><th class="fr">devoir</th><th class="fr">vouloir</th></tr>
-        <tr><td>je</td><td class="fr">peux</td><td class="fr">dois</td><td class="fr">veux</td></tr>
-        <tr><td>tu</td><td class="fr">peux</td><td class="fr">dois</td><td class="fr">veux</td></tr>
-        <tr><td>il/elle</td><td class="fr">peut</td><td class="fr">doit</td><td class="fr">veut</td></tr>
-        <tr><td>nous</td><td class="fr">pouvons</td><td class="fr">devons</td><td class="fr">voulons</td></tr>
-        <tr><td>vous</td><td class="fr">pouvez</td><td class="fr">devez</td><td class="fr">voulez</td></tr>
-        <tr><td>ils/elles</td><td class="fr">peuvent</td><td class="fr">doivent</td><td class="fr">veulent</td></tr>
-      </table>
-      <p><strong>pouvoir</strong> = can / be able to / permission · <strong>devoir</strong> = must / have to · <strong>vouloir</strong> = want</p>
-      <p>Tip: <em>je voudrais</em> (conditional of vouloir) = 'I would like'. Use it in shops, restaurants, anywhere polite. You <strong>never</strong> ask for things with 'je veux' — it sounds rude.</p>`
-  },
-  {
-    title: "Possessive adjectives — mon, ton, son...",
-    body: `<p>They agree with the thing owned, <strong>not</strong> the owner.</p>
-      <table class="gr-table">
-        <tr><th></th><th>masc. sing.</th><th>fem. sing.</th><th>plural</th></tr>
-        <tr><td>my</td><td class="fr">mon</td><td class="fr">ma</td><td class="fr">mes</td></tr>
-        <tr><td>your (tu)</td><td class="fr">ton</td><td class="fr">ta</td><td class="fr">tes</td></tr>
-        <tr><td>his/her</td><td class="fr">son</td><td class="fr">sa</td><td class="fr">ses</td></tr>
-        <tr><td>our</td><td class="fr" colspan="2">notre</td><td class="fr">nos</td></tr>
-        <tr><td>your (vous)</td><td class="fr" colspan="2">votre</td><td class="fr">vos</td></tr>
-        <tr><td>their</td><td class="fr" colspan="2">leur</td><td class="fr">leurs</td></tr>
-      </table>
-      <p><strong>Critical rule:</strong> before a feminine word starting with a vowel (or silent h), use the masculine form for sound. So it's <em>mon école</em>, <em>son amie</em>, <em>ton histoire</em> — not ma/sa/ta.</p>
-      <p><strong>son vs leur:</strong> son/sa/ses = one owner; leur/leurs = multiple owners. 'La voiture de Jean et Brigitte' → c'est <em>leur</em> voiture (two owners, one car).</p>`
-  },
-  {
-    title: "Question words",
-    body: `<p>Three ways to ask a question: rising intonation ('Tu viens ?'), <em>est-ce que</em>, or inversion ('Viens-tu ?').</p>
-      <table class="gr-table">
-        <tr><th>Word</th><th>Meaning</th><th>Example</th></tr>
-        <tr><td class="fr">qui</td><td>who</td><td><em>Qui parle ?</em></td></tr>
-        <tr><td class="fr">quoi / que</td><td>what</td><td><em>Tu fais quoi ?</em></td></tr>
-        <tr><td class="fr">où</td><td>where</td><td><em>Où vas-tu ?</em></td></tr>
-        <tr><td class="fr">quand</td><td>when</td><td><em>Quand pars-tu ?</em></td></tr>
-        <tr><td class="fr">pourquoi</td><td>why</td><td><em>Pourquoi ?</em></td></tr>
-        <tr><td class="fr">comment</td><td>how</td><td><em>Comment ça va ?</em></td></tr>
-        <tr><td class="fr">combien (de)</td><td>how much/many</td><td><em>Combien ça coûte ?</em></td></tr>
-        <tr><td class="fr">quel(le/s)</td><td>which/what</td><td><em>Quel âge as-tu ?</em></td></tr>
-      </table>
-      <p><strong>Quel</strong> agrees with its noun: quel (m), quelle (f), quels/quelles (pl).</p>`
-  },
-  {
-    title: "Adverbs of time & sequence",
-    body: `<p>These are your discourse glue — they connect sentences into real narrative.</p>
-      <div class="gr-box"><span class="label">Sequence</span>
-        <em>d'abord</em> (first) → <em>ensuite</em> (next) / <em>puis</em> (then) → <em>enfin</em> (finally)</div>
-      <div class="gr-box"><span class="label">Frequency</span>
-        <em>toujours</em> (always) · <em>souvent</em> (often) · <em>parfois</em> (sometimes) · <em>jamais</em> (never)</div>
-      <div class="gr-box"><span class="label">Time & consequence</span>
-        <em>maintenant</em> (now) · <em>alors</em> (so/then)</div>
-      <p><strong>Jamais</strong> usually pairs with <em>ne</em>: <em>Je ne mange jamais de viande.</em></p>`
-  },
-  {
-    title: "Pronunciation cheats",
-    body: `<p>The things that trip up English speakers most in Morzine conversations:</p>
-      <p><strong>Silent endings:</strong> final consonants are usually silent. <em>Parlent</em> sounds like 'parl'. <em>Veulent</em> sounds like 'veul'. <em>Ils peuvent</em> sounds like 'il peuv'.</p>
-      <p><strong>Liaisons:</strong> a silent final consonant activates when the next word starts with a vowel. <em>Vous avez</em> → 'vooz-avay'. <em>Les amis</em> → 'layz-amee'.</p>
-      <p><strong>The -ent ending on verbs is silent.</strong> <em>Ils mangent</em> = 'eel monzh'. <em>Elles dansent</em> = 'ell donss'.</p>
-      <p><strong>R</strong> is pronounced at the back of the throat, not rolled. Think of clearing your throat softly.</p>
-      <p><strong>U vs OU:</strong> 'tu' and 'tout' are different sounds. U = round your lips and say 'ee'. OU = English 'oo'.</p>`
-  },
-  {
-    title: "Mistakes to watch for",
-    body: `<p>Based on your own lesson sheets — these are your patterns:</p>
-      <p><strong>Word order with 'plus de + noun':</strong> it's <em>Jules fait moins DE sport QUE Annabelle</em> — not 'Jules fait sport moins que'. The 'de' comes before the noun.</p>
-      <p><strong>Plus bon → meilleur:</strong> never say 'plus bon'. It's always <em>meilleur(e)</em>.</p>
-      <p><strong>Son amie, not sa amie:</strong> feminine word starting with a vowel → use the masculine form. <em>son amie, mon école, ton histoire.</em></p>
-      <p><strong>Leur vs son:</strong> when two people own one thing, it's <em>leur</em>, not son/sa. <em>La voiture de Jean et Brigitte → leur voiture.</em></p>
-      <p><strong>Conjugate after vouloir/pouvoir/devoir:</strong> the second verb stays as infinitive. <em>Je veux aller</em> — not 'je veux va'. <em>Elle veut aller au ski</em>, not 'elle veut au ski'.</p>`
-  }
-];
+var grammar = [];   // filled from Neon by bootstrapContent()
 
 // ---------- DAILY 10 (rotating set of practical speaking prompts) ----------
 // Each item has a category so the UI can filter by theme.
 // Categories: 'general', 'meeting', 'shop', 'bar', 'supermarket'
-const dailyDrills = [
-  // ===== GENERAL / EVERYDAY =====
-  { cat: 'general', en: "Say: I want a coffee, please.", fr: "Je voudrais un café, s'il vous plaît.", note: "Je voudrais is the polite form of je veux." },
-  { cat: 'general', en: "Ask: Can you help me?", fr: "Vous pouvez m'aider ?", note: "'vous pouvez' — polite, stock phrase." },
-  { cat: 'general', en: "Say: I have to go to the supermarket.", fr: "Je dois aller au supermarché.", note: "devoir + infinitive." },
-  { cat: 'general', en: "Say: I ski more than my brother.", fr: "Je skie plus que mon frère.", note: "verb + plus + que (no 'de' with a verb)." },
-  { cat: 'general', en: "Say: There are more people here than yesterday.", fr: "Il y a plus de monde ici qu'hier.", note: "plus DE + noun + que." },
-  { cat: 'general', en: "Say: This restaurant is better than the other.", fr: "Ce restaurant est meilleur que l'autre.", note: "meilleur, not 'plus bon'." },
-  { cat: 'general', en: "Say: My neighbours are really nice.", fr: "Mes voisins sont très sympas.", note: "plural noun → mes + plural adjective (sympas)." },
-  { cat: 'general', en: "Say: I never work on Sundays.", fr: "Je ne travaille jamais le dimanche.", note: "ne + verb + jamais sandwich." },
-  { cat: 'general', en: "Say: First I eat breakfast, then I go to work.", fr: "D'abord je prends mon petit-déjeuner, puis je vais au travail.", note: "d'abord ... puis — connects steps." },
-  { cat: 'general', en: "Say: I would like to try the raclette.", fr: "Je voudrais essayer la raclette.", note: "Polite want + infinitive." },
-  { cat: 'general', en: "Say: Sorry, I don't understand.", fr: "Désolé, je ne comprends pas.", note: "Use this constantly. No shame." },
-  { cat: 'general', en: "Say: I'm learning French because I live in Morzine.", fr: "J'apprends le français parce que j'habite à Morzine.", note: "parce que = because." },
-  { cat: 'general', en: "Say: I have been here for two years.", fr: "Je suis ici depuis deux ans.", note: "depuis = 'for' (ongoing time)." },
-  { cat: 'general', en: "Say: It's too expensive for me.", fr: "C'est trop cher pour moi.", note: "trop = too (much)." },
-  { cat: 'general', en: "Ask: What time does it open?", fr: "À quelle heure ça ouvre ?", note: "à quelle heure — one chunk." },
-  { cat: 'general', en: "Say: The pistes are closed today.", fr: "Les pistes sont fermées aujourd'hui.", note: "fermées agrees with 'les pistes' (fem. pl.)." },
-
-  // ===== MEETING SOMEONE NEW =====
-  { cat: 'meeting', en: "Say: Hello, nice to meet you.", fr: "Bonjour, enchanté.", note: "Women say 'enchantée'. Shake hands; use 'bise' (cheek kisses) with friends." },
-  { cat: 'meeting', en: "Say: My name is Martyn.", fr: "Je m'appelle Martyn.", note: "Literally 'I call myself' — reflexive verb." },
-  { cat: 'meeting', en: "Ask: What's your name?", fr: "Comment vous vous appelez ?", note: "Informal version: Comment tu t'appelles ?" },
-  { cat: 'meeting', en: "Ask: Where do you come from?", fr: "Vous venez d'où ?", note: "Or more formal: D'où venez-vous ?" },
-  { cat: 'meeting', en: "Say: I'm English but I live here.", fr: "Je suis anglais mais j'habite ici.", note: "Women say 'anglaise'. No 'un/une' before nationality." },
-  { cat: 'meeting', en: "Say: I live in Morzine for two years.", fr: "J'habite à Morzine depuis deux ans.", note: "depuis + present tense = ongoing 'for'." },
-  { cat: 'meeting', en: "Ask: What do you do (for work)?", fr: "Qu'est-ce que vous faites dans la vie ?", note: "Literally 'what do you do in life'. Very natural phrasing." },
-  { cat: 'meeting', en: "Say: I run a business, I'm a director.", fr: "Je dirige une entreprise, je suis directeur.", note: "No 'un' before profession. 'Directrice' if female." },
-  { cat: 'meeting', en: "Ask: How long have you lived here?", fr: "Depuis combien de temps vous habitez ici ?", note: "Literally 'since how much time' — the French way." },
-  { cat: 'meeting', en: "Say: It's a pleasure to meet you.", fr: "Ravi de vous rencontrer.", note: "'Ravi' = delighted. Women: 'ravie'." },
-  { cat: 'meeting', en: "Ask: Do you have children?", fr: "Vous avez des enfants ?", note: "'des' = some (the plural indefinite)." },
-  { cat: 'meeting', en: "Say: We can switch to 'tu' if you like.", fr: "On peut se tutoyer, si tu veux.", note: "'se tutoyer' = to address each other informally. Big social moment in France." },
-  { cat: 'meeting', en: "Say: Excuse me for my bad French!", fr: "Excusez-moi pour mon mauvais français !", note: "Disarming and polite. Always gets a smile." },
-  { cat: 'meeting', en: "Ask: Can you speak more slowly please?", fr: "Vous pouvez parler plus lentement, s'il vous plaît ?", note: "plus lentement = more slowly. Essential." },
-  { cat: 'meeting', en: "Say: See you soon!", fr: "À bientôt !", note: "Or: à plus tard (later), à demain (tomorrow)." },
-
-  // ===== SHOPS (general, non-supermarket) =====
-  { cat: 'shop', en: "Say: Hello, I'm just looking.", fr: "Bonjour, je regarde juste.", note: "Polite brush-off when you don't want help immediately." },
-  { cat: 'shop', en: "Ask: Do you have this in another size?", fr: "Vous avez ça dans une autre taille ?", note: "taille = size (clothes). For shoes say 'pointure'." },
-  { cat: 'shop', en: "Ask: Can I try it on?", fr: "Je peux l'essayer ?", note: "'l'' = it (replaces the object). 'essayer' = to try." },
-  { cat: 'shop', en: "Say: It's too small.", fr: "C'est trop petit.", note: "trop = too. For 'too big' → trop grand." },
-  { cat: 'shop', en: "Ask: How much does it cost?", fr: "Ça coûte combien ?", note: "Or: combien ça coûte / c'est combien." },
-  { cat: 'shop', en: "Say: I'll think about it, thanks.", fr: "Je vais réfléchir, merci.", note: "Graceful exit. 'réfléchir' = to think about." },
-  { cat: 'shop', en: "Say: I'll take it.", fr: "Je le prends.", note: "Use 'la prends' for feminine items. 'le' / 'la' = it." },
-  { cat: 'shop', en: "Ask: Can I pay by card?", fr: "Je peux payer par carte ?", note: "pouvoir = permission. Usually yes in France now." },
-  { cat: 'shop', en: "Ask: Do you have a bag?", fr: "Vous avez un sac ?", note: "Most shops charge a few cents. Often they ask first." },
-  { cat: 'shop', en: "Say: No bag, thanks, I have one.", fr: "Non merci, j'en ai un.", note: "'en' = 'of them / one of those'. Tricky but useful." },
-  { cat: 'shop', en: "Ask: Do you have a loyalty card?", fr: "Vous avez une carte de fidélité ?", note: "They'll ask YOU this all the time. Answer: non merci." },
-  { cat: 'shop', en: "Say: Can you gift-wrap it?", fr: "Vous pouvez me faire un paquet cadeau ?", note: "Free in most French shops, very common." },
-  { cat: 'shop', en: "Ask: Is there a discount?", fr: "Il y a une réduction ?", note: "réduction = discount. Or 'solde' during sale periods." },
-  { cat: 'shop', en: "Say: That's all, thanks.", fr: "Ce sera tout, merci.", note: "Stock phrase at the till. 'Sera' is future of être." },
-  { cat: 'shop', en: "Say: Here you go (handing over money).", fr: "Voilà.", note: "Magic word. Works for 'here you are', 'there you go', 'done'." },
-
-  // ===== SUPERMARKET =====
-  { cat: 'supermarket', en: "Ask: Where is the bread?", fr: "Où est le pain ?", note: "Or: 'Où se trouve le pain ?' (literally 'where finds itself')." },
-  { cat: 'supermarket', en: "Ask: Where is the dairy section?", fr: "Où est le rayon crèmerie ?", note: "'rayon' = aisle / section. Rayon boucherie, rayon fromage, etc." },
-  { cat: 'supermarket', en: "Say: I'm looking for baking powder.", fr: "Je cherche de la levure chimique.", note: "chercher = to look for (don't translate 'for'). Useful: 'je cherche...'." },
-  { cat: 'supermarket', en: "Say: Do you have any fresh milk?", fr: "Vous avez du lait frais ?", note: "French default is UHT; 'frais' = fresh. In the cold section." },
-  { cat: 'supermarket', en: "Ask: How much is the reblochon?", fr: "Combien coûte le reblochon ?", note: "You can also just hand it to them and they'll tell you." },
-  { cat: 'supermarket', en: "Say: Two hundred grams, please.", fr: "Deux cents grammes, s'il vous plaît.", note: "At the cheese or deli counter. 200g = classic portion." },
-  { cat: 'supermarket', en: "Say: A slice of ham, thin please.", fr: "Une tranche de jambon, fine s'il vous plaît.", note: "tranche = slice. 'fine' = thin (feminine agrees with tranche)." },
-  { cat: 'supermarket', en: "Ask: Is it a ripe (ready-to-eat) one?", fr: "Il est mûr ?", note: "For fruit/cheese. 'mûr' = ripe. Essential for French cheese shopping." },
-  { cat: 'supermarket', en: "Say: Can I have a bag for my vegetables?", fr: "Je peux avoir un sac pour mes légumes ?", note: "Many supermarkets have paper bags at the scales." },
-  { cat: 'supermarket', en: "Say: I don't have change.", fr: "Je n'ai pas de monnaie.", note: "'monnaie' = coins/change, NOT 'argent' (money in general)." },
-  { cat: 'supermarket', en: "Ask: Do you accept contactless?", fr: "Vous acceptez le sans contact ?", note: "'sans contact' = contactless. Nearly everywhere does." },
-  { cat: 'supermarket', en: "Say: The receipt, please.", fr: "Le ticket, s'il vous plaît.", note: "'ticket' (not 'reçu') for supermarket receipts." },
-  { cat: 'supermarket', en: "Say: Is this self-service?", fr: "C'est en libre-service ?", note: "libre-service = self-service. At cheese / charcuterie sometimes." },
-  { cat: 'supermarket', en: "Say: I'll put my basket back.", fr: "Je remets mon panier.", note: "panier = basket, chariot = trolley. 'remettre' = to put back." },
-  { cat: 'supermarket', en: "Ask: What's this? (pointing)", fr: "C'est quoi, ça ?", note: "Very informal but totally fine. Point, they'll explain." },
-
-  // ===== BAR / CAFÉ / RESTAURANT =====
-  { cat: 'bar', en: "Ask: Do you have a table for two?", fr: "Vous avez une table pour deux ?", note: "Add 'en terrasse' if you want outside." },
-  { cat: 'bar', en: "Say: I'll have a beer please.", fr: "Je vais prendre une bière, s'il vous plaît.", note: "'Je vais prendre' = 'I'll have'. More natural than 'je veux'." },
-  { cat: 'bar', en: "Ask: What do you have on draft?", fr: "Qu'est-ce que vous avez à la pression ?", note: "'à la pression' = on draft/tap." },
-  { cat: 'bar', en: "Say: A small / large beer please.", fr: "Un demi / une pinte, s'il vous plaît.", note: "'un demi' = 25cl (standard French size). 'une pinte' = 50cl." },
-  { cat: 'bar', en: "Ask: What do you recommend?", fr: "Qu'est-ce que vous me recommandez ?", note: "Always get a good answer. 'me' = to me." },
-  { cat: 'bar', en: "Say: The same for me.", fr: "La même chose pour moi.", note: "Or: 'Moi aussi' / 'pareil'. Handy in groups." },
-  { cat: 'bar', en: "Ask: Is it spicy?", fr: "C'est épicé ?", note: "French food is rarely very spicy, but good to check." },
-  { cat: 'bar', en: "Say: I'm allergic to nuts.", fr: "Je suis allergique aux fruits à coque.", note: "'fruits à coque' = tree nuts. 'aux arachides' = peanuts." },
-  { cat: 'bar', en: "Say: Rare / medium / well done.", fr: "Saignant / à point / bien cuit.", note: "For steak. 'Saignant' literally = bleeding. French 'well done' is still pinker than UK." },
-  { cat: 'bar', en: "Ask: Can we have the menu?", fr: "On peut avoir la carte ?", note: "'la carte' = menu. 'Le menu' = fixed-price set menu." },
-  { cat: 'bar', en: "Ask: Can we have some water please?", fr: "Une carafe d'eau, s'il vous plaît ?", note: "'carafe' = free tap water. 'Eau plate/gazeuse' = still/sparkling (paid)." },
-  { cat: 'bar', en: "Say: That was delicious.", fr: "C'était délicieux.", note: "'était' = past tense of être. Staff love hearing this." },
-  { cat: 'bar', en: "Ask: Can we have the bill?", fr: "L'addition, s'il vous plaît ?", note: "'addition' = bill. Never ask for 'la facture' in a restaurant — that's a commercial invoice." },
-  { cat: 'bar', en: "Say: Keep the change.", fr: "Gardez la monnaie.", note: "French tipping is small and optional. 1-2€ on drinks is generous." },
-  { cat: 'bar', en: "Say: Cheers!", fr: "Santé !", note: "Look everyone in the eye when you clink — it's a real thing in France." }
-];
+var dailyDrills = [];   // filled from Neon by bootstrapContent()
 
 // Categories metadata for the UI
 const drillCategories = [
@@ -7363,7 +7589,7 @@ const dayAbbrev = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 // --- User settings ---
 function loadSettings() {
   try {
-    const s = JSON.parse(localStorage.getItem('fr_settings') || '{}');
+    const s = JSON.parse(Store.getItem('fr_settings') || '{}');
     return Object.assign({}, defaultSettings(), s);
   } catch (e) {
     return defaultSettings();
@@ -7393,7 +7619,7 @@ function defaultSettings() {
 }
 
 function saveSettings(s) {
-  try { localStorage.setItem('fr_settings', JSON.stringify(s)); } catch (e) {}
+  try { Store.setItem('fr_settings', JSON.stringify(s)); } catch (e) {}
 }
 
 // Deadline date derived from settings
@@ -7543,163 +7769,7 @@ Object.defineProperty(window, 'weeklyPlan', {
 // ---------- SHORT STORIES ----------
 // Syntax: [[french|english|optional grammar note]] becomes a tappable word/phrase.
 // Keep tooltips short — they appear in a popover.
-const stories = [
-  {
-    title: "Une matinée à Morzine",
-    blurb: "A simple morning routine — sequence words, daily verbs",
-    level: "A1",
-    tags: ["sequence words", "daily verbs", "present tense"],
-    focus: [
-      "<em>D'abord, ensuite, puis, enfin</em> — the sequence glue",
-      "Present tense of <em>être, avoir, faire, aller, prendre</em>",
-      "Simple negation with <em>ne … pas</em>"
-    ],
-    body: `
-      <p>[[Tous les matins|Every morning|the 's' on 'matin' makes it plural]], je me [[réveille|wake up|reflexive verb]] à sept heures. [[D'abord|First]], je [[prends|take / have|'prendre' = to take]] une douche [[chaude|hot|adjective agrees with 'douche' (fem.)]], [[puis|then]] je [[descends|go down]] dans la cuisine.</p>
-      <p>[[Ensuite|Next]], je [[prépare|prepare]] mon petit-déjeuner. [[Aujourd'hui|Today]], je [[mange|eat]] du [[pain|bread]] avec du [[beurre|butter]] et de la [[confiture|jam]]. Je [[bois|drink|'boire' = to drink]] aussi un café. Il est très [[fort|strong]] !</p>
-      <p>[[Après|After]], je [[regarde|look at / watch]] par la [[fenêtre|window]]. Les [[montagnes|mountains]] sont [[magnifiques|magnificent]] [[quand|when]] il y a de la [[neige|snow]]. [[Parfois|Sometimes]], je [[vois|see|'voir' = to see]] des [[skieurs|skiers]] sur les pistes.</p>
-      <p>[[Enfin|Finally]], je [[mets|put on|'mettre' = to put]] mes [[bottes|boots]] et ma [[veste|jacket]], et je [[sors|go out|'sortir' = to leave/go out]]. Il fait [[froid|cold]], mais je suis [[content|happy]]. La [[journée|day]] [[commence bien|starts well]] !</p>
-    `,
-    translation: `
-      <p>Every morning, I wake up at seven. First, I take a hot shower, then I go down to the kitchen.</p>
-      <p>Next, I prepare my breakfast. Today, I'm eating bread with butter and jam. I also drink a coffee. It's very strong!</p>
-      <p>After, I look out of the window. The mountains are magnificent when there is snow. Sometimes, I see skiers on the slopes.</p>
-      <p>Finally, I put on my boots and my jacket, and I go out. It's cold, but I'm happy. The day starts well!</p>
-    `
-  },
-  {
-    title: "Au marché du mercredi",
-    blurb: "Wednesday market — comparisons, shopping vocabulary",
-    level: "A1",
-    tags: ["comparisons", "market vocab", "numbers"],
-    focus: [
-      "Comparisons with adjectives: <em>plus … que, moins … que, aussi … que</em>",
-      "Comparisons with nouns: <em>plus DE … que</em>",
-      "The exception: <em>meilleur</em> (not 'plus bon')"
-    ],
-    body: `
-      <p>[[Le mercredi matin|Wednesday morning]], je [[vais|go]] au marché à Morzine. Il y a [[beaucoup de|lots of]] [[monde|people]] et [[beaucoup de choses|lots of things]] à [[acheter|buy]].</p>
-      <p>[[D'abord|First]], je [[choisis|choose|'choisir' = to choose]] des [[fruits|fruits]]. Les [[pommes|apples]] sont [[plus chères que|more expensive than]] la [[semaine dernière|last week]], mais elles sont [[meilleures|better|exception: NEVER 'plus bonnes']] ! Le [[vendeur|seller / vendor]] est très [[sympa|nice]].</p>
-      <p>[[Ensuite|Next]], je [[regarde|look at]] les [[fromages|cheeses]]. Il y a [[plus de choix|more choice|'plus DE' + noun]] ici [[qu'au|than at the|qu' = que + vowel]] [[supermarché|supermarket]]. Le [[reblochon|reblochon (Alpine cheese)]] est [[délicieux|delicious]] et [[moins cher qu'à Paris|cheaper than in Paris]].</p>
-      <p>[[Après|After]], je [[prends|buy / take]] du [[pain|bread]] à la [[boulangerie|bakery]]. La [[baguette tradition|traditional baguette]] est [[aussi bonne que|as good as]] celle de ma [[boulangerie préférée|favourite bakery]].</p>
-      <p>[[À la fin|At the end]], [[mon sac est plus lourd que|my bag is heavier than]] [[d'habitude|usual]] ! [[Mais ça va|But it's fine]] — [[je mange mieux|I eat better]] [[quand|when]] je [[cuisine|cook]] [[moi-même|myself]]. [[La prochaine fois|Next time]], je [[veux|want]] [[essayer|to try]] le [[saucisson|dry sausage]].</p>
-    `,
-    translation: `
-      <p>Wednesday morning, I go to the market in Morzine. There are lots of people and lots of things to buy.</p>
-      <p>First, I choose some fruits. The apples are more expensive than last week, but they are better! The vendor is very nice.</p>
-      <p>Next, I look at the cheeses. There's more choice here than at the supermarket. The reblochon is delicious and cheaper than in Paris.</p>
-      <p>After, I get some bread at the bakery. The traditional baguette is as good as the one from my favourite bakery.</p>
-      <p>At the end, my bag is heavier than usual! But it's fine — I eat better when I cook myself. Next time, I want to try the dry sausage.</p>
-    `
-  },
-  {
-    title: "La première leçon de ski",
-    blurb: "Pierre's first ski lesson — modal verbs in action",
-    level: "A2",
-    tags: ["pouvoir / devoir / vouloir", "ski vocabulary", "polite requests"],
-    focus: [
-      "<em>Pouvoir</em> (can), <em>devoir</em> (must), <em>vouloir</em> (want) — all three modals",
-      "<em>Je voudrais</em> for polite requests",
-      "Modal + infinitive construction"
-    ],
-    body: `
-      <p>Pierre [[est arrivé|arrived|passé composé with être]] à Morzine [[hier soir|last night]]. C'est la [[première fois|first time]] qu'il [[essaie|tries]] le ski. [[Ce matin|This morning]], il [[doit|must]] [[aller|go]] au magasin [[pour|to / in order to]] [[louer|rent]] [[son équipement|his equipment]].</p>
-      <p>— [[Bonjour|Hello]] ! [[Je voudrais|I would like|polite form of 'je veux']] [[louer|to rent]] des skis, [[dit-il|he says]] [[au vendeur|to the seller]].</p>
-      <p>— [[Bien sûr|Of course]]. [[Quel est votre niveau|What's your level]] ?</p>
-      <p>— [[Je suis débutant|I'm a beginner]]. [[Je ne peux pas|I can't|pouvoir + infinitive]] [[encore|yet]] [[skier|ski]] sur les pistes [[difficiles|difficult]].</p>
-      <p>— [[Pas de problème|No problem]]. Vous [[devez|must]] [[prendre|take]] des skis [[courts|short]]. Et vous [[devez absolument|must absolutely]] [[porter|wear]] un [[casque|helmet]] !</p>
-      <p>Pierre [[veut aussi|also wants]] [[acheter|to buy]] un [[forfait|ski pass]]. Il [[peut|can]] [[skier|ski]] sur [[quinze pistes|fifteen pistes]] [[pendant|during]] [[trois jours|three days]]. [[C'est parfait|It's perfect]] !</p>
-      <p>[[Plus tard|Later]], à [[l'école de ski|the ski school]], son [[moniteur|instructor]] [[lui dit|says to him]] :</p>
-      <p>— [[Tu peux|You can]] [[essayer|try]] [[doucement|gently]]. [[Si tu tombes|If you fall]], [[tu dois|you must]] [[te relever|get yourself up]] [[sans paniquer|without panicking]]. [[Et si|And if]] [[tu as peur|you're afraid]], [[tu peux|you can]] [[m'appeler|call me]].</p>
-      <p>[[À la fin de la journée|At the end of the day]], Pierre est [[fatigué|tired]] mais [[heureux|happy]]. Il [[veut|wants]] [[revenir|to come back]] [[demain|tomorrow]] !</p>
-    `,
-    translation: `
-      <p>Pierre arrived in Morzine last night. It's the first time he's trying skiing. This morning, he must go to the shop to rent his equipment.</p>
-      <p>— "Hello! I would like to rent some skis," he says to the seller.</p>
-      <p>— "Of course. What's your level?"</p>
-      <p>— "I'm a beginner. I can't yet ski on the difficult pistes."</p>
-      <p>— "No problem. You must take short skis. And you must absolutely wear a helmet!"</p>
-      <p>Pierre also wants to buy a ski pass. He can ski on fifteen pistes during three days. It's perfect!</p>
-      <p>Later, at the ski school, his instructor says to him:</p>
-      <p>— "You can try gently. If you fall, you must get up without panicking. And if you're afraid, you can call me."</p>
-      <p>At the end of the day, Pierre is tired but happy. He wants to come back tomorrow!</p>
-    `
-  },
-  {
-    title: "La famille de Sophie",
-    blurb: "Sophie introduces her family — possessive adjectives",
-    level: "A1",
-    tags: ["possessive adjectives", "family vocab", "adjective agreement"],
-    focus: [
-      "All possessives: <em>mon/ma/mes, ton/ta/tes, son/sa/ses, notre/nos, votre/vos, leur/leurs</em>",
-      "The trick: <em>son amie</em> (not <em>sa</em>) because 'amie' starts with a vowel",
-      "<em>Leur</em> vs <em>son</em>: multiple vs single owners"
-    ],
-    body: `
-      <p>[[Je m'appelle|My name is]] Sophie et [[j'habite|I live]] à Morzine [[avec ma famille|with my family]]. [[Nous sommes|We are]] [[quatre|four]] à la [[maison|house]].</p>
-      <p>[[Mon père|My father]] [[s'appelle|is called]] Thomas. [[Il est médecin|He's a doctor|no 'un' before profession]] à l'[[hôpital|hospital]] de [[Thonon|Thonon (a nearby town)]]. [[Ses patients|His patients]] l'[[aiment bien|like him a lot]] [[parce qu'il|because he]] est [[patient|patient]] et [[sympa|nice]]. [[Il travaille|He works]] [[beaucoup|a lot]], mais [[le week-end|on the weekend]], il [[aime|likes]] [[faire du ski|to go skiing]] [[avec nous|with us]].</p>
-      <p>[[Ma mère|My mother]] [[s'appelle|is called]] Claire. [[Elle est professeure|She's a teacher]] [[à l'école primaire|at the primary school]]. [[Ses élèves|Her pupils]] sont [[adorables|adorable]] et [[elle adore|she loves]] [[son métier|her job]]. [[Le soir|In the evening]], elle [[lit|reads]] [[ses livres|her books]] devant [[la cheminée|the fireplace]].</p>
-      <p>[[Mon frère|My brother]] [[s'appelle|is called]] Lucas. [[Il a|He is]] [[quinze ans|fifteen years old|literally "has 15 years"]]. [[Son passe-temps préféré|His favourite hobby]] est [[le snowboard|snowboarding]]. [[Ses amis|His friends]] [[viennent|come]] [[souvent|often]] à la [[maison|house]] pour [[jouer|to play]] aux [[jeux vidéo|video games]].</p>
-      <p>Et [[moi|me]] ? [[J'ai|I have]] [[une meilleure amie|a best friend (fem.)]] qui [[s'appelle|is called]] Léa. [[C'est ma voisine|She's my neighbour]]. [[Nous aimons|We like]] [[faire nos devoirs|doing our homework]] [[ensemble|together]] et [[partager nos secrets|sharing our secrets]].</p>
-      <p>[[Mes parents|My parents]] [[ont|have]] aussi [[deux chats|two cats]] : [[leur chat|their cat]] [[s'appelle|is called]] Minou et [[leur chatte|their cat (fem.)]] [[s'appelle|is called]] Poupette. [[Leurs couleurs|Their colours]] [[sont différentes|are different]] mais [[ils dorment|they sleep]] [[toujours ensemble|always together]] !</p>
-    `,
-    translation: `
-      <p>My name is Sophie and I live in Morzine with my family. There are four of us at home.</p>
-      <p>My father is called Thomas. He's a doctor at the hospital in Thonon. His patients like him a lot because he is patient and nice. He works a lot, but on the weekend, he likes to go skiing with us.</p>
-      <p>My mother is called Claire. She's a teacher at the primary school. Her pupils are adorable and she loves her job. In the evening, she reads her books in front of the fireplace.</p>
-      <p>My brother is called Lucas. He is fifteen years old. His favourite hobby is snowboarding. His friends often come to the house to play video games.</p>
-      <p>And me? I have a best friend called Léa. She's my neighbour. We like doing our homework together and sharing our secrets.</p>
-      <p>My parents also have two cats: their cat is called Minou and their female cat is called Poupette. Their colours are different but they always sleep together!</p>
-    `
-  },
-  {
-    title: "Un dîner entre amis",
-    blurb: "A dinner with friends — questions, comparisons, modals",
-    level: "A2",
-    tags: ["question words", "comparisons", "modals", "conversation"],
-    focus: [
-      "Questions with <em>qui, où, pourquoi, combien, quel, comment</em>",
-      "Natural use of modals in conversation",
-      "Comparisons in real dialogue"
-    ],
-    body: `
-      <p>[[Samedi soir|Saturday evening]], [[mes amis et moi|my friends and I]] [[allons dîner|are going to have dinner]] [[au restaurant|at the restaurant]] « Le Clin d'Œil » [[au centre|in the centre]] de Morzine. [[Nous sommes|We are]] [[six|six people]].</p>
-      <p>[[À l'entrée|At the entrance]], le [[serveur|waiter]] [[nous demande|asks us]] :</p>
-      <p>— [[Bonsoir|Good evening]] ! [[Vous avez réservé|Have you booked|literally "you have reserved"]] ?</p>
-      <p>— [[Oui|Yes]], [[au nom de|in the name of]] Martyn, [[pour six personnes|for six people]].</p>
-      <p>[[Pendant|During]] [[l'apéritif|the aperitif]], [[tout le monde parle|everyone is talking]]. Pierre [[me demande|asks me]] :</p>
-      <p>— [[Alors|So]], [[pourquoi|why]] [[est-ce que tu as choisi|did you choose]] [[de vivre|to live]] à Morzine ?</p>
-      <p>— [[Parce que|Because]] [[c'est plus calme|it's calmer]] qu'en [[Angleterre|England]] et les [[montagnes|mountains]] sont [[magnifiques|magnificent]]. [[Et toi|And you]], [[depuis combien de temps|since how long / for how long]] tu [[habites|live]] ici ?</p>
-      <p>— [[Depuis|For]] [[dix ans|ten years]] ! [[Je ne peux plus|I can no longer|ne … plus = no longer]] [[imaginer|imagine]] [[vivre ailleurs|living elsewhere]].</p>
-      <p>[[Quand|When]] le [[serveur|waiter]] [[revient|comes back|'revenir' = to come back]], [[il demande|he asks]] :</p>
-      <p>— [[Qu'est-ce que vous voulez|What do you want / would you like]] [[manger|to eat]] ? [[Je vous recommande|I recommend you]] la [[fondue savoyarde|Savoyard fondue]] — [[c'est notre spécialité|it's our specialty]].</p>
-      <p>— [[Combien ça coûte|How much does it cost]] ? [[demande|asks]] Julie.</p>
-      <p>— [[Vingt-cinq euros|Twenty-five euros]] [[par personne|per person]].</p>
-      <p>— [[C'est un peu cher|It's a bit expensive]], [[mais on doit|but we must]] [[essayer|try]] [[au moins une fois|at least once]] !</p>
-      <p>Le [[repas|meal]] est [[délicieux|delicious]]. [[Nous mangeons plus|We eat more]] et [[parlons plus fort|talk louder]] [[que d'habitude|than usual]]. [[À la fin|At the end]], Martyn [[dit|says]] :</p>
-      <p>— [[C'est la meilleure soirée|It's the best evening]] [[de la semaine|of the week]] ! [[Qui veut|Who wants]] [[un dernier verre|a last drink]] [[quelque part|somewhere]] ?</p>
-      <p>[[Tout le monde|Everyone]] [[répond|answers]] « [[oui|yes]] » [[en même temps|at the same time]].</p>
-    `,
-    translation: `
-      <p>Saturday evening, my friends and I are going to have dinner at "Le Clin d'Œil" restaurant in the centre of Morzine. There are six of us.</p>
-      <p>At the entrance, the waiter asks us:</p>
-      <p>— "Good evening! Have you booked?"</p>
-      <p>— "Yes, in the name of Martyn, for six people."</p>
-      <p>During the aperitif, everyone is talking. Pierre asks me:</p>
-      <p>— "So, why did you choose to live in Morzine?"</p>
-      <p>— "Because it's calmer than in England and the mountains are magnificent. And you, how long have you lived here?"</p>
-      <p>— "For ten years! I can no longer imagine living elsewhere."</p>
-      <p>When the waiter comes back, he asks:</p>
-      <p>— "What would you like to eat? I recommend the Savoyard fondue — it's our specialty."</p>
-      <p>— "How much does it cost?" asks Julie.</p>
-      <p>— "Twenty-five euros per person."</p>
-      <p>— "It's a bit expensive, but we must try it at least once!"</p>
-      <p>The meal is delicious. We eat more and talk louder than usual. At the end, Martyn says:</p>
-      <p>— "It's the best evening of the week! Who wants a last drink somewhere?"</p>
-      <p>Everyone answers "yes" at the same time.</p>
-    `
-  }
-];
+var stories = [];   // filled from Neon by bootstrapContent()
 
 // ---------- WORKBOOK ----------
 // Source: Speak Abroad Academy "Learn French 8-in-1 Bundle"
@@ -7717,177 +7787,7 @@ const stories = [
 // ignores trailing punctuation and extra spaces. For typed French answers we
 // also strip/normalise common accents optionally (see gradeAnswer()).
 
-const workbook = {
-  // ========== BOOK I: GRAMMAR FOR BEGINNERS ==========
-  ch02: {
-    book: 'I',
-    bookTitle: 'Grammar for Beginners',
-    num: 2,
-    title: 'Nouns & Articles',
-    subtitle: 'The dog and the cat',
-    level: 'A1.1',
-    rule: {
-      heading: 'Every French noun has a gender',
-      paras: [
-        'Unlike English, every French noun is either <strong>masculine</strong> or <strong>feminine</strong> — even objects, places, and abstract concepts. <em>la table</em> (the table) is feminine; <em>le livre</em> (the book) is masculine. You memorise the gender with each new noun.',
-        'The <strong>definite article</strong> (\"the\") changes with gender and number: <em>le</em> for masculine, <em>la</em> for feminine, <em>les</em> for plural. Before a vowel, <em>le</em> and <em>la</em> both become <em>l\'</em> — <em>l\'ami</em>, <em>l\'école</em>.',
-        'The <strong>indefinite article</strong> (\"a/an/some\") is <em>un</em> for masculine, <em>une</em> for feminine, <em>des</em> for plural. Use <em>le/la/les</em> for a specific thing (the dog) and <em>un/une/des</em> for a non-specific one (a dog).'
-      ]
-    },
-    vocab: [
-      { fr: 'le garçon', en: 'the boy' },
-      { fr: 'la fille', en: 'the girl' },
-      { fr: 'le chien', en: 'the dog (m)' },
-      { fr: 'la chienne', en: 'the dog (f)' },
-      { fr: 'le chat', en: 'the cat' },
-      { fr: 'la maison', en: 'the house' },
-      { fr: 'le livre', en: 'the book' },
-      { fr: 'la table', en: 'the table' },
-      { fr: "l'ami", en: 'the friend (m)' },
-      { fr: "l'amie", en: 'the friend (f)' },
-      { fr: "l'école", en: 'the school' },
-      { fr: 'un bateau', en: 'a boat' },
-      { fr: 'des amis', en: 'some friends (m)' },
-      { fr: 'des amies', en: 'some friends (f)' }
-    ],
-    exercises: [
-      {
-        id: 'ch02-ex1',
-        title: 'Practice 2.3A — Singular to plural',
-        instructions: 'Turn these singular nouns into plural nouns with their articles. Example: <em>un grand-père → des grands-pères</em>',
-        questions: [
-          { prompt: 'un livre → ___ livres', answer: 'des', hint: 'plural indefinite' },
-          { prompt: 'un chien → ___ chiens', answer: 'des' },
-          { prompt: 'une femme → ___ femmes', answer: 'des' },
-          { prompt: 'un étudiant → ___ étudiants', answer: 'des' },
-          { prompt: 'un médecin → ___ médecins', answer: 'des' },
-          { prompt: 'un hôtel → ___ hôtels', answer: 'des' },
-          { prompt: 'un train → ___ trains', answer: 'des' },
-          { prompt: 'un chat → ___ chats', answer: 'des' },
-          { prompt: 'un étudiant → ___ étudiants', answer: 'des' },
-          { prompt: 'une ville → ___ villes', answer: 'des' }
-        ]
-      },
-      {
-        id: 'ch02-ex2',
-        title: 'Practice 2.3B — Translate with indefinite articles',
-        instructions: 'Translate these phrases using <em>un, une, des</em>.',
-        type: 'translate',
-        questions: [
-          { prompt: 'The planets', answer: 'des planètes', notes: 'All planets, so plural indefinite.' },
-          { prompt: 'A doctor (m)', answer: 'un médecin' },
-          { prompt: 'Some photographs', answer: 'des photos', acceptable: ['des photographies'] },
-          { prompt: 'The woman', answer: 'la femme' },
-          { prompt: 'The sisters', answer: 'les sœurs' },
-          { prompt: 'Some male friends', answer: 'des amis' },
-          { prompt: 'A dog (m)', answer: 'un chien' },
-          { prompt: 'The mother', answer: 'la mère' },
-          { prompt: 'Some houses', answer: 'des maisons' }
-        ]
-      },
-      {
-        id: 'ch02-ex3',
-        title: 'Practice 2.3C — Le, la, or les?',
-        instructions: 'Circle the right article. Decide whether the noun is singular or plural, masculine or feminine.',
-        type: 'multiple',
-        questions: [
-          { prompt: '___ mère de Thomas est sympathique. (Thomas\'s mother is nice.)', options: ['Le', 'La', 'Les'], answer: 'La' },
-          { prompt: 'Je veux ___ livres pour apprendre. (I want some books to learn from.)', options: ['le', 'la', 'des'], answer: 'des' },
-          { prompt: 'Je veux une nouvelle télévision. (I want a new TV.) — which article introduces \"new TV\"?', options: ['la', 'une', 'des'], answer: 'une' },
-          { prompt: '___ chat est dans la maison. (The cat is in the house.)', options: ['Le', 'La', 'Les'], answer: 'Le' },
-          { prompt: 'Il a brisé ___ fenêtre. (He broke a window.)', options: ['le', 'la', 'une'], answer: 'une' },
-          { prompt: 'J\'aime ___ fleurs. (I like flowers.)', options: ['le', 'la', 'les'], answer: 'les' },
-          { prompt: 'J\'ai parlé avec ___ directeur de l\'école. (I spoke with the head of the school.)', options: ['le', 'la', 'les'], answer: 'le' },
-          { prompt: 'Amélie a vu ___ chien. (Amélie saw a dog.)', options: ['le', 'la', 'un'], answer: 'un' },
-          { prompt: 'J\'ai mis ___ clés dans le sac. (I put the keys in the bag.)', options: ['le', 'la', 'les'], answer: 'les' }
-        ]
-      }
-    ]
-  },
-
-  // ========== BOOK I: CHAPTER 9 ==========
-  ch09: {
-    book: 'I',
-    bookTitle: 'Grammar for Beginners',
-    num: 9,
-    title: 'Eating & Drinking',
-    subtitle: 'Practical vocabulary for restaurants and meals',
-    level: 'A1.2',
-    rule: {
-      heading: 'Expressing what you eat and drink',
-      paras: [
-        'The verb <em>manger</em> (to eat) is a regular -ER verb but with a tiny spelling twist in <em>nous</em>: we say <em>nous mangeons</em> (not mangons) to keep the soft \"g\" sound.',
-        'The verb <em>boire</em> (to drink) is irregular and worth memorising: <em>je bois, tu bois, il/elle boit, nous buvons, vous buvez, ils/elles boivent</em>.',
-        'For food quantities, French uses <strong>partitive articles</strong> — <em>du</em> (masc), <em>de la</em> (fem), <em>de l\'</em> (before vowel), <em>des</em> (plural). <em>Je mange du pain</em> = I\'m eating (some) bread. In negative sentences, these all become <em>de</em> / <em>d\'</em>: <em>Je ne mange pas de viande</em>.'
-      ]
-    },
-    vocab: [
-      { fr: 'manger', en: 'to eat' },
-      { fr: 'boire', en: 'to drink' },
-      { fr: 'le restaurant', en: 'the restaurant' },
-      { fr: 'le petit-déjeuner', en: 'breakfast' },
-      { fr: 'le déjeuner', en: 'lunch' },
-      { fr: 'le dîner', en: 'dinner' },
-      { fr: 'le pain', en: 'bread' },
-      { fr: 'le fromage', en: 'cheese' },
-      { fr: 'la viande', en: 'meat' },
-      { fr: 'le poisson', en: 'fish' },
-      { fr: 'les légumes', en: 'vegetables' },
-      { fr: 'le vin', en: 'wine' },
-      { fr: 'la bière', en: 'beer' },
-      { fr: "l'eau (f)", en: 'water' },
-      { fr: 'le jus', en: 'juice' },
-      { fr: 'le café', en: 'coffee' },
-      { fr: 'le thé', en: 'tea' },
-      { fr: 'le gâteau', en: 'cake' },
-      { fr: 'une tarte', en: 'a tart / pie' },
-      { fr: 'délicieux / délicieuse', en: 'delicious' }
-    ],
-    exercises: [
-      {
-        id: 'ch09-ex1',
-        title: 'Practice 9.4A — Conjugate boire',
-        instructions: 'Write the right form of <em>boire</em>.',
-        type: 'fillblank',
-        questions: [
-          { prompt: "Je ___ trop de bière. (I drink too much beer.)", answer: 'bois' },
-          { prompt: "Il ___ un verre de jus d'orange. (He drinks a glass of orange juice.)", answer: 'boit' },
-          { prompt: "Elle ___ une bouteille d'eau. (She drinks a bottle of water.)", answer: 'boit' },
-          { prompt: "Tu ___ beaucoup de jus. (You drink a lot of juice.)", answer: 'bois' },
-          { prompt: "Nous ___ du champagne le matin. (We drink champagne in the morning.)", answer: 'buvons' },
-          { prompt: "Ils ___ du vin au restaurant. (They drink wine at the restaurant.)", answer: 'boivent' },
-          { prompt: "Elles ___ du vin au bar. (They (f) drink wine at the bar.)", answer: 'boivent' }
-        ]
-      },
-      {
-        id: 'ch09-ex2',
-        title: 'Practice 9.4B — Translate to French',
-        instructions: 'Translate the following sentences. Accents matter — the app will accept close matches.',
-        type: 'translate',
-        questions: [
-          { prompt: "I'm eating an apple for breakfast.", answer: 'Je mange une pomme pour le petit-déjeuner.', acceptable: ['je mange une pomme pour le petit déjeuner'] },
-          { prompt: "We are eating a big plate of fish. It's delicious!", answer: 'Nous mangeons une grande assiette de poisson. C\'est délicieux !', acceptable: ['nous mangeons une grande assiette de poisson. c\'est delicieux'] },
-          { prompt: "They (m) are eating in the garden tonight.", answer: 'Ils mangent dans le jardin ce soir.' },
-          { prompt: "She is eating a handful of strawberries.", answer: 'Elle mange une poignée de fraises.', acceptable: ['elle mange des fraises'], notes: 'Either \"une poignée de fraises\" (handful) or just \"des fraises\" works.' },
-          { prompt: "He is eating ice cream for dessert.", answer: 'Il mange une glace pour le dessert.', acceptable: ['il mange de la glace pour le dessert'] }
-        ]
-      },
-      {
-        id: 'ch09-ex3',
-        title: 'Practice 9.4C — Reading comprehension: Au restaurant',
-        instructions: 'Read the short passage, then answer the questions. Passage: <em>Nous sommes dans un restaurant français populaire. Nous sommes huit à table. Nous travaillons ensemble dans le même bureau. La table est très grande. Nous commandons quatre bouteilles de vin et beaucoup de viande. Je mange du bœuf et je bois un verre de vin. Il y a aussi du poulet, du poisson et des légumes. C\'est délicieux ! Toute la sortie, nous parlons, rions, mangeons et buvons. Quelle merveilleuse soirée !</em>',
-        type: 'multiple',
-        questions: [
-          { prompt: 'What type of restaurant are they eating at?', options: ['French', 'Italian', 'Spanish', 'Chinese'], answer: 'French' },
-          { prompt: 'How many people are at the table?', options: ['Four', 'Six', 'Eight', 'Ten'], answer: 'Eight' },
-          { prompt: "What's the relationship between all the people at dinner?", options: ['Family', 'Colleagues (same office)', 'Classmates', 'Neighbours'], answer: 'Colleagues (same office)' },
-          { prompt: 'What do they order to drink?', options: ['Beer', 'Four bottles of wine', 'Champagne', 'Water'], answer: 'Four bottles of wine' },
-          { prompt: 'What does the narrator eat?', options: ['Chicken', 'Fish', 'Beef', 'Vegetables'], answer: 'Beef' }
-        ]
-      }
-    ]
-  }
-};
+var workbook = {};   // filled from Neon by bootstrapContent()
 
 // Chapters that exist in the book but haven't been transcribed yet.
 // Shown as placeholders in the chapter list so the scope is visible.
@@ -7927,609 +7827,7 @@ const workbookPlaceholders = [
 //   related: ids of related concepts (for navigation)
 //   items: filter function for drill mode — picks which items to include when
 //          the user taps "Drill these"
-const concepts = {
-  // ========== A1.1 FOUNDATIONS ==========
-  'subject-pronouns': {
-    title: 'Subject pronouns',
-    subtitle: 'je, tu, il, elle, nous, vous, ils, elles',
-    category: 'A1.1',
-    paragraphs: [
-      'French has <strong>eight</strong> subject pronouns where English has six. The two differences worth knowing: French distinguishes <em>tu</em> (informal, one person) from <em>vous</em> (formal OR plural), and the third-person plural has a masculine <em>ils</em> and feminine <em>elles</em>.',
-      'Use <em>tu</em> with friends, family, children, and peers. Use <em>vous</em> with strangers, in shops, at the tutor, with anyone older or more senior. When in doubt, start with <em>vous</em> — French people will tell you to switch.',
-      'For mixed groups (men and women together), <em>ils</em> wins — even one man in a group of women flips it to <em>ils</em>. That\'s grammatical, not a statement about the world.'
-    ],
-    table: [
-      { en: 'I', fr: 'je' },
-      { en: 'you (informal sing.)', fr: 'tu' },
-      { en: 'he / it (m)', fr: 'il' },
-      { en: 'she / it (f)', fr: 'elle' },
-      { en: 'we', fr: 'nous' },
-      { en: 'you (formal or plural)', fr: 'vous' },
-      { en: 'they (m or mixed)', fr: 'ils' },
-      { en: 'they (all feminine)', fr: 'elles' }
-    ],
-    examples: [
-      { fr: 'Je m\'appelle Martyn.', en: 'My name is Martyn.' },
-      { fr: 'Tu habites à Morzine ?', en: 'Do you live in Morzine?' },
-      { fr: 'Vous voulez un café ?', en: 'Do you want a coffee? (polite, to a stranger)' },
-      { fr: 'Ils sont en vacances.', en: 'They are on holiday. (men, or mixed group)' }
-    ],
-    pitfall: {
-      title: 'Using <em>tu</em> too early',
-      body: 'With the tutor, with shopkeepers, with anyone you haven\'t met — it\'s always <em>vous</em> until they invite you to switch. Saying <em>tu</em> too early comes across as rude in a way most English speakers underestimate.'
-    },
-    related: ['etre-verb', 'avoir-verb']
-  },
-
-  'definite-articles': {
-    title: 'Definite articles',
-    subtitle: 'le / la / les — "the"',
-    category: 'A1.1',
-    paragraphs: [
-      'Every French noun has a gender — masculine or feminine — even for objects. <em>le livre</em> (the book) is masculine. <em>la table</em> (the table) is feminine. There\'s no reliable rule, you memorise the gender with the noun.',
-      'Before a vowel sound, both <em>le</em> and <em>la</em> shrink to <em>l\'</em>. So it\'s <em>l\'ami</em>, <em>l\'école</em>, <em>l\'homme</em> (the H is silent). This happens before every vowel and silent H.',
-      'In the plural, gender disappears — it\'s always <em>les</em>. <em>les livres</em>, <em>les tables</em>, <em>les amis</em>. Easy.'
-    ],
-    table: [
-      { en: 'the (m sing.)', fr: 'le (l\' before vowel)' },
-      { en: 'the (f sing.)', fr: 'la (l\' before vowel)' },
-      { en: 'the (plural)', fr: 'les' }
-    ],
-    examples: [
-      { fr: 'Le chat dort.', en: 'The cat is sleeping.' },
-      { fr: 'La maison est grande.', en: 'The house is big.' },
-      { fr: 'L\'école commence à neuf heures.', en: 'The school starts at nine.' },
-      { fr: 'Les enfants jouent dehors.', en: 'The children are playing outside.' }
-    ],
-    pitfall: {
-      title: 'Guessing the gender',
-      body: 'There\'s no foolproof rule. Words ending in -tion, -té, -ée are usually feminine. Words ending in -ment, -eau, -isme are usually masculine. But exceptions are everywhere. Memorise the article with the noun, always.'
-    },
-    related: ['indefinite-articles', 'adjective-agreement']
-  },
-
-  'indefinite-articles': {
-    title: 'Indefinite articles',
-    subtitle: 'un / une / des — "a / an / some"',
-    category: 'A1.1',
-    paragraphs: [
-      'Where English uses "a" or "an" for unspecified things, French uses <em>un</em> (masculine) or <em>une</em> (feminine). <em>un livre</em> = a book. <em>une pomme</em> = an apple.',
-      'The plural "some" is <em>des</em>. English often drops it — "I ate apples" — but French never does: <em>J\'ai mangé des pommes.</em> Leaving it out sounds distinctly foreign.',
-      'In negative sentences, <em>un/une/des</em> all become <em>de</em> (or <em>d\'</em> before a vowel). <em>J\'ai une voiture</em> → <em>Je n\'ai pas de voiture</em> (I don\'t have a car).'
-    ],
-    table: [
-      { en: 'a / an (m)', fr: 'un' },
-      { en: 'a / an (f)', fr: 'une' },
-      { en: 'some (plural)', fr: 'des' },
-      { en: 'not a / no (negative)', fr: 'de / d\'' }
-    ],
-    examples: [
-      { fr: 'C\'est un bon restaurant.', en: 'It\'s a good restaurant.' },
-      { fr: 'J\'ai une question.', en: 'I have a question.' },
-      { fr: 'Il y a des enfants dans le jardin.', en: 'There are (some) children in the garden.' },
-      { fr: 'Je n\'ai pas de temps.', en: 'I don\'t have (any) time.', note: 'negative → de' }
-    ],
-    pitfall: {
-      title: 'Forgetting that "some" → "de" when negated',
-      body: 'This one catches everyone. <em>J\'ai du pain</em> becomes <em>Je n\'ai pas de pain</em>, not <em>pas du pain</em>. In negatives, <em>un / une / des / du / de la</em> all collapse to <em>de</em>.'
-    },
-    related: ['definite-articles', 'negation']
-  },
-
-  'numbers-small': {
-    title: 'Numbers 0–100',
-    subtitle: 'Including the quirky French bits',
-    category: 'A1.1',
-    paragraphs: [
-      'Numbers 0–16 are individual words you just memorise. From 17 onward it gets predictable: <em>dix-sept, dix-huit, dix-neuf</em> (literally "ten-seven, ten-eight, ten-nine"). Then 20, 30, 40, 50, 60 work normally.',
-      'The oddity: 70 is <em>soixante-dix</em> ("sixty-ten"), 80 is <em>quatre-vingts</em> ("four twenties"), 90 is <em>quatre-vingt-dix</em> ("four-twenty-ten"). Think of it as old Celtic counting that survived. Belgian and Swiss French use <em>septante</em> (70) and <em>nonante</em> (90), which many learners quietly wish were standard.',
-      'For 21, 31, 41, 51, 61 — you insert <em>et</em> ("and"): <em>vingt et un, trente et un</em>. But 81 and 91 don\'t: it\'s <em>quatre-vingt-un, quatre-vingt-onze</em>. No hyphen, no <em>et</em>.'
-    ],
-    examples: [
-      { fr: 'quinze', en: '15' },
-      { fr: 'soixante-dix', en: '70 (literally "sixty-ten")' },
-      { fr: 'quatre-vingts', en: '80 (literally "four twenties")' },
-      { fr: 'quatre-vingt-dix-neuf', en: '99' },
-      { fr: 'vingt et un', en: '21 (with "et")' },
-      { fr: 'quatre-vingt-un', en: '81 (no "et", no hyphen before un)' }
-    ],
-    pitfall: {
-      title: 'Expecting 70, 80, 90 to be regular',
-      body: 'They\'re not, and they never will be. Just drill <em>soixante-dix, quatre-vingts, quatre-vingt-dix</em> until they\'re automatic. They\'re the numbers that give French menus, phone numbers, and addresses their unmistakable character.'
-    },
-    related: ['alphabet']
-  },
-
-  'alphabet': {
-    title: 'French alphabet & accents',
-    subtitle: 'Pronunciation and what the accents do',
-    category: 'A1.1',
-    paragraphs: [
-      'The letters are the same 26 as English. What changes is how they\'re pronounced: <em>R</em> is guttural (made in the back of the throat), <em>U</em> is lip-rounded with no English equivalent, and <em>H</em> is always silent.',
-      'French has four diacritics. <em>é</em> (accent aigu) makes a sharp "ay" sound. <em>è / ê</em> (grave/circumflex) make an open "eh". <em>ç</em> (cedilla) softens a C to sound like an S — <em>français, garçon</em>. <em>ë / ï</em> (tréma) separates two vowels that would otherwise be pronounced together — <em>Noël</em> has two syllables.',
-      'You\'ll also meet the apostrophe in elisions: <em>je aime</em> becomes <em>j\'aime</em>, <em>le ami</em> becomes <em>l\'ami</em>. This happens automatically before vowels and silent H.'
-    ],
-    examples: [
-      { fr: 'étudiant', en: 'student — é (closed "ay")' },
-      { fr: 'mère', en: 'mother — è (open "eh")' },
-      { fr: 'garçon', en: 'boy — ç softens the c to "s"' },
-      { fr: 'Noël', en: 'Christmas — tréma separates the vowels' }
-    ],
-    pitfall: {
-      title: 'Ignoring accents when typing',
-      body: 'An unaccented "e" is NOT the same letter as "é" in French. <em>a</em> and <em>à</em> are different words ("has" vs "to"). The app is forgiving and accepts near-matches, but on paper (or with French speakers), accents matter.'
-    },
-    related: ['definite-articles']
-  },
-
-  // ========== A1.2–A1.3 CORE ==========
-  'etre-verb': {
-    title: 'The verb être — to be',
-    subtitle: 'Arguably the most important verb in French',
-    category: 'A1.1',
-    paragraphs: [
-      '<em>Être</em> is irregular, used constantly, and the auxiliary for certain past-tense verbs. Memorising its present-tense forms is non-negotiable — you\'ll use each of them multiple times a day once you\'re speaking.',
-      'It covers the same territory as English "to be": identity (<em>je suis Martyn</em>), state (<em>je suis fatigué</em>), location (<em>nous sommes à Morzine</em>), and nationality (<em>elle est anglaise</em>).',
-      'Like avoir, être is also an auxiliary in compound tenses — but for a smaller set of verbs (movement/change verbs like <em>aller, venir, partir</em>). At A1, you mostly see it in its simple present form.'
-    ],
-    table: [
-      { en: 'I am', fr: 'je suis' },
-      { en: 'you are', fr: 'tu es' },
-      { en: 'he/she/it is', fr: 'il/elle est' },
-      { en: 'we are', fr: 'nous sommes' },
-      { en: 'you are (formal/pl.)', fr: 'vous êtes' },
-      { en: 'they are', fr: 'ils/elles sont' }
-    ],
-    examples: [
-      { fr: 'Je suis anglais.', en: 'I\'m English.' },
-      { fr: 'Tu es fatigué ?', en: 'Are you tired?' },
-      { fr: 'Nous sommes à Morzine.', en: 'We\'re in Morzine.' },
-      { fr: 'Ils sont dans le chalet.', en: 'They\'re in the chalet.' }
-    ],
-    pitfall: {
-      title: 'Confusing "est" with "et"',
-      body: 'Same pronunciation, different words. <em>est</em> = "is" (from être). <em>et</em> = "and". Spoken, you rely on context; written, the trailing -t of <em>est</em> is silent but spelled.'
-    },
-    related: ['avoir-verb', 'subject-pronouns', 'adjective-agreement']
-  },
-
-  'avoir-verb': {
-    title: 'The verb avoir — to have',
-    subtitle: 'The other essential irregular verb',
-    category: 'A1.1',
-    paragraphs: [
-      'If <em>être</em> is "who you are", <em>avoir</em> is "what you have". Fully irregular and worth drilling until it\'s automatic.',
-      'Avoir has a quirk: French uses it where English uses "to be" for physical states. <em>J\'ai faim</em> = I\'m hungry (literally "I have hunger"). <em>J\'ai chaud</em> = I\'m hot. <em>J\'ai vingt ans</em> = I\'m twenty years old ("I have twenty years"). Don\'t translate literally — learn these as phrases.',
-      'The most important use: <em>avoir</em> is the auxiliary for <strong>passé composé</strong>, the main past tense you\'ll use. <em>J\'ai mangé</em> = I ate. <em>Tu as vu</em> = you saw. Every sentence in the past with a normal verb uses an <em>avoir</em> form.'
-    ],
-    table: [
-      { en: 'I have', fr: 'j\'ai' },
-      { en: 'you have', fr: 'tu as' },
-      { en: 'he/she has', fr: 'il/elle a' },
-      { en: 'we have', fr: 'nous avons' },
-      { en: 'you have (formal/pl.)', fr: 'vous avez' },
-      { en: 'they have', fr: 'ils/elles ont' }
-    ],
-    examples: [
-      { fr: 'J\'ai deux enfants.', en: 'I have two children.' },
-      { fr: 'Tu as faim ?', en: 'Are you hungry? (lit. "Do you have hunger?")' },
-      { fr: 'Elle a vingt-cinq ans.', en: 'She\'s 25 years old.' },
-      { fr: 'Nous avons mangé.', en: 'We ate. (passé composé)' }
-    ],
-    pitfall: {
-      title: 'Using "je suis" for age or hunger',
-      body: 'In English you "are" 30, you "are" hungry. In French you <em>have</em> those: <em>j\'ai 30 ans, j\'ai faim</em>. Saying <em>je suis 30</em> or <em>je suis faim</em> is wrong and immediately flags you as a beginner.'
-    },
-    related: ['etre-verb', 'pc-avoir-regular', 'pc-avoir-irregular']
-  },
-
-  'present-er-verbs': {
-    title: 'Present tense — regular -ER verbs',
-    subtitle: 'The easy pattern that covers 80% of French verbs',
-    category: 'A1.2',
-    paragraphs: [
-      'French verbs fall into three groups based on their infinitive ending: -ER, -IR, and -RE. The -ER group is by far the biggest and the most regular. If you learn one -ER verb, you essentially know them all.',
-      'The recipe: drop the -ER, add the right ending for the subject. For <em>parler</em> (to speak), the stem is <em>parl-</em>. Then: <em>je parle, tu parles, il/elle parle, nous parlons, vous parlez, ils/elles parlent</em>.',
-      'Watch the pronunciation: the endings -e, -es, -ent are all silent. <em>je parle, tu parles, ils parlent</em> sound identical when spoken. Only <em>nous parlons</em> and <em>vous parlez</em> sound different. That means spoken French has far fewer "forms" than written French.'
-    ],
-    table: [
-      { en: 'I speak', fr: 'je parl<strong>e</strong>' },
-      { en: 'you speak', fr: 'tu parl<strong>es</strong>' },
-      { en: 'he/she speaks', fr: 'il/elle parl<strong>e</strong>' },
-      { en: 'we speak', fr: 'nous parl<strong>ons</strong>' },
-      { en: 'you speak (formal/pl.)', fr: 'vous parl<strong>ez</strong>' },
-      { en: 'they speak', fr: 'ils/elles parl<strong>ent</strong>' }
-    ],
-    examples: [
-      { fr: 'J\'habite à Morzine.', en: 'I live in Morzine.' },
-      { fr: 'Tu aimes le fromage ?', en: 'Do you like cheese?' },
-      { fr: 'Nous travaillons ensemble.', en: 'We work together.' },
-      { fr: 'Ils regardent un film.', en: 'They\'re watching a film.' }
-    ],
-    pitfall: {
-      title: 'Pronouncing the silent endings',
-      body: 'The final -e, -es, -ent endings aren\'t spoken. <em>il parle</em> is "eel parl", not "eel parl-uh". Beginners often over-pronounce these thinking they help clarity — in fact, leaving them silent is what sounds French.'
-    },
-    related: ['etre-verb', 'avoir-verb', 'negation']
-  },
-
-  'negation': {
-    title: 'Negation — ne…pas',
-    subtitle: 'The two-part wrap',
-    category: 'A1.2',
-    paragraphs: [
-      'Unlike English "not", French negation comes in two parts that surround the verb: <em>ne</em> before, <em>pas</em> after. <em>Je parle</em> → <em>Je <strong>ne</strong> parle <strong>pas</strong></em>. "I don\'t speak."',
-      'Before a vowel, <em>ne</em> becomes <em>n\'</em>. <em>Je n\'aime pas le café</em>. <em>Il n\'habite pas ici</em>. The apostrophe is automatic.',
-      'In casual spoken French, people often drop the <em>ne</em> entirely. You\'ll hear <em>je sais pas</em> instead of <em>je ne sais pas</em>. Fine for informal speech; keep the <em>ne</em> in writing and in formal settings (tutor, work).'
-    ],
-    examples: [
-      { fr: 'Je ne parle pas italien.', en: 'I don\'t speak Italian.' },
-      { fr: 'Tu n\'es pas fatigué ?', en: 'You\'re not tired?' },
-      { fr: 'Nous n\'avons pas de chien.', en: 'We don\'t have a dog.', note: 'Note "de" — see indefinite articles pitfall.' },
-      { fr: 'Elle ne mange pas de viande.', en: 'She doesn\'t eat meat.' }
-    ],
-    pitfall: {
-      title: 'Forgetting one of the two parts',
-      body: 'Both <em>ne</em> and <em>pas</em> are required in writing. Saying just <em>je parle pas</em> is conversational but technically incomplete. Saying just <em>je ne parle</em> is wrong — <em>ne</em> alone doesn\'t negate.'
-    },
-    related: ['indefinite-articles', 'present-er-verbs']
-  },
-
-  'questions': {
-    title: 'Asking questions',
-    subtitle: 'Three ways to form a question',
-    category: 'A1.3',
-    paragraphs: [
-      'French has three ways to ask a yes/no question, ordered roughly from most casual to most formal.',
-      '<strong>1. Intonation.</strong> Keep the word order of a statement, raise your voice at the end: <em>Tu parles français ?</em> This is how friends talk. Super common in speech, rare in writing.',
-      '<strong>2. Est-ce que.</strong> Stick <em>est-ce que</em> (or <em>est-ce qu\'</em> before a vowel) at the front of any statement: <em>Est-ce que tu parles français ?</em> Works everywhere, safe choice for tutor and formal situations.',
-      '<strong>3. Inversion.</strong> Swap the subject and verb, hyphenated: <em>Parles-tu français ?</em> More literary, used in writing and polite speech. For third-person with a vowel, add a -t- for flow: <em>Parle-t-il anglais ?</em>'
-    ],
-    examples: [
-      { fr: 'Tu as faim ?', en: 'Are you hungry? (intonation)' },
-      { fr: 'Est-ce que tu as faim ?', en: 'Are you hungry? (est-ce que)' },
-      { fr: 'As-tu faim ?', en: 'Are you hungry? (inversion)' },
-      { fr: 'Où est-ce qu\'il habite ?', en: 'Where does he live?' }
-    ],
-    pitfall: {
-      title: 'Mixing up the three styles',
-      body: 'Avoid combining them. <em>Est-ce que as-tu faim ?</em> is wrong — you\'ve used est-ce que AND inversion. Pick one method per question. Intonation is fine for friends; est-ce que is the safe all-rounder.'
-    },
-    related: ['questions-words']
-  },
-
-  'questions-words': {
-    title: 'Question words',
-    subtitle: 'qui, que, où, quand, comment, combien, pourquoi, quel',
-    category: 'A1.3',
-    paragraphs: [
-      'The eight core question words let you ask about specific things (who, what, where, when, why, how, how much, which). Most combine with <em>est-ce que</em> in the standard form: <em>Où est-ce que tu habites ?</em>',
-      '<em>Quel</em> is special — it agrees with the noun it refers to: <em>quel (m), quelle (f), quels (m.pl), quelles (f.pl)</em>. All pronounced the same, but spelled differently.',
-      '<em>Que</em> (what) contracts to <em>qu\'</em> before a vowel: <em>Qu\'est-ce que tu fais ?</em> (What are you doing?). This is one of the most common questions you\'ll ask and hear.'
-    ],
-    table: [
-      { en: 'who', fr: 'qui' },
-      { en: 'what', fr: 'que / qu\'' },
-      { en: 'where', fr: 'où' },
-      { en: 'when', fr: 'quand' },
-      { en: 'why', fr: 'pourquoi' },
-      { en: 'how', fr: 'comment' },
-      { en: 'how much / many', fr: 'combien' },
-      { en: 'which', fr: 'quel(le)(s)' }
-    ],
-    examples: [
-      { fr: 'Qu\'est-ce que tu fais ?', en: 'What are you doing?' },
-      { fr: 'Pourquoi tu apprends le français ?', en: 'Why are you learning French?' },
-      { fr: 'Combien ça coûte ?', en: 'How much does it cost?' },
-      { fr: 'Quelle heure est-il ?', en: 'What time is it?' }
-    ],
-    pitfall: {
-      title: 'Translating "what" as "quoi"',
-      body: '<em>Quoi</em> does mean "what", but not at the start of most questions. Use <em>qu\'est-ce que</em> or <em>que</em> there instead. <em>Quoi</em> is mostly for the end: <em>Tu fais quoi ?</em> (casual) or after a preposition: <em>avec quoi ?</em>'
-    },
-    related: ['questions']
-  },
-
-  'adjective-agreement': {
-    title: 'Adjective agreement',
-    subtitle: 'Gender and number matching',
-    category: 'A1.2',
-    paragraphs: [
-      'French adjectives change their ending to match the noun they describe. Four possible forms: masculine singular (the base), feminine singular, masculine plural, feminine plural.',
-      'The default rules: add <em>-e</em> for feminine, <em>-s</em> for plural, <em>-es</em> for feminine plural. <em>grand / grande / grands / grandes</em>. If the masculine already ends in -e, the feminine is identical: <em>jeune / jeune / jeunes / jeunes</em>.',
-      'Most adjectives go AFTER the noun in French, unlike English: <em>une voiture rouge</em> (a red car). A small group comes before — size, age, beauty, goodness (BAGS): <em>une grande maison, un vieux chien, une jolie ville, un bon livre</em>.'
-    ],
-    table: [
-      { en: 'big (m sing)', fr: 'grand' },
-      { en: 'big (f sing)', fr: 'grande' },
-      { en: 'big (m pl)', fr: 'grands' },
-      { en: 'big (f pl)', fr: 'grandes' }
-    ],
-    examples: [
-      { fr: 'un petit chien', en: 'a small dog' },
-      { fr: 'une petite maison', en: 'a small house' },
-      { fr: 'des enfants intelligents', en: 'intelligent children' },
-      { fr: 'une jolie robe rouge', en: 'a pretty red dress', note: '"jolie" before, "rouge" after' }
-    ],
-    pitfall: {
-      title: 'Forgetting to make the adjective feminine',
-      body: 'English adjectives don\'t change, so it\'s easy to say <em>une maison grand</em>. It has to be <em>grande</em> — the noun <em>maison</em> is feminine, so everything describing it follows suit. The -e is often silent but the spelling matters.'
-    },
-    related: ['definite-articles', 'indefinite-articles']
-  },
-
-  'possessives': {
-    title: 'Possessive adjectives',
-    subtitle: 'mon, ma, mes — "my"',
-    category: 'A1.3',
-    paragraphs: [
-      'Unlike English, French possessives agree with the <strong>thing owned</strong>, not the owner. "My book" is <em>mon livre</em> (masculine) even if "my" is a woman speaking. "My house" is <em>ma maison</em> even if a man is speaking.',
-      'Three forms for each owner: masculine singular, feminine singular, plural. <em>mon/ma/mes</em> (my), <em>ton/ta/tes</em> (your, informal), <em>son/sa/ses</em> (his/her/its — one form covers both). <em>notre/notre/nos</em> (our), <em>votre/votre/vos</em> (your, formal/plural), <em>leur/leur/leurs</em> (their).',
-      'Exception worth knowing: before a feminine noun starting with a vowel, <em>ma/ta/sa</em> become <em>mon/ton/son</em> for pronunciation. <em>mon amie</em> — even though "amie" is feminine. Sounds smoother.'
-    ],
-    table: [
-      { en: 'my (m sing / f before vowel)', fr: 'mon' },
-      { en: 'my (f sing)', fr: 'ma' },
-      { en: 'my (plural)', fr: 'mes' },
-      { en: 'your (informal, m/f-vowel)', fr: 'ton / ta / tes' },
-      { en: 'his/her (m/f-vowel)', fr: 'son / sa / ses' }
-    ],
-    examples: [
-      { fr: 'mon frère, ma sœur, mes parents', en: 'my brother, my sister, my parents' },
-      { fr: 'son chien', en: 'his dog OR her dog — context decides' },
-      { fr: 'mon amie Claire', en: 'my friend Claire', note: 'ma → mon before vowel' },
-      { fr: 'leurs enfants', en: 'their children' }
-    ],
-    pitfall: {
-      title: 'Using "sa" like English "her"',
-      body: '<em>Son/sa/ses</em> doesn\'t tell you the gender of the owner — it agrees with the owned thing. <em>sa voiture</em> could be "his car" or "her car". You have to get it from context. Learners often try to use <em>sa</em> only for feminine owners and this is wrong.'
-    },
-    related: ['definite-articles', 'adjective-agreement']
-  },
-
-  'demonstratives': {
-    title: 'Demonstratives',
-    subtitle: 'ce, cette, ces — "this / that / these / those"',
-    category: 'A1.2',
-    paragraphs: [
-      'French uses <em>ce/cette/ces</em> for both "this" and "that" — there\'s no built-in distinction. <em>ce livre</em> is "this book" OR "that book" depending on context.',
-      'Forms: <em>ce</em> (masculine sing.), <em>cette</em> (feminine sing.), <em>ces</em> (plural both genders). For a masculine noun starting with a vowel, <em>ce</em> becomes <em>cet</em> for pronunciation: <em>cet homme, cet ami</em>.',
-      'If you really need to distinguish "this" from "that", tack <em>-ci</em> (here/this) or <em>-là</em> (there/that) onto the noun: <em>ce livre-ci</em> (this book here), <em>ce livre-là</em> (that book there). Formal; in daily speech the plain form covers both.'
-    ],
-    table: [
-      { en: 'this/that (m sing)', fr: 'ce' },
-      { en: 'this/that (m sing, before vowel)', fr: 'cet' },
-      { en: 'this/that (f sing)', fr: 'cette' },
-      { en: 'these/those (plural)', fr: 'ces' }
-    ],
-    examples: [
-      { fr: 'Ce chien est sympa.', en: 'This/that dog is nice.' },
-      { fr: 'Cette maison est grande.', en: 'This/that house is big.' },
-      { fr: 'Cet homme parle anglais.', en: 'This/that man speaks English.' },
-      { fr: 'Ces enfants sont fatigués.', en: 'These/those children are tired.' }
-    ],
-    pitfall: {
-      title: 'Forgetting "cet" before a vowel',
-      body: '<em>ce homme</em> is wrong — it has to be <em>cet homme</em>. This happens only for masculine nouns starting with a vowel or silent H, and only in the singular. Feminine already uses <em>cette</em>, so no change needed there.'
-    },
-    related: ['definite-articles']
-  },
-
-  'prepositions-place': {
-    title: 'Prepositions of place',
-    subtitle: 'dans, sur, sous, devant, derrière, à côté de…',
-    category: 'A1.2',
-    paragraphs: [
-      'French uses prepositions very similarly to English — one-word markers that describe where something is. The most common eight cover 90% of normal use: <em>dans, sur, sous, devant, derrière, entre, chez, à côté de</em>.',
-      '<em>Chez</em> is worth calling out — it means "at the place of": <em>chez moi</em> (at my place / at my home), <em>chez le médecin</em> (at the doctor\'s). English has nothing equivalent and beginners miss it constantly.',
-      'Compound prepositions ending in <em>de</em> (like <em>à côté de, près de, en face de</em>) contract before <em>le/les</em>: <em>à côté du café</em> (next to the café), <em>près des magasins</em> (near the shops). <em>de + le = du</em>, <em>de + les = des</em>.'
-    ],
-    table: [
-      { en: 'in', fr: 'dans' },
-      { en: 'on', fr: 'sur' },
-      { en: 'under', fr: 'sous' },
-      { en: 'in front of', fr: 'devant' },
-      { en: 'behind', fr: 'derrière' },
-      { en: 'between', fr: 'entre' },
-      { en: 'next to', fr: 'à côté de' },
-      { en: 'at the place of', fr: 'chez' }
-    ],
-    examples: [
-      { fr: 'Le chat est sous la table.', en: 'The cat is under the table.' },
-      { fr: 'Nous sommes chez Claire.', en: 'We\'re at Claire\'s place.' },
-      { fr: 'La boulangerie est à côté du café.', en: 'The bakery is next to the café.' },
-      { fr: 'Le parking est devant l\'hôtel.', en: 'The car park is in front of the hotel.' }
-    ],
-    pitfall: {
-      title: 'Translating "at" directly',
-      body: '"At work" in French is <em>au travail</em>, not <em>à travail</em>. "At Claire\'s" is <em>chez Claire</em>, not <em>à Claire</em>. French prepositions don\'t map one-to-one from English — learn each location phrase as a fixed combo.'
-    },
-    related: []
-  },
-
-  // ========== A2.1 GRAMMAR ==========
-  'pc-avoir-regular': {
-    title: 'Passé composé — regular verbs',
-    subtitle: 'avoir + past participle, the workhorse past tense',
-    category: 'A2.1',
-    paragraphs: [
-      'Passé composé is the main past tense in spoken and casual written French — roughly covers what English does with "I ate / I have eaten" (both collapse into one in French). It\'s built from two pieces: an auxiliary (<em>avoir</em> for most verbs) plus a past participle.',
-      'For regular verbs the past participle is predictable: <em>-ER → é, -IR → i, -RE → u</em>. So <em>manger → mangé, finir → fini, vendre → vendu</em>. You conjugate the <em>avoir</em> part for the subject and leave the participle alone.',
-      'Structure: subject + conjugated <em>avoir</em> + past participle. <em>J\'ai mangé, tu as fini, il a vendu, nous avons regardé, vous avez écouté, ils ont décidé</em>. The participle doesn\'t change with the subject (mostly — one exception involving direct objects, not worth tackling at A1/A2).'
-    ],
-    table: [
-      { en: 'I ate', fr: 'j\'ai mangé' },
-      { en: 'you ate', fr: 'tu as mangé' },
-      { en: 'he/she ate', fr: 'il/elle a mangé' },
-      { en: 'we ate', fr: 'nous avons mangé' },
-      { en: 'you ate (formal/pl.)', fr: 'vous avez mangé' },
-      { en: 'they ate', fr: 'ils/elles ont mangé' }
-    ],
-    examples: [
-      { fr: 'J\'ai regardé un film hier.', en: 'I watched a film yesterday.' },
-      { fr: 'Tu as fini ton travail ?', en: 'Have you finished your work?' },
-      { fr: 'Nous avons mangé au restaurant.', en: 'We ate at the restaurant.' },
-      { fr: 'Ils ont vendu leur voiture.', en: 'They sold their car.' }
-    ],
-    pitfall: {
-      title: 'Dropping the auxiliary',
-      body: 'You can\'t say <em>j\'mangé</em> or <em>je mangé</em>. The <em>avoir</em> is essential. Every single passé composé sentence has two verbs: the <em>avoir</em> form and the participle. If you leave out the auxiliary, it\'s not a sentence.'
-    },
-    related: ['avoir-verb', 'pc-avoir-irregular', 'negation']
-  },
-
-  'pc-avoir-irregular': {
-    title: 'Passé composé — irregular past participles',
-    subtitle: 'The ones you just have to memorise',
-    category: 'A2.1',
-    paragraphs: [
-      'About 20 very common verbs have irregular past participles — you can\'t work them out from the infinitive. These are the ones you\'ll use constantly, so they\'re worth drilling into long-term memory.',
-      'The most common: <em>être → été</em> (been), <em>avoir → eu</em> (had), <em>faire → fait</em> (done/made), <em>prendre → pris</em> (taken), <em>voir → vu</em> (seen), <em>boire → bu</em> (drunk), <em>dire → dit</em> (said), <em>mettre → mis</em> (put), <em>lire → lu</em> (read), <em>pouvoir → pu</em> (could), <em>devoir → dû</em> (had to), <em>vouloir → voulu</em> (wanted).',
-      'There\'s a rough pattern for many: irregular verbs often take <em>-u</em> (bu, vu, lu, pu, dû, voulu). But exceptions abound (fait, dit, mis, pris), so treat this as a memorisation task, not a rule.'
-    ],
-    table: [
-      { en: 'been (être)', fr: 'été' },
-      { en: 'had (avoir)', fr: 'eu' },
-      { en: 'done/made (faire)', fr: 'fait' },
-      { en: 'taken (prendre)', fr: 'pris' },
-      { en: 'seen (voir)', fr: 'vu' },
-      { en: 'drunk (boire)', fr: 'bu' },
-      { en: 'said (dire)', fr: 'dit' },
-      { en: 'put (mettre)', fr: 'mis' },
-      { en: 'could (pouvoir)', fr: 'pu' },
-      { en: 'had to (devoir)', fr: 'dû' }
-    ],
-    examples: [
-      { fr: 'J\'ai été malade hier.', en: 'I was ill yesterday.' },
-      { fr: 'Tu as fait quoi ce matin ?', en: 'What did you do this morning?' },
-      { fr: 'Nous avons pris le train.', en: 'We took the train.' },
-      { fr: 'Il a dû partir tôt.', en: 'He had to leave early.' }
-    ],
-    pitfall: {
-      title: 'Inventing regular participles for irregular verbs',
-      body: 'Saying <em>j\'ai faisé</em> instead of <em>j\'ai fait</em> is a classic trap. <em>Faire</em> looks like an -ER verb but isn\'t. Learn the 20 most common irregular participles as a block — they appear in nearly every past-tense sentence.'
-    },
-    related: ['pc-avoir-regular', 'avoir-verb']
-  },
-
-  'faire-verb': {
-    title: 'The verb faire — to do / to make',
-    subtitle: 'Irregular, essential, used in dozens of expressions',
-    category: 'A1.2',
-    paragraphs: [
-      '<em>Faire</em> translates as both "to do" and "to make", and shows up in countless fixed expressions. It\'s irregular in the present tense but not that bad — memorise it once.',
-      'The unusual forms are <em>nous faisons</em> (pronounced "fuh-ZON", not "fay-ZON") and <em>vous faites</em> (not <em>faisez</em>). The <em>ils/elles</em> form is <em>font</em> — another "-ont" ending like <em>ont, sont, vont</em>.',
-      'Faire dominates weather talk: <em>il fait chaud/froid/beau</em> (it\'s hot/cold/nice). And activities: <em>faire du ski, faire la cuisine, faire les courses, faire du sport, faire attention</em>. Each is a fixed combo — "to ski, to cook, to do the shopping, to do sport, to pay attention".'
-    ],
-    table: [
-      { en: 'I do/make', fr: 'je fais' },
-      { en: 'you do/make', fr: 'tu fais' },
-      { en: 'he/she does/makes', fr: 'il/elle fait' },
-      { en: 'we do/make', fr: 'nous faisons' },
-      { en: 'you do/make (f/pl)', fr: 'vous faites' },
-      { en: 'they do/make', fr: 'ils/elles font' }
-    ],
-    examples: [
-      { fr: 'Il fait froid à Morzine.', en: 'It\'s cold in Morzine.' },
-      { fr: 'Qu\'est-ce que tu fais ?', en: 'What are you doing?' },
-      { fr: 'Je fais du ski chaque hiver.', en: 'I ski every winter.' },
-      { fr: 'Nous faisons la cuisine ensemble.', en: 'We cook together.' }
-    ],
-    pitfall: {
-      title: 'Over-pronouncing "faisons"',
-      body: '<em>Nous faisons</em> is pronounced "noo fuh-zon", not "noo fay-zon". The <em>ai</em> here is pronounced as an <em>e</em> sound. This is unique to the nous form of faire and catches everyone at first.'
-    },
-    related: ['avoir-verb', 'etre-verb']
-  },
-
-  'boire-verb': {
-    title: 'The verb boire — to drink',
-    subtitle: 'Irregular, and the stem changes in plural forms',
-    category: 'A1.2',
-    paragraphs: [
-      '<em>Boire</em> is a classic irregular verb: the stem changes between the singular (<em>boi-</em>) and plural (<em>buv-</em>) forms. Worth drilling because you\'ll use it at every meal in French-speaking contexts.',
-      'Singular forms: <em>je bois, tu bois, il/elle boit</em>. Plural forms: <em>nous buvons, vous buvez, ils/elles boivent</em>. Three stems in one verb: <em>boi-</em> (singular), <em>buv-</em> (nous/vous), <em>boiv-</em> (ils/elles).',
-      'The past participle is <em>bu</em>: <em>j\'ai bu un café</em> (I drank a coffee). Short, irregular, memorise it with the other "-u" ones (vu, lu, pu, bu).'
-    ],
-    table: [
-      { en: 'I drink', fr: 'je bois' },
-      { en: 'you drink', fr: 'tu bois' },
-      { en: 'he/she drinks', fr: 'il/elle boit' },
-      { en: 'we drink', fr: 'nous buvons' },
-      { en: 'you drink (f/pl)', fr: 'vous buvez' },
-      { en: 'they drink', fr: 'ils/elles boivent' }
-    ],
-    examples: [
-      { fr: 'Je bois un café le matin.', en: 'I drink a coffee in the morning.' },
-      { fr: 'Nous buvons du vin au dîner.', en: 'We drink wine at dinner.' },
-      { fr: 'Ils boivent trop de bière.', en: 'They drink too much beer.' },
-      { fr: 'J\'ai bu un verre de jus.', en: 'I drank a glass of juice. (passé composé)' }
-    ],
-    pitfall: {
-      title: 'Using "bois" for plural forms',
-      body: 'The singular and plural stems are different. <em>Nous bois</em> is wrong — it\'s <em>nous buvons</em>. The stem shift from "boi-" to "buv-" catches learners because it feels like two different verbs.'
-    },
-    related: ['pc-avoir-irregular']
-  },
-
-  'modal-verbs': {
-    title: 'Modal verbs — pouvoir, vouloir, devoir',
-    subtitle: 'Can, want, must',
-    category: 'A2.1',
-    paragraphs: [
-      'The three modal verbs are <em>pouvoir</em> (can/to be able), <em>vouloir</em> (to want), and <em>devoir</em> (must/to have to). They\'re irregular in the present, and each is followed by a second verb in the infinitive: <em>Je peux partir</em>, <em>Je veux manger</em>, <em>Je dois travailler</em>.',
-      'The polite <em>conditionnel</em> form of <em>vouloir</em> — <em>je voudrais</em> — is the go-to phrase for ordering or requesting: <em>je voudrais un café</em> (I\'d like a coffee). Saying <em>je veux</em> ("I want") in a restaurant is grammatically fine but sounds abrupt. <em>Je voudrais</em> is the polite default.',
-      'Same structure as English modals: "I can swim" → <em>Je peux nager</em>. "I want to leave" → <em>Je veux partir</em>. "I have to go" → <em>Je dois partir</em>. The second verb stays in its bare infinitive form — no extra conjugation needed.'
-    ],
-    table: [
-      { en: 'I can', fr: 'je peux' },
-      { en: 'I want', fr: 'je veux' },
-      { en: 'I must / I have to', fr: 'je dois' },
-      { en: 'I would like (polite)', fr: 'je voudrais' },
-      { en: 'you can / want / must', fr: 'tu peux / veux / dois' },
-      { en: 'we can / want / must', fr: 'nous pouvons / voulons / devons' }
-    ],
-    examples: [
-      { fr: 'Je peux vous aider ?', en: 'Can I help you?' },
-      { fr: 'Je voudrais un café, s\'il vous plaît.', en: 'I\'d like a coffee, please.' },
-      { fr: 'Tu dois partir maintenant.', en: 'You have to leave now.' },
-      { fr: 'Nous voulons aller au restaurant.', en: 'We want to go to the restaurant.' }
-    ],
-    pitfall: {
-      title: 'Ordering with "je veux"',
-      body: 'In a café or shop, <em>je veux un café</em> sounds demanding — too direct. Use <em>je voudrais</em> for ordering ("I\'d like"). Save <em>je veux</em> for statements of desire with friends.'
-    },
-    related: ['etre-verb', 'avoir-verb']
-  },
-
-  'comparatives': {
-    title: 'Comparatives',
-    subtitle: 'plus… que, moins… que, aussi… que',
-    category: 'A2.1',
-    paragraphs: [
-      'Three comparison structures in French, all built the same way: <em>[modifier] + adjective + que</em>. <em>plus</em> = more, <em>moins</em> = less, <em>aussi</em> = as.',
-      '<em>Morzine est plus grand que Avoriaz</em> (Morzine is bigger than Avoriaz). <em>Le train est moins cher que l\'avion</em> (The train is cheaper than the plane). <em>Ma maison est aussi grande que ta maison</em> (My house is as big as yours).',
-      'One irregular: the comparative of <em>bon</em> (good) is <em>meilleur</em>, not <em>plus bon</em>. "Better than" = <em>meilleur que</em>. For the adverb <em>bien</em>, it\'s <em>mieux</em>. These two are the only major exceptions at A2.'
-    ],
-    table: [
-      { en: 'more ___ than', fr: 'plus ___ que' },
-      { en: 'less ___ than', fr: 'moins ___ que' },
-      { en: 'as ___ as', fr: 'aussi ___ que' },
-      { en: 'better than', fr: 'meilleur que (adj) / mieux que (adv)' }
-    ],
-    examples: [
-      { fr: 'Il est plus grand que moi.', en: 'He\'s taller than me.' },
-      { fr: 'Cette tarte est moins bonne que l\'autre.', en: 'This tart is less good than the other.' },
-      { fr: 'Paris est aussi beau que Londres.', en: 'Paris is as beautiful as London.' },
-      { fr: 'Ce vin est meilleur que l\'autre.', en: 'This wine is better than the other.' }
-    ],
-    pitfall: {
-      title: 'Saying "plus bon"',
-      body: 'Don\'t do it — it\'s <em>meilleur</em>. French treats "good" the way English does: you don\'t say "more good", you say "better". For everything else though, <em>plus [adjective]</em> works fine.'
-    },
-    related: ['adjective-agreement']
-  }
-};
+var concepts = {};   // filled from Neon by bootstrapContent()
 
 // Which items map to which concept? One concept can cover multiple sources.
 // The key is either a deck/quiz/verb key, or a special prefix like 'wb:ch09' for
@@ -8622,6 +7920,7 @@ function showView(id) {
   if (id === 'drills') renderDrills();
   if (id === 'storyPicker') renderStoryPicker();
   if (id === 'weeklyPlan') renderWeeklyPlan();
+  if (id === 'upload') renderUpload();
   if (id === 'myStuff') renderMyMaterial();
   if (id === 'progress') renderProgress();
   if (id === 'settings') renderSettings();
@@ -10388,12 +9687,12 @@ const MASTERY_STORAGE_KEY = 'fr_mastery_v1';
 
 function loadMastery() {
   try {
-    return JSON.parse(localStorage.getItem(MASTERY_STORAGE_KEY) || '{}');
+    return JSON.parse(Store.getItem(MASTERY_STORAGE_KEY) || '{}');
   } catch (e) { return {}; }
 }
 
 function saveMastery(obj) {
-  try { localStorage.setItem(MASTERY_STORAGE_KEY, JSON.stringify(obj)); } catch (e) {}
+  try { Store.setItem(MASTERY_STORAGE_KEY, JSON.stringify(obj)); } catch (e) {}
 }
 
 // Build a stable id for an item so the same question is recognised across sessions.
@@ -10916,7 +10215,7 @@ function renderWeeklySummarySlot() {
   const s = computeWeeklySummary();
   const dismissedKey = 'fr_ws_dismissed_' + s.weekKey;
   try {
-    if (localStorage.getItem(dismissedKey)) { slot.innerHTML = ''; return; }
+    if (Store.getItem(dismissedKey)) { slot.innerHTML = ''; return; }
   } catch (e) {}
 
   slot.innerHTML = `
@@ -10946,7 +10245,7 @@ function renderWeeklySummarySlot() {
 }
 
 function dismissWeeklySummary(weekKey) {
-  try { localStorage.setItem('fr_ws_dismissed_' + weekKey, '1'); } catch (e) {}
+  try { Store.setItem('fr_ws_dismissed_' + weekKey, '1'); } catch (e) {}
   document.getElementById('weeklySummarySlot').innerHTML = '';
 }
 
@@ -11157,7 +10456,7 @@ function renderNudgeSlot() {
 
   const dismissKey = 'fr_nudge_dismissed_' + dateKey();
   try {
-    if (localStorage.getItem(dismissKey)) { slot.innerHTML = ''; return; }
+    if (Store.getItem(dismissKey)) { slot.innerHTML = ''; return; }
   } catch (e) {}
 
   const messages = [
@@ -11179,7 +10478,7 @@ function renderNudgeSlot() {
 }
 
 function dismissNudge() {
-  try { localStorage.setItem('fr_nudge_dismissed_' + dateKey(), '1'); } catch (e) {}
+  try { Store.setItem('fr_nudge_dismissed_' + dateKey(), '1'); } catch (e) {}
   document.getElementById('nudgeSlot').innerHTML = '';
 }
 
@@ -11195,7 +10494,7 @@ function canUseNotifications() {
 
 function loadReminderPrefs() {
   try {
-    const prefs = JSON.parse(localStorage.getItem('fr_reminder') || '{}');
+    const prefs = JSON.parse(Store.getItem('fr_reminder') || '{}');
     return {
       enabled: !!prefs.enabled,
       time: prefs.time || '19:00'
@@ -11206,7 +10505,7 @@ function loadReminderPrefs() {
 }
 
 function saveReminderPrefs(prefs) {
-  try { localStorage.setItem('fr_reminder', JSON.stringify(prefs)); } catch (e) {}
+  try { Store.setItem('fr_reminder', JSON.stringify(prefs)); } catch (e) {}
 }
 
 let reminderTimer = null;
@@ -11302,7 +10601,7 @@ const GUIDE_TOPICS = [
     icon: '🔧',
     title: 'When the app gets updates',
     body: `<p>The author ships new versions by replacing the <code>index.html</code> file on GitHub. When this happens:</p>
-      <p>• Your progress is preserved (lives in localStorage, separate from the app code)<br>
+      <p>• Your progress is preserved (it lives in your account, not in the app code)<br>
       • Your custom material is preserved<br>
       • Your settings are preserved<br>
       • You get new features or bug fixes the next time you open the app</p>
@@ -11334,11 +10633,11 @@ function renderGuideTopics() {
 // ---------- Welcome modal ----------
 
 function isFirstTimeUser() {
-  try { return !localStorage.getItem('fr_welcomed'); } catch (e) { return true; }
+  try { return !Store.getItem('fr_welcomed'); } catch (e) { return true; }
 }
 
 function markWelcomed() {
-  try { localStorage.setItem('fr_welcomed', '1'); } catch (e) {}
+  try { Store.setItem('fr_welcomed', '1'); } catch (e) {}
 }
 
 function showWelcomeModal(manual) {
@@ -11554,6 +10853,9 @@ function levelForFlashcard(deckKey, card) {
   if (deckKey === '__mine__') {
     return card && card.level ? card.level : userCurrentLevel() || 'A1.2';
   }
+  if (card && card.level) return card.level;
+  // Uploaded decks carry their own level; the built-in ones use the static map.
+  if (decks[deckKey] && decks[deckKey].level) return decks[deckKey].level;
   if (DECK_LEVELS[deckKey]) return DECK_LEVELS[deckKey].level;
   return 'A1.2';
 }
@@ -11564,12 +10866,14 @@ function skillForFlashcard(deckKey) {
 }
 
 function levelForQuiz(quizKey) {
+  if (quizzes[quizKey] && quizzes[quizKey].level) return quizzes[quizKey].level;
   return (QUIZ_LEVELS[quizKey] && QUIZ_LEVELS[quizKey].level) || 'A2.1';
 }
 
 function skillForQuiz() { return 'grammar'; }
 
 function levelForVerb(verb) {
+  if (verbTables[verb] && verbTables[verb].level) return verbTables[verb].level;
   return (VERB_LEVELS[verb] && VERB_LEVELS[verb].level) || 'A1.3';
 }
 
@@ -11583,6 +10887,9 @@ function levelForDrill(cat, phrase) {
 }
 
 function levelForStory(storyKey) {
+  // Stories carry their own level now; STORY_LEVELS is kept for older keys.
+  var story = stories.filter(function (s) { return s.slug === storyKey; })[0];
+  if (story && story.level) return story.level;
   return STORY_LEVELS[storyKey] || 'A2.1';
 }
 
@@ -11973,21 +11280,21 @@ let trState = {
 };
 
 function loadTranslateCache() {
-  try { return JSON.parse(localStorage.getItem(TRANSLATE_CACHE_KEY) || '{}'); }
+  try { return JSON.parse(Store.getItem(TRANSLATE_CACHE_KEY) || '{}'); }
   catch (e) { return {}; }
 }
 
 function saveTranslateCache(obj) {
-  try { localStorage.setItem(TRANSLATE_CACHE_KEY, JSON.stringify(obj)); } catch (e) {}
+  try { Store.setItem(TRANSLATE_CACHE_KEY, JSON.stringify(obj)); } catch (e) {}
 }
 
 function loadTranslateHistory() {
-  try { return JSON.parse(localStorage.getItem(TRANSLATE_HISTORY_KEY) || '[]'); }
+  try { return JSON.parse(Store.getItem(TRANSLATE_HISTORY_KEY) || '[]'); }
   catch (e) { return []; }
 }
 
 function saveTranslateHistory(arr) {
-  try { localStorage.setItem(TRANSLATE_HISTORY_KEY, JSON.stringify(arr)); } catch (e) {}
+  try { Store.setItem(TRANSLATE_HISTORY_KEY, JSON.stringify(arr)); } catch (e) {}
 }
 
 function addToTranslateHistory(entry) {
@@ -12298,6 +11605,18 @@ function renderSettings() {
     </div>
 
     <div class="stg-section">
+      <div class="stg-section-title">Account</div>
+      <div class="stg-section-sub">Your progress and uploads are tied to this account, so they follow you onto any device you sign in on.</div>
+      <div class="account-row">
+        <div>
+          <div class="account-label">Signed in as</div>
+          <div class="account-email">${escapeHtml((window.__user && window.__user.email) || '')}</div>
+        </div>
+        <button class="stg-reset" style="margin:0" onclick="signOut()">Sign out</button>
+      </div>
+    </div>
+
+    <div class="stg-section">
       <div class="stg-section-title">📖 Guide &amp; tips</div>
       <div class="stg-section-sub">Everything you need to know about using the app — storage, backups, sharing, and more.</div>
       ${renderGuideTopics()}
@@ -12472,7 +11791,7 @@ function saveSettingsFromForm() {
 
 function resetSettings() {
   if (!confirm('Reset settings to defaults? Your progress, custom material, and tracked time will not be affected.')) return;
-  try { localStorage.removeItem('fr_settings'); } catch (e) {}
+  try { Store.removeItem('fr_settings'); } catch (e) {}
   renderSettings();
 }
 
@@ -12807,7 +12126,7 @@ function renderProgressSection(title, sections) {
 
 function resetMastery() {
   if (!confirm('Reset all progress stats? This cannot be undone. Your custom material and tracked time will NOT be affected.')) return;
-  try { localStorage.removeItem(MASTERY_STORAGE_KEY); } catch (e) {}
+  try { Store.removeItem(MASTERY_STORAGE_KEY); } catch (e) {}
   renderProgress();
 }
 
@@ -12817,7 +12136,7 @@ function resetMastery() {
 
 function loadCustom() {
   try {
-    const obj = JSON.parse(localStorage.getItem('fr_custom') || '{}');
+    const obj = JSON.parse(Store.getItem('fr_custom') || '{}');
     obj.flashcards = obj.flashcards || [];
     obj.phrases = obj.phrases || [];
     obj.notes = obj.notes || [];
@@ -12828,7 +12147,7 @@ function loadCustom() {
 }
 
 function saveCustom(obj) {
-  try { localStorage.setItem('fr_custom', JSON.stringify(obj)); } catch (e) {}
+  try { Store.setItem('fr_custom', JSON.stringify(obj)); } catch (e) {}
 }
 
 function addCustomFlashcard(fr, en, ex, level) {
@@ -13222,8 +12541,8 @@ function exportFullBackup() {
     mastery: loadMastery(),
     time: loadTime(),
     streak: {
-      last: localStorage.getItem('fr_last') || null,
-      count: parseInt(localStorage.getItem('fr_streak') || '0')
+      last: Store.getItem('fr_last') || null,
+      count: parseInt(Store.getItem('fr_streak') || '0')
     },
     reminder: loadReminderPrefs()
   };
@@ -13238,7 +12557,7 @@ function exportFullBackup() {
   URL.revokeObjectURL(url);
 
   // Record when we last exported — used to prompt reminders
-  try { localStorage.setItem('fr_last_backup', dateKey()); } catch (e) {}
+  try { Store.setItem('fr_last_backup', dateKey()); } catch (e) {}
 
   const fb = document.getElementById('fullExportFb');
   if (fb) {
@@ -13305,22 +12624,22 @@ function importFullBackupFile(event) {
           if (secs > cur) { existing[day] = secs; changed++; }
         });
         // save
-        try { localStorage.setItem('fr_time', JSON.stringify(existing)); } catch (e) {}
+        try { Store.setItem('fr_time', JSON.stringify(existing)); } catch (e) {}
         if (changed > 0) summary.push(`${changed} days of practice time`);
       }
 
       // --- Streak: take the higher count and most-recent last-date ---
       if (data.streak) {
-        const curLast = localStorage.getItem('fr_last');
-        const curCount = parseInt(localStorage.getItem('fr_streak') || '0');
+        const curLast = Store.getItem('fr_last');
+        const curCount = parseInt(Store.getItem('fr_streak') || '0');
         const newCount = Math.max(curCount, data.streak.count || 0);
         const newLast = (data.streak.last && (!curLast || new Date(data.streak.last) > new Date(curLast)))
           ? data.streak.last : curLast;
         if (newCount !== curCount) {
-          localStorage.setItem('fr_streak', String(newCount));
+          Store.setItem('fr_streak', String(newCount));
           summary.push(`streak now ${newCount}`);
         }
-        if (newLast && newLast !== curLast) localStorage.setItem('fr_last', newLast);
+        if (newLast && newLast !== curLast) Store.setItem('fr_last', newLast);
       }
 
       // --- Reminder prefs: last write wins (only one device sets it at a time typically) ---
@@ -13347,7 +12666,7 @@ function importFullBackupFile(event) {
 
 function daysSinceLastBackup() {
   try {
-    const last = localStorage.getItem('fr_last_backup');
+    const last = Store.getItem('fr_last_backup');
     if (!last) return null;
     return daysBetween(dateKey(), last);
   } catch (e) { return null; }
@@ -13375,7 +12694,7 @@ const TODAY_DONE_KEY = 'fr_today_done';
 
 function loadTodayDone() {
   try {
-    const raw = JSON.parse(localStorage.getItem(TODAY_DONE_KEY) || '{}');
+    const raw = JSON.parse(Store.getItem(TODAY_DONE_KEY) || '{}');
     const today = dateKey();
     // Only return today's state — old days are discarded
     return raw[today] ? { date: today, ids: raw[today] } : { date: today, ids: [] };
@@ -13389,14 +12708,14 @@ function saveTodayDone(ids) {
   // Keep the last 7 days of state for any future debugging, but only today's
   // is actually used.
   let all = {};
-  try { all = JSON.parse(localStorage.getItem(TODAY_DONE_KEY) || '{}'); } catch (e) {}
+  try { all = JSON.parse(Store.getItem(TODAY_DONE_KEY) || '{}'); } catch (e) {}
   all[today] = ids;
   // Prune anything older than 7 days
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - 7);
   const cutoffKey = dateKey(cutoff);
   Object.keys(all).forEach(k => { if (k < cutoffKey) delete all[k]; });
-  localStorage.setItem(TODAY_DONE_KEY, JSON.stringify(all));
+  Store.setItem(TODAY_DONE_KEY, JSON.stringify(all));
 }
 
 function taskId(task) {
@@ -13773,11 +13092,11 @@ let wbState = {
 // Structure: { "ch02-ex1": { done: true, at: "2026-04-20", right: 8, wrong: 2 } }
 function loadWbProgress() {
   try {
-    return JSON.parse(localStorage.getItem('fr_workbook') || '{}');
+    return JSON.parse(Store.getItem('fr_workbook') || '{}');
   } catch (e) { return {}; }
 }
 function saveWbProgress(obj) {
-  try { localStorage.setItem('fr_workbook', JSON.stringify(obj)); } catch (e) {}
+  try { Store.setItem('fr_workbook', JSON.stringify(obj)); } catch (e) {}
 }
 function markExerciseDone(exId, right, wrong) {
   const p = loadWbProgress();
@@ -14634,7 +13953,7 @@ const phrases = [
   { fr: "Ça marche !", en: "Sounds good! / Deal!" }
 ];
 
-(function initPhrase() {
+function initPhrase() {
   // rotate phrase by date so it's stable across the day
   const d = new Date();
   const idx = (d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate()) % phrases.length;
@@ -14644,19 +13963,19 @@ const phrases = [
   // simple streak: stored in localStorage
   try {
     const today = new Date().toDateString();
-    const last = localStorage.getItem('fr_last');
-    let streak = parseInt(localStorage.getItem('fr_streak') || '0');
+    const last = Store.getItem('fr_last');
+    let streak = parseInt(Store.getItem('fr_streak') || '0');
     if (last !== today) {
       const lastDate = last ? new Date(last) : null;
       const oneDay = 1000 * 60 * 60 * 24;
       if (lastDate && (new Date(today) - lastDate) / oneDay <= 1.5) streak++;
       else streak = 1;
-      localStorage.setItem('fr_last', today);
-      localStorage.setItem('fr_streak', String(streak));
+      Store.setItem('fr_last', today);
+      Store.setItem('fr_streak', String(streak));
     }
     document.getElementById('streakLabel').innerHTML = `day <strong>${streak}</strong>`;
   } catch (e) {}
-})();
+}
 
 /* ====================== TIME TRACKING ======================
    Stored in localStorage under 'fr_time' as { "YYYY-MM-DD": seconds }.
@@ -14776,12 +14095,12 @@ function isRecentWeek(weekKey, weeksBack) {
 
 function loadTime() {
   try {
-    return JSON.parse(localStorage.getItem('fr_time') || '{}');
+    return JSON.parse(Store.getItem('fr_time') || '{}');
   } catch (e) { return {}; }
 }
 
 function saveTime(obj) {
-  try { localStorage.setItem('fr_time', JSON.stringify(obj)); } catch (e) {}
+  try { Store.setItem('fr_time', JSON.stringify(obj)); } catch (e) {}
 }
 
 function addSeconds(seconds) {
@@ -14927,17 +14246,446 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-// Initial render and start
-renderTracker();
-renderTodayCard();
-startTracking();
-scheduleReminder();
+// Called by the bootstrap script once the learner is signed in and their
+// content and progress have come back from the server.
+function bootApp() {
+  initPhrase();
+  renderTracker();
+  renderTodayCard();
+  startTracking();
+  scheduleReminder();
 
-// Show welcome modal on first visit
-if (isFirstTimeUser()) {
-  // Small delay so the page renders behind the modal first
-  setTimeout(() => showWelcomeModal(false), 400);
+  // Show welcome modal on first visit
+  if (isFirstTimeUser()) {
+    // Small delay so the page renders behind the modal first
+    setTimeout(() => showWelcomeModal(false), 400);
+  }
 }
+window.bootApp = bootApp;
+
+</script>
+
+<script>
+/* =========================================================
+   UPLOAD — put lesson material in, get exercises out.
+
+   Photograph a worksheet, attach a PDF, or paste your notes. The file goes to
+   the server, Claude reads it, and what it builds lands in your decks, drills,
+   quizzes and concepts alongside everything else.
+   ========================================================= */
+(function () {
+  'use strict';
+
+  var MAX_EDGE = 1800;      // px — plenty for Claude to read a worksheet
+  var JPEG_QUALITY = 0.85;
+
+  var upState = {
+    mode: 'photo',          // photo | file | text
+    file: null,             // { base64, mimeType, fileName, previewUrl, bytes }
+    busy: false,
+    uploads: [],
+    loaded: false
+  };
+  window.upState = upState;
+
+  function el(id) { return document.getElementById(id); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* ------------------------------------------------------ render ----- */
+
+  function renderUpload() {
+    var wrap = el('uploadBody');
+    if (!wrap) return;
+
+    wrap.innerHTML =
+      '<div class="up-intro">' +
+        '<p>Photograph a worksheet, attach a PDF, or paste your notes. Claude reads it ' +
+        'and builds vocabulary decks, drills, quizzes and grammar explainers from it — ' +
+        'which then join your normal practice and spaced repetition.</p>' +
+      '</div>' +
+
+      '<div class="up-tabs">' +
+        tab('photo', 'Photo') + tab('file', 'PDF or image') + tab('text', 'Paste text') +
+      '</div>' +
+
+      '<div class="up-panel" id="upPanel">' + panelHtml() + '</div>' +
+
+      '<div class="up-field">' +
+        '<label for="upTitle">Title <span class="up-optional">optional</span></label>' +
+        '<input type="text" id="upTitle" placeholder="Lesson 12 — the partitive" maxlength="120">' +
+      '</div>' +
+
+      '<div class="up-field">' +
+        '<label for="upNote">Anything Claude should know <span class="up-optional">optional</span></label>' +
+        '<textarea id="upNote" rows="2" maxlength="500" ' +
+          'placeholder="e.g. Only the vocabulary on the left-hand page, and go easy on the quizzes"></textarea>' +
+      '</div>' +
+
+      '<button class="up-submit" id="upSubmit" onclick="submitUpload()">' +
+        'Build exercises from this' +
+      '</button>' +
+
+      '<div class="up-status" id="upStatus"></div>' +
+
+      '<div class="section-title" style="margin-top:34px">Your uploads ' +
+        '<span class="count" id="upCount"></span></div>' +
+      '<div id="upList"><div class="up-empty">Loading…</div></div>';
+
+    bindPanel();
+    loadUploads();
+  }
+  window.renderUpload = renderUpload;
+
+  function tab(mode, label) {
+    return '<button class="up-tab' + (upState.mode === mode ? ' active' : '') +
+      '" onclick="setUploadMode(\'' + mode + '\')">' + label + '</button>';
+  }
+
+  function panelHtml() {
+    if (upState.mode === 'text') {
+      return '<textarea id="upText" class="up-textarea" rows="10" ' +
+        'placeholder="Paste your vocabulary list, lesson notes, or anything your tutor sent you…"></textarea>';
+    }
+
+    var isPhoto = upState.mode === 'photo';
+    if (upState.file) {
+      var preview = upState.file.mimeType === 'application/pdf'
+        ? '<div class="up-pdf-icon">PDF</div>'
+        : '<img src="' + upState.file.previewUrl + '" alt="Selected material">';
+      return '<div class="up-preview">' + preview +
+        '<div class="up-preview-meta">' +
+          '<div class="up-preview-name">' + esc(upState.file.fileName) + '</div>' +
+          '<div class="up-preview-size">' + formatBytes(upState.file.bytes) + '</div>' +
+        '</div>' +
+        '<button class="up-clear" onclick="clearUploadFile()">Choose a different one</button>' +
+      '</div>';
+    }
+
+    return '<label class="up-drop" for="upFile">' +
+        '<div class="up-drop-icon">' + (isPhoto ? cameraIcon() : fileIcon()) + '</div>' +
+        '<div class="up-drop-title">' + (isPhoto ? 'Take a photo' : 'Choose a file') + '</div>' +
+        '<div class="up-drop-sub">' + (isPhoto
+          ? 'Point at the page. Flat, well lit, whole page in frame.'
+          : 'PDF, JPEG, PNG or WebP — up to 8MB.') + '</div>' +
+      '</label>' +
+      '<input type="file" id="upFile" class="up-file-input" ' +
+        (isPhoto ? 'accept="image/*" capture="environment"' : 'accept="image/*,application/pdf"') + '>';
+  }
+
+  function bindPanel() {
+    var input = el('upFile');
+    if (input) input.addEventListener('change', onFileChosen);
+  }
+
+  function setUploadMode(mode) {
+    upState.mode = mode;
+    upState.file = null;
+    renderUpload();
+  }
+  window.setUploadMode = setUploadMode;
+
+  function clearUploadFile() {
+    if (upState.file && upState.file.previewUrl) URL.revokeObjectURL(upState.file.previewUrl);
+    upState.file = null;
+    el('upPanel').innerHTML = panelHtml();
+    bindPanel();
+  }
+  window.clearUploadFile = clearUploadFile;
+
+  /* ------------------------------------------------------- file ------ */
+
+  async function onFileChosen(event) {
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+    setStatus('');
+
+    try {
+      if (file.type === 'application/pdf') {
+        if (file.size > 8 * 1024 * 1024) {
+          throw new Error('That PDF is ' + formatBytes(file.size) + '. The limit is 8MB.');
+        }
+        upState.file = {
+          base64: await toBase64(file),
+          mimeType: 'application/pdf',
+          fileName: file.name,
+          bytes: file.size,
+          previewUrl: null
+        };
+      } else if (file.type.indexOf('image/') === 0) {
+        // Phone photos are far bigger than Claude needs. Shrinking here keeps
+        // the upload inside the request limit and the reading cost down.
+        upState.file = await shrinkImage(file);
+      } else {
+        throw new Error('That file type is not supported. Use a JPEG, PNG, WebP or PDF.');
+      }
+      el('upPanel').innerHTML = panelHtml();
+      bindPanel();
+    } catch (err) {
+      setStatus(err.message, 'error');
+    }
+  }
+
+  function toBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var result = String(reader.result);
+        resolve(result.slice(result.indexOf(',') + 1));
+      };
+      reader.onerror = function () { reject(new Error('Could not read that file')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function shrinkImage(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height));
+        var canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        var dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
+        var base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+        URL.revokeObjectURL(url);
+        resolve({
+          base64: base64,
+          mimeType: 'image/jpeg',
+          fileName: file.name || 'photo.jpg',
+          bytes: Math.floor((base64.length * 3) / 4),
+          previewUrl: dataUrl
+        });
+      };
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        reject(new Error('That image could not be opened'));
+      };
+      img.src = url;
+    });
+  }
+
+  function formatBytes(n) {
+    if (!n) return '';
+    if (n < 1024 * 1024) return Math.round(n / 1024) + 'KB';
+    return (n / 1024 / 1024).toFixed(1) + 'MB';
+  }
+
+  /* ----------------------------------------------------- submit ------ */
+
+  function setStatus(html, tone) {
+    var box = el('upStatus');
+    if (!box) return;
+    box.className = 'up-status' + (tone ? ' ' + tone : '');
+    box.innerHTML = html;
+  }
+
+  async function submitUpload() {
+    if (upState.busy) return;
+
+    var payload = {
+      inputType: upState.mode === 'text' ? 'text' : null,
+      title: (el('upTitle').value || '').trim(),
+      note: (el('upNote').value || '').trim()
+    };
+
+    if (upState.mode === 'text') {
+      payload.text = (el('upText') && el('upText').value || '').trim();
+      if (payload.text.length < 20) {
+        return setStatus('Paste a bit more — there is not enough there to build exercises from.', 'error');
+      }
+    } else {
+      if (!upState.file) return setStatus('Choose a photo or file first.', 'error');
+      payload.inputType = upState.file.mimeType === 'application/pdf' ? 'pdf' : 'image';
+      payload.dataBase64 = upState.file.base64;
+      payload.mimeType = upState.file.mimeType;
+      payload.fileName = upState.file.fileName;
+    }
+
+    upState.busy = true;
+    var button = el('upSubmit');
+    button.disabled = true;
+    button.textContent = 'Uploading…';
+    setStatus('<span class="up-spinner"></span> Sending your material…', 'working');
+
+    try {
+      var created = await window.Api.post('/api/uploads', payload);
+      var id = created.upload.id;
+
+      button.textContent = 'Reading…';
+      setStatus(
+        '<span class="up-spinner"></span> Claude is reading it and building exercises. ' +
+        'This usually takes half a minute or so — you can leave this screen open.',
+        'working'
+      );
+
+      var result = await window.Api.post('/api/uploads/parse', { id: id });
+
+      setStatus(
+        '<div class="up-done-title">' + esc(result.title || 'Done') + '</div>' +
+        '<p>' + esc(result.summary || '') + '</p>' +
+        '<div class="up-chips">' + statChips(result.stats) + '</div>',
+        'done'
+      );
+
+      // Clear the form so the next upload starts clean.
+      upState.file = null;
+      el('upTitle').value = '';
+      el('upNote').value = '';
+      if (el('upText')) el('upText').value = '';
+      el('upPanel').innerHTML = panelHtml();
+      bindPanel();
+
+      await window.refreshContent();
+      await loadUploads();
+    } catch (err) {
+      setStatus(
+        '<div class="up-done-title">That didn’t work</div><p>' + esc(err.message) + '</p>',
+        'error'
+      );
+      await loadUploads();
+    } finally {
+      upState.busy = false;
+      button.disabled = false;
+      button.textContent = 'Build exercises from this';
+    }
+  }
+  window.submitUpload = submitUpload;
+
+  var CHIP_LABELS = {
+    decks: ['deck', 'decks'], cards: ['flashcard', 'flashcards'],
+    quizzes: ['quiz', 'quizzes'], questions: ['question', 'questions'],
+    verbs: ['verb table', 'verb tables'], drills: ['drill', 'drills'],
+    concepts: ['concept', 'concepts'], stories: ['story', 'stories'],
+    roleplays: ['role-play', 'role-plays'], grammarNotes: ['grammar note', 'grammar notes'],
+    chapters: ['chapter', 'chapters'], exercises: ['exercise', 'exercises']
+  };
+
+  function statChips(stats) {
+    if (!stats) return '';
+    var out = '';
+    for (var key in CHIP_LABELS) {
+      var n = stats[key];
+      if (!n) continue;
+      var label = CHIP_LABELS[key][n === 1 ? 0 : 1];
+      out += '<span class="up-chip"><strong>' + n + '</strong> ' + label + '</span>';
+    }
+    return out;
+  }
+
+  /* ------------------------------------------------------- list ------ */
+
+  async function loadUploads() {
+    var list = el('upList');
+    if (!list) return;
+    try {
+      var data = await window.Api.get('/api/uploads');
+      upState.uploads = data.uploads || [];
+      upState.loaded = true;
+    } catch (err) {
+      list.innerHTML = '<div class="up-empty">Could not load your uploads: ' + esc(err.message) + '</div>';
+      return;
+    }
+
+    var count = el('upCount');
+    if (count) count.textContent = upState.uploads.length
+      ? upState.uploads.length + (upState.uploads.length === 1 ? ' item' : ' items') : '';
+
+    if (!upState.uploads.length) {
+      list.innerHTML = '<div class="up-empty">Nothing uploaded yet. ' +
+        'Whatever you add here shows up in your decks and drills straight away.</div>';
+      return;
+    }
+
+    list.innerHTML = upState.uploads.map(uploadRow).join('');
+  }
+
+  function uploadRow(u) {
+    var when = new Date(u.created_at).toLocaleDateString('en-GB',
+      { day: 'numeric', month: 'short', year: 'numeric' });
+
+    var badge = {
+      ready: '<span class="up-badge ready">Ready</span>',
+      failed: '<span class="up-badge failed">Failed</span>',
+      parsing: '<span class="up-badge working">Reading…</span>',
+      pending: '<span class="up-badge pending">Not read yet</span>'
+    }[u.status] || '';
+
+    var detail = '';
+    if (u.status === 'ready') {
+      detail = '<p class="up-row-summary">' + esc(u.summary || '') + '</p>' +
+        '<div class="up-chips">' + statChips(u.stats) + '</div>';
+    } else if (u.status === 'failed') {
+      detail = '<p class="up-row-error">' + esc(u.error || 'Something went wrong.') + '</p>' +
+        '<button class="up-retry" onclick="retryUpload(\'' + u.id + '\')">Try reading it again</button>';
+    } else if (u.status === 'pending') {
+      detail = '<button class="up-retry" onclick="retryUpload(\'' + u.id + '\')">Read it now</button>';
+    }
+
+    return '<div class="up-row">' +
+      '<div class="up-row-head">' +
+        '<div class="up-row-title">' + esc(u.title) + '</div>' + badge +
+      '</div>' +
+      '<div class="up-row-meta">' + esc(typeLabel(u.input_type)) + ' · ' + when + '</div>' +
+      detail +
+      '<button class="up-delete" onclick="deleteUpload(\'' + u.id + '\')" ' +
+        'title="Delete this upload and everything built from it">Remove</button>' +
+    '</div>';
+  }
+
+  function typeLabel(t) {
+    return { image: 'Photo', pdf: 'PDF', text: 'Pasted text' }[t] || 'Material';
+  }
+
+  async function retryUpload(id) {
+    setStatus('<span class="up-spinner"></span> Reading it now…', 'working');
+    try {
+      var result = await window.Api.post('/api/uploads/parse', { id: id });
+      setStatus(
+        '<div class="up-done-title">' + esc(result.title || 'Done') + '</div>' +
+        '<p>' + esc(result.summary || '') + '</p>' +
+        '<div class="up-chips">' + statChips(result.stats) + '</div>',
+        'done'
+      );
+      await window.refreshContent();
+    } catch (err) {
+      setStatus('<div class="up-done-title">Still no luck</div><p>' + esc(err.message) + '</p>', 'error');
+    }
+    await loadUploads();
+  }
+  window.retryUpload = retryUpload;
+
+  async function deleteUpload(id) {
+    var upload = upState.uploads.filter(function (u) { return u.id === id; })[0];
+    var name = upload ? upload.title : 'this upload';
+    if (!confirm('Remove "' + name + '"?\n\nEverything built from it — decks, drills, quizzes — goes too. ' +
+                 'Your progress on other material is not affected.')) return;
+    try {
+      await window.Api.del('/api/uploads?id=' + encodeURIComponent(id));
+      await window.refreshContent();
+      await loadUploads();
+    } catch (err) {
+      setStatus('Could not remove that: ' + esc(err.message), 'error');
+    }
+  }
+  window.deleteUpload = deleteUpload;
+
+  function cameraIcon() {
+    return '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">' +
+      '<path d="M9 2 7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9zm3 5a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm0 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>';
+  }
+
+  function fileIcon() {
+    return '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">' +
+      '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 7V3.5L18.5 9H14z"/></svg>';
+  }
+})();
 
 </script>
 </body>

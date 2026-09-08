@@ -1,0 +1,25 @@
+{
+  "name": "apprendre",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Apprendre \u2014 French revision app. Upload lesson material, Claude turns it into exercises.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "db:setup": "node scripts/seed.mjs --schema",
+    "db:seed": "node scripts/seed.mjs",
+    "db:reset": "node scripts/seed.mjs --schema --reset",
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.124.0",
+    "@neondatabase/serverless": "^1.0.1",
+    "@vercel/blob": "^1.1.1",
+    "bcryptjs": "^3.0.2",
+    "jose": "^6.1.0",
+    "zod": "^4.5.4"
+  }
+}

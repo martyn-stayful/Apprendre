@@ -1,6 +1,13 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
+import { z } from 'zod';
 import { ParsedContent } from './schema.js';
+
+// The API compiles a grammar for structured outputs, and this schema — eleven
+// sections, several of them deeply nested — is too big for it ("the compiled
+// grammar is too large"). Rather than cut content types to fit, we describe the
+// shape in the prompt and validate the reply ourselves. Same guarantee at the
+// point it matters, no ceiling on how rich the schema can get.
+const SHAPE = JSON.stringify(z.toJSONSchema(ParsedContent), null, 0);
 
 const MODEL = 'claude-opus-5';
 
@@ -59,7 +66,13 @@ Rules that matter:
   generously — anything past the most basic words.
 - Aim for enough to practise with, not everything possible: roughly 10-25 cards per
   deck, 8-12 quiz questions, 10-20 drills. Split genuinely different topics into
-  separate decks rather than one long one.`;
+  separate decks rather than one long one.
+
+Reply with a single JSON object and nothing else — no prose around it, no markdown
+code fence. Every key below must be present; use an empty array where a type does
+not apply. It must validate against this JSON Schema:
+
+${SHAPE}`;
 
 function pdfBlock(base64) {
   return { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } };
@@ -95,50 +108,109 @@ export async function parseMaterial({ inputType, text, base64, mimeType, note })
       ? 'Here is the lesson material:\n\n' + (text || '')
       : 'The attached file is the lesson material.',
     note ? `\n\nThe learner added this instruction — follow it:\n${note}` : '',
-    '\n\nRead it and build the exercises.',
+    '\n\nRead it and build the exercises. Reply with the JSON object and nothing ',
+    'else — no explanation before or after it, no markdown code fence.',
   ].join('');
 
   content.push({ type: 'text', text: instruction });
 
-  const stream = client().messages.stream({
-    model: MODEL,
-    max_tokens: 32000,
-    system: SYSTEM,
-    thinking: { type: 'adaptive' },
-    output_config: { format: zodOutputFormat(ParsedContent, 'lesson_content') },
-    messages: [{ role: 'user', content }],
-  });
+  const messages = [{ role: 'user', content }];
+  let lastProblem = '';
 
-  const message = await stream.finalMessage();
-
-  if (message.stop_reason === 'refusal') {
-    throw new Error(
-      'Claude declined to process this material' +
-      (message.stop_details?.explanation ? `: ${message.stop_details.explanation}` : '.')
-    );
-  }
-
-  const raw = message.content
-    .filter((b) => b.type === 'text')
-    .map((b) => b.text)
-    .join('');
-
-  if (!raw.trim()) throw new Error('Claude returned an empty response');
-
-  let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    if (message.stop_reason === 'max_tokens') {
-      throw new Error('The material produced more exercises than fit in one response. Try splitting it into smaller uploads.');
+  // Two attempts: a stray character in a long JSON reply shouldn't cost the
+  // learner their whole upload, so we hand the problem back and let Claude fix it.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    let message;
+    try {
+      message = await client().messages.stream({
+        model: MODEL,
+        max_tokens: 32000,
+        system: SYSTEM,
+        thinking: { type: 'adaptive' },
+        messages,
+      }).finalMessage();
+    } catch (err) {
+      throw new Error(explain(err));
     }
-    throw new Error('Claude returned something that was not valid JSON');
+
+    if (message.stop_reason === 'refusal') {
+      throw new Error(
+        'Claude declined to read this material' +
+        (message.stop_details?.explanation ? `: ${message.stop_details.explanation}` : '.')
+      );
+    }
+
+    if (message.stop_reason === 'max_tokens') {
+      throw new Error(
+        'That produced more exercises than fit in one response. ' +
+        'Try uploading it in smaller pieces — a page at a time.'
+      );
+    }
+
+    const raw = message.content.filter((b) => b.type === 'text').map((b) => b.text).join('');
+    if (!raw.trim()) throw new Error('Claude returned an empty response');
+
+    const parsed = parseJson(raw);
+    if (parsed.ok) {
+      const result = ParsedContent.safeParse(parsed.value);
+      if (result.success) return { content: result.data, usage: message.usage };
+      const issue = result.error.issues[0];
+      lastProblem = `${issue.path.join('.') || 'the response'}: ${issue.message}`;
+    } else {
+      lastProblem = parsed.error;
+    }
+
+    if (attempt === 0) {
+      messages.push(
+        { role: 'assistant', content: raw.slice(0, 4000) },
+        { role: 'user', content:
+          `That didn't match the required shape — ${lastProblem}. ` +
+          'Send the whole JSON object again, corrected, with nothing around it.' }
+      );
+    }
   }
 
-  const result = ParsedContent.safeParse(parsed);
-  if (!result.success) {
-    throw new Error(`Claude's output did not match the expected shape: ${result.error.issues[0]?.message || 'unknown mismatch'}`);
-  }
+  throw new Error(`Claude's reply did not match the expected shape (${lastProblem})`);
+}
 
-  return { content: result.data, usage: message.usage };
+/** Pull the JSON object out of a reply, tolerating a code fence or stray prose. */
+function parseJson(raw) {
+  let text = raw.trim();
+
+  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fence) text = fence[1].trim();
+
+  const first = text.indexOf('{');
+  const last = text.lastIndexOf('}');
+  if (first === -1 || last <= first) {
+    return { ok: false, error: 'no JSON object in the reply' };
+  }
+  text = text.slice(first, last + 1);
+
+  try {
+    return { ok: true, value: JSON.parse(text) };
+  } catch (err) {
+    return { ok: false, error: `not valid JSON (${err.message})` };
+  }
+}
+
+/** Turn an SDK error into something worth reading on a phone. */
+function explain(err) {
+  const status = err?.status;
+  const detail = err?.error?.error?.message || err?.message || '';
+
+  if (status === 401) return 'The Claude API key is not valid. Check ANTHROPIC_API_KEY in the project settings.';
+  if (status === 403) return 'The Claude API key is not allowed to make this request. Check it in the Anthropic console.';
+  if (status === 429) return 'Too many requests to Claude just now, or the account is out of credit. Wait a minute and try again.';
+  if (status === 400 && /credit balance|billing/i.test(detail)) {
+    return 'The Anthropic account is out of credit. Top it up in the Anthropic console and try again.';
+  }
+  if (status === 400 && /too large|too long|exceeds/i.test(detail)) {
+    return 'That material is too large for one request. Try a single page, or split the text.';
+  }
+  if (status >= 500) return 'Claude is having trouble at the moment. Try again in a minute.';
+  if (err?.name === 'APIConnectionError' || /fetch failed|ECONN/i.test(detail)) {
+    return 'Could not reach Claude. Check the connection and try again.';
+  }
+  return detail ? `Claude could not read that: ${detail}` : 'Claude could not read that material.';
 }

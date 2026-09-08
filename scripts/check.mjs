@@ -34,6 +34,14 @@ try {
   ok(`converts to a strict JSON schema (${format.schema.required.length} sections)`);
 } catch (err) { bad('parser schema', err.message); }
 
+console.log('\nSchema');
+try {
+  const { SCHEMA_SQL } = await import(path.join(root, 'api/_lib/schema-sql.js'));
+  const onDisk = fs.readFileSync(path.join(root, 'db/schema.sql'), 'utf8');
+  if (SCHEMA_SQL !== onDisk) throw new Error('db/schema.sql is out of date — run: npm run schema');
+  ok('db/schema.sql matches api/_lib/schema-sql.js');
+} catch (err) { bad('schema', err.message); }
+
 console.log('\nBuilt-in content');
 try {
   const seed = JSON.parse(fs.readFileSync(path.join(root, 'db/seed-content.json'), 'utf8'));

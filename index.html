@@ -7549,9 +7549,36 @@
         '<p class="setup-help">Add the missing values under <strong>Project → ' +
         'Settings → Environment Variables</strong> on Vercel, redeploy, then ' +
         'reload this page. The README has the full walkthrough.</p>' +
-        '<button class="auth-submit" onclick="location.reload()">Check again</button>' +
+        (canInitialise(setup)
+          ? '<button class="auth-submit" onclick="runSetup()">Set up the database</button>'
+          : '<button class="auth-submit" onclick="location.reload()">Check again</button>') +
+        '<div class="auth-error" id="setupError"></div>' +
       '</div>';
   }
+
+  /** The database is connected but has no tables or content yet. */
+  function canInitialise(setup) {
+    var db = setup.checks.filter(function (c) { return c.key === 'DATABASE_URL'; })[0];
+    return Boolean(db) && !db.ok && /tables are missing|Connected, but empty/i.test(db.detail);
+  }
+
+  async function runSetup() {
+    var button = document.querySelector('.setup-card .auth-submit');
+    var error = el('setupError');
+    button.disabled = true;
+    button.textContent = 'Setting up…';
+    error.textContent = '';
+    try {
+      var result = await Api.post('/api/setup');
+      button.textContent = result.message || 'Done';
+      setTimeout(function () { location.reload(); }, 900);
+    } catch (err) {
+      error.textContent = err.message;
+      button.disabled = false;
+      button.textContent = 'Set up the database';
+    }
+  }
+  window.runSetup = runSetup;
 
   function setSplash(message) {
     var s = el('bootSplash');

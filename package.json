@@ -12,7 +12,8 @@
     "db:setup": "node scripts/seed.mjs --schema",
     "db:seed": "node scripts/seed.mjs",
     "db:reset": "node scripts/seed.mjs --schema --reset",
-    "dev": "vercel dev"
+    "dev": "vercel dev",
+    "schema": "node scripts/schema.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",

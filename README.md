@@ -95,9 +95,24 @@ node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
 Without Blob storage, uploads still work — the file is held with its database
 row for the parse and dropped afterwards, so only the exercises are kept.
 
-### 3. Create the tables and load the built-in library
+### 3. Deploy, then open it
 
-Once, from your machine:
+```bash
+vercel --prod
+```
+
+Open the URL. If anything is still missing, the app says so — a checklist of
+what's set and what isn't, rather than an error. Once the database is connected
+it offers a **Set up the database** button that creates the tables and loads the
+built-in library for you. No terminal needed.
+
+That button only works while the app has no accounts yet; once someone has
+signed up it refuses. The first person to sign up becomes the admin, and if you
+set `SIGNUP_CODE` the sign-up form asks for it.
+
+### Doing the database setup from a terminal instead
+
+If you'd rather:
 
 ```bash
 npm install
@@ -108,15 +123,6 @@ npm run db:setup                  # creates the tables, then seeds
 `npm run db:seed` is safe to re-run; it does nothing if the library is already
 loaded. `npm run db:reset` replaces the built-in library and leaves every
 learner's own uploads and progress alone.
-
-### 4. Deploy
-
-```bash
-vercel --prod
-```
-
-The first person to sign up becomes the admin. If you set `SIGNUP_CODE`, the
-sign-up form asks for it.
 
 ---
 
@@ -162,7 +168,13 @@ whatever was on that device is pushed up the first time you sign in.
 ```bash
 npm run check     # every API module imports, schema is strict, scripts parse
 npm run dev       # vercel dev, with .env.local
+npm run schema    # regenerate db/schema.sql after editing the DDL
 ```
+
+The schema lives in `api/_lib/schema-sql.js` as a string, because the setup
+endpoint needs it in its function bundle rather than on disk. `db/schema.sql` is
+generated from it for use with `psql`, and `npm run check` fails if the two
+drift apart.
 
 `npm run check` is the fast pre-deploy pass. It won't catch a bad SQL query —
 for that, run against a real database.

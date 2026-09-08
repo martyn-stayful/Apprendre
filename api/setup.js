@@ -1,11 +1,14 @@
-import { route, ok } from './_lib/http.js';
+import { route, ok, bad } from './_lib/http.js';
+import seedData from '../db/seed-content.json' with { type: 'json' };
 
 /**
  * What still needs configuring. Deliberately unauthenticated — it runs before
  * anyone can sign in — so it reports only whether each piece is present, never
  * any value.
  */
-export default route('GET', async (req, res) => {
+export default route(['GET', 'POST'], async (req, res) => {
+  if (req.method === 'POST') return initialise(res);
+
   const checks = [];
 
   const secret = process.env.AUTH_SECRET || '';
@@ -64,3 +67,43 @@ export default route('GET', async (req, res) => {
     checks,
   });
 });
+
+
+/**
+ * Create the tables and load the built-in library, from the browser, so nobody
+ * needs a terminal and a connection string to get started.
+ *
+ * Only possible while the app is genuinely uninitialised: once an account
+ * exists, or the library is loaded, this refuses. That keeps it from being a
+ * way to meddle with a running app.
+ */
+async function initialise(res) {
+  if (!process.env.DATABASE_URL) {
+    return bad(res, 'There is no database connected yet. Add Neon to this project on Vercel first.', 409);
+  }
+
+  const { db } = await import('./_lib/db.js');
+  const { applySchema, seedBuiltins } = await import('./_lib/seed.js');
+  const sql = db();
+
+  try {
+    const [{ count }] = await sql`select count(*)::int as count from users`;
+    if (count > 0) {
+      return bad(res, 'This app is already set up — sign in instead.', 409);
+    }
+  } catch (err) {
+    // No users table yet is exactly the case we are here to fix.
+    if (!/relation .* does not exist/i.test(err.message)) throw err;
+  }
+
+  await applySchema(sql);
+  const stats = await seedBuiltins(sql, seedData);
+
+  return ok(res, {
+    initialised: true,
+    stats,
+    message: stats
+      ? 'Database ready and the built-in library is loaded.'
+      : 'Database ready — the built-in library was already there.',
+  });
+}

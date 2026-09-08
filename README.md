@@ -131,10 +131,16 @@ learner's own uploads and progress alone.
 Three ways in, on the **Upload Material** screen:
 
 - **Photo** — opens the camera on a phone. Photos are shrunk to 1800px in the
-  browser before they're sent, which keeps the upload small and the reading
+  browser before they're sent, which keeps each upload small and the reading
   cost down.
-- **PDF or image** — up to 8MB.
+- **PDF or image** — up to 4MB per file.
 - **Paste text** — a vocabulary list, lesson notes, anything your tutor sent.
+
+**A worksheet can be several pages.** Add up to 10, in order. They go up one
+request at a time — a serverless request body caps out around 4.5MB, so a
+handful of photos in a single payload would be rejected — and are then read
+together in one call, so vocabulary introduced on one page and the exercises
+using it on another end up connected rather than parsed as unrelated documents.
 
 You can add a title and an instruction ("only the left-hand page", "go easy on
 the quizzes"). Claude gets both.

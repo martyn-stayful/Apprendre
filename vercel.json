@@ -30,6 +30,9 @@
     },
     "api/auth/me.js": {
       "maxDuration": 10
+    },
+    "api/uploads/file.js": {
+      "maxDuration": 60
     }
   },
   "headers": [

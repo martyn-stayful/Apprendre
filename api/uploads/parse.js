@@ -14,7 +14,7 @@ export default route('POST', withAuth(async (req, res, user) => {
   if (!id) return bad(res, 'Which upload? Pass an id.');
 
   const [source] = await sql`
-    select id, input_type, title, file_url, file_data, mime_type, raw_text, status, stats
+    select id, input_type, title, files, raw_text, status, stats
       from sources where id = ${id}::uuid and user_id = ${user.id}::uuid limit 1`;
 
   if (!source) return bad(res, 'No such upload', 404);
@@ -24,13 +24,15 @@ export default route('POST', withAuth(async (req, res, user) => {
   await sql`update sources set status = 'parsing', error = null where id = ${source.id}::uuid`;
 
   try {
-    const base64 = source.input_type === 'text' ? null : await fetchBytes(source);
+    const files = source.input_type === 'text' ? [] : await loadPages(source);
+
+    if (source.input_type !== 'text' && !files.length) {
+      throw new Error('No pages were attached to this upload');
+    }
 
     const { content, usage } = await parseMaterial({
-      inputType: source.input_type,
       text: source.raw_text,
-      base64,
-      mimeType: source.mime_type,
+      files,
       note: source.stats?.note || '',
     });
 
@@ -50,7 +52,10 @@ export default route('POST', withAuth(async (req, res, user) => {
              summary = ${content.summary || ''},
              stats = stats || ${JSON.stringify({ ...stats, usage: tokenSummary(usage) })}::jsonb,
              parsed_at = now(),
-             file_data = null
+             -- Drop the inline bytes now they've been read; keep the page list.
+             files = coalesce(
+               (select jsonb_agg(page - 'data') from jsonb_array_elements(files) as page),
+               '[]'::jsonb)
        where id = ${source.id}::uuid`;
 
     return ok(res, { status: 'ready', title: content.title, summary: content.summary, stats });
@@ -63,14 +68,20 @@ export default route('POST', withAuth(async (req, res, user) => {
   }
 }));
 
-/** Base64 bytes for the upload, from Blob storage or from the row itself. */
-async function fetchBytes(source) {
-  if (source.file_data) return source.file_data;
-  if (!source.file_url) throw new Error('The file for this upload is missing');
-  const resp = await fetch(source.file_url);
-  if (!resp.ok) throw new Error(`Could not read the stored file (${resp.status})`);
-  const buf = Buffer.from(await resp.arrayBuffer());
-  return buf.toString('base64');
+/**
+ * Every page as base64, in order. Pages live either in Blob storage or, when
+ * that isn't configured, inline on the row itself.
+ */
+async function loadPages(source) {
+  const pages = source.files || [];
+  return Promise.all(pages.map(async (page, i) => {
+    if (page.data) return { base64: page.data, mimeType: page.mimeType };
+    if (!page.url) throw new Error(`Page ${i + 1} of this upload is missing`);
+    const resp = await fetch(page.url);
+    if (!resp.ok) throw new Error(`Could not read page ${i + 1} (${resp.status})`);
+    const buf = Buffer.from(await resp.arrayBuffer());
+    return { base64: buf.toString('base64'), mimeType: page.mimeType };
+  }));
 }
 
 function tokenSummary(usage) {

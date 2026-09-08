@@ -6329,60 +6329,124 @@
 
   .up-file-input { display: none; }
 
-  .up-preview {
-    border: 1px solid rgba(26, 35, 50, 0.1);
-    border-radius: 14px;
+  .up-pages {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 8px;
+  }
+
+  .up-thumb {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border: 1px solid rgba(26, 35, 50, 0.12);
+    border-radius: 10px;
+    overflow: hidden;
     background: var(--paper);
-    padding: 14px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .up-preview img {
-    max-width: 100%;
-    max-height: 260px;
-    border-radius: 9px;
-    display: block;
-    margin: 0 auto 12px;
-  }
+  .up-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  .up-pdf-icon {
-    width: 62px;
-    height: 78px;
-    margin: 4px auto 12px;
-    border-radius: 7px;
+  .up-thumb-pdf {
+    width: 46px;
+    height: 58px;
+    border-radius: 6px;
     background: var(--ember);
     color: var(--paper);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 900;
     letter-spacing: 0.06em;
   }
 
-  .up-preview-name {
-    font-size: 14px;
+  .up-thumb-num {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: rgba(26, 35, 50, 0.72);
+    color: var(--paper);
+    font-size: 11px;
     font-weight: 700;
-    color: var(--ink);
-    word-break: break-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .up-preview-size { font-size: 12px; color: var(--slate); margin-top: 2px; }
-
-  .up-clear {
-    margin-top: 12px;
-    padding: 8px 14px;
-    border: 1px solid var(--slate-soft);
-    border-radius: 8px;
-    background: transparent;
-    font-family: 'Lato', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--slate);
+  .up-thumb-x {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(26, 35, 50, 0.72);
+    color: var(--paper);
+    font-size: 15px;
+    line-height: 1;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
   }
 
-  .up-clear:hover { border-color: var(--pine); color: var(--pine); }
+  .up-thumb-x:hover { background: var(--ember); }
+
+  .up-thumb-name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 3px 5px;
+    background: rgba(254, 252, 247, 0.92);
+    font-size: 9.5px;
+    color: var(--slate);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .up-thumb-add {
+    border-style: dashed;
+    border-color: var(--slate-soft);
+    cursor: pointer;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 11px;
+    color: var(--slate);
+    transition: all 0.15s;
+  }
+
+  .up-thumb-add:hover { border-color: var(--pine); color: var(--pine); background: var(--cream); }
+
+  .up-thumb-plus { font-size: 22px; line-height: 1; font-weight: 300; }
+
+  .up-pages-meta {
+    margin-top: 9px;
+    font-size: 12px;
+    color: var(--slate);
+  }
+
+  .up-pages-clear {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 4px;
+    font: inherit;
+    color: var(--ember);
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+  }
 
   .up-textarea, .up-field textarea, .up-field input {
     width: 100%;
@@ -14393,9 +14457,11 @@ window.bootApp = bootApp;
   var MAX_EDGE = 1800;      // px — plenty for Claude to read a worksheet
   var JPEG_QUALITY = 0.85;
 
+  var MAX_PAGES = 10;
+
   var upState = {
     mode: 'photo',          // photo | file | text
-    file: null,             // { base64, mimeType, fileName, previewUrl, bytes }
+    pages: [],              // [{ base64, mimeType, fileName, previewUrl, bytes }]
     busy: false,
     uploads: [],
     loaded: false
@@ -14420,6 +14486,8 @@ window.bootApp = bootApp;
         '<p>Photograph a worksheet, attach a PDF, or paste your notes. Claude reads it ' +
         'and builds vocabulary decks, drills, quizzes and grammar explainers from it — ' +
         'which then join your normal practice and spaced repetition.</p>' +
+        '<p>Several pages? Add them all. They are read together as one document, so ' +
+        'vocabulary on one page and the exercises using it on another end up connected.</p>' +
       '</div>' +
 
       '<div class="up-tabs">' +
@@ -14466,28 +14534,46 @@ window.bootApp = bootApp;
     }
 
     var isPhoto = upState.mode === 'photo';
-    if (upState.file) {
-      var preview = upState.file.mimeType === 'application/pdf'
-        ? '<div class="up-pdf-icon">PDF</div>'
-        : '<img src="' + upState.file.previewUrl + '" alt="Selected material">';
-      return '<div class="up-preview">' + preview +
-        '<div class="up-preview-meta">' +
-          '<div class="up-preview-name">' + esc(upState.file.fileName) + '</div>' +
-          '<div class="up-preview-size">' + formatBytes(upState.file.bytes) + '</div>' +
-        '</div>' +
-        '<button class="up-clear" onclick="clearUploadFile()">Choose a different one</button>' +
-      '</div>';
+    var picker =
+      '<input type="file" id="upFile" class="up-file-input" multiple ' +
+        (isPhoto ? 'accept="image/*" capture="environment"' : 'accept="image/*,application/pdf"') + '>';
+
+    if (!upState.pages.length) {
+      return '<label class="up-drop" for="upFile">' +
+          '<div class="up-drop-icon">' + (isPhoto ? cameraIcon() : fileIcon()) + '</div>' +
+          '<div class="up-drop-title">' + (isPhoto ? 'Take photos' : 'Choose files') + '</div>' +
+          '<div class="up-drop-sub">' + (isPhoto
+            ? 'One per page. Flat, well lit, whole page in frame.'
+            : 'PDF, JPEG, PNG or WebP — up to 4MB each.') + '</div>' +
+        '</label>' + picker;
     }
 
-    return '<label class="up-drop" for="upFile">' +
-        '<div class="up-drop-icon">' + (isPhoto ? cameraIcon() : fileIcon()) + '</div>' +
-        '<div class="up-drop-title">' + (isPhoto ? 'Take a photo' : 'Choose a file') + '</div>' +
-        '<div class="up-drop-sub">' + (isPhoto
-          ? 'Point at the page. Flat, well lit, whole page in frame.'
-          : 'PDF, JPEG, PNG or WebP — up to 8MB.') + '</div>' +
-      '</label>' +
-      '<input type="file" id="upFile" class="up-file-input" ' +
-        (isPhoto ? 'accept="image/*" capture="environment"' : 'accept="image/*,application/pdf"') + '>';
+    var thumbs = upState.pages.map(function (page, i) {
+      var inner = page.mimeType === 'application/pdf'
+        ? '<div class="up-thumb-pdf">PDF</div>'
+        : '<img src="' + page.previewUrl + '" alt="Page ' + (i + 1) + '">';
+      return '<div class="up-thumb">' + inner +
+        '<span class="up-thumb-num">' + (i + 1) + '</span>' +
+        '<button class="up-thumb-x" onclick="removeUploadPage(' + i + ')" ' +
+          'aria-label="Remove page ' + (i + 1) + '">×</button>' +
+        '<span class="up-thumb-name">' + esc(page.fileName) + '</span>' +
+      '</div>';
+    }).join('');
+
+    var full = upState.pages.length >= MAX_PAGES;
+    var total = upState.pages.reduce(function (n, p) { return n + p.bytes; }, 0);
+
+    return '<div class="up-pages">' + thumbs +
+        (full ? '' : '<label class="up-thumb up-thumb-add" for="upFile">' +
+          '<span class="up-thumb-plus">+</span><span>Add page</span></label>') +
+      '</div>' +
+      '<div class="up-pages-meta">' +
+        upState.pages.length + (upState.pages.length === 1 ? ' page' : ' pages') +
+        ' · ' + formatBytes(total) +
+        (upState.pages.length > 1 ? ' · read together as one document' : '') +
+        (full ? ' · that is the maximum' : '') +
+        ' <button class="up-pages-clear" onclick="clearUploadFile()">Clear all</button>' +
+      '</div>' + picker;
   }
 
   function bindPanel() {
@@ -14497,50 +14583,71 @@ window.bootApp = bootApp;
 
   function setUploadMode(mode) {
     upState.mode = mode;
-    upState.file = null;
+    upState.pages = [];
     renderUpload();
   }
   window.setUploadMode = setUploadMode;
 
   function clearUploadFile() {
-    if (upState.file && upState.file.previewUrl) URL.revokeObjectURL(upState.file.previewUrl);
-    upState.file = null;
+    upState.pages = [];
+    repaintPanel();
+  }
+  window.clearUploadFile = clearUploadFile;
+
+  function removeUploadPage(index) {
+    upState.pages.splice(index, 1);
+    repaintPanel();
+  }
+  window.removeUploadPage = removeUploadPage;
+
+  function repaintPanel() {
     el('upPanel').innerHTML = panelHtml();
     bindPanel();
   }
-  window.clearUploadFile = clearUploadFile;
 
   /* ------------------------------------------------------- file ------ */
 
   async function onFileChosen(event) {
-    var file = event.target.files && event.target.files[0];
-    if (!file) return;
+    var chosen = Array.prototype.slice.call(event.target.files || []);
+    if (!chosen.length) return;
     setStatus('');
 
-    try {
-      if (file.type === 'application/pdf') {
-        if (file.size > 8 * 1024 * 1024) {
-          throw new Error('That PDF is ' + formatBytes(file.size) + '. The limit is 8MB.');
-        }
-        upState.file = {
-          base64: await toBase64(file),
-          mimeType: 'application/pdf',
-          fileName: file.name,
-          bytes: file.size,
-          previewUrl: null
-        };
-      } else if (file.type.indexOf('image/') === 0) {
-        // Phone photos are far bigger than Claude needs. Shrinking here keeps
-        // the upload inside the request limit and the reading cost down.
-        upState.file = await shrinkImage(file);
-      } else {
-        throw new Error('That file type is not supported. Use a JPEG, PNG, WebP or PDF.');
-      }
-      el('upPanel').innerHTML = panelHtml();
-      bindPanel();
-    } catch (err) {
-      setStatus(err.message, 'error');
+    var room = MAX_PAGES - upState.pages.length;
+    if (chosen.length > room) {
+      setStatus('Only the first ' + room + ' were added — ' + MAX_PAGES +
+        ' pages is the most one upload can hold.', 'error');
+      chosen = chosen.slice(0, room);
     }
+
+    for (var i = 0; i < chosen.length; i++) {
+      var file = chosen[i];
+      try {
+        if (file.type === 'application/pdf') {
+          if (file.size > 4 * 1024 * 1024) {
+            throw new Error(file.name + ' is ' + formatBytes(file.size) + ' — 4MB is the limit per file.');
+          }
+          upState.pages.push({
+            base64: await toBase64(file),
+            mimeType: 'application/pdf',
+            fileName: file.name,
+            bytes: file.size,
+            previewUrl: null
+          });
+        } else if (file.type.indexOf('image/') === 0) {
+          // Phone photos are far bigger than Claude needs. Shrinking here keeps
+          // each request small and the reading cost down.
+          upState.pages.push(await shrinkImage(file));
+        } else {
+          throw new Error(file.name + ' is not a supported type. Use a JPEG, PNG, WebP or PDF.');
+        }
+      } catch (err) {
+        setStatus(err.message, 'error');
+      }
+    }
+
+    // Let the same file be picked again after removing it.
+    event.target.value = '';
+    repaintPanel();
   }
 
   function toBase64(file) {
@@ -14573,7 +14680,7 @@ window.bootApp = bootApp;
           base64: base64,
           mimeType: 'image/jpeg',
           fileName: file.name || 'photo.jpg',
-          bytes: Math.floor((base64.length * 3) / 4),
+          bytes: base64Bytes(base64),
           previewUrl: dataUrl
         });
       };
@@ -14583,6 +14690,13 @@ window.bootApp = bootApp;
       };
       img.src = url;
     });
+  }
+
+  /** Exact byte length of base64 content, accounting for '=' padding. */
+  function base64Bytes(b64) {
+    if (!b64) return 0;
+    var pad = b64.slice(-2) === '==' ? 2 : b64.slice(-1) === '=' ? 1 : 0;
+    return Math.floor((b64.length * 3) / 4) - pad;
   }
 
   function formatBytes(n) {
@@ -14603,39 +14717,53 @@ window.bootApp = bootApp;
   async function submitUpload() {
     if (upState.busy) return;
 
+    var isText = upState.mode === 'text';
     var payload = {
-      inputType: upState.mode === 'text' ? 'text' : null,
+      inputType: isText ? 'text' : (upState.pages.every(isPdf) ? 'pdf' : 'image'),
       title: (el('upTitle').value || '').trim(),
       note: (el('upNote').value || '').trim()
     };
 
-    if (upState.mode === 'text') {
+    if (isText) {
       payload.text = (el('upText') && el('upText').value || '').trim();
       if (payload.text.length < 20) {
         return setStatus('Paste a bit more — there is not enough there to build exercises from.', 'error');
       }
-    } else {
-      if (!upState.file) return setStatus('Choose a photo or file first.', 'error');
-      payload.inputType = upState.file.mimeType === 'application/pdf' ? 'pdf' : 'image';
-      payload.dataBase64 = upState.file.base64;
-      payload.mimeType = upState.file.mimeType;
-      payload.fileName = upState.file.fileName;
+    } else if (!upState.pages.length) {
+      return setStatus('Add a photo or file first.', 'error');
     }
 
     upState.busy = true;
     var button = el('upSubmit');
     button.disabled = true;
-    button.textContent = 'Uploading…';
-    setStatus('<span class="up-spinner"></span> Sending your material…', 'working');
 
     try {
+      button.textContent = 'Uploading…';
+      setStatus('<span class="up-spinner"></span> Starting…', 'working');
+
       var created = await window.Api.post('/api/uploads', payload);
       var id = created.upload.id;
 
+      // A page per request: a serverless request body caps out around 4.5MB,
+      // and a few photos in one payload would go straight past it.
+      for (var i = 0; i < upState.pages.length; i++) {
+        var page = upState.pages[i];
+        setStatus('<span class="up-spinner"></span> Uploading page ' + (i + 1) +
+          ' of ' + upState.pages.length + '…', 'working');
+        await window.Api.post('/api/uploads/file', {
+          id: id,
+          fileName: page.fileName,
+          mimeType: page.mimeType,
+          dataBase64: page.base64
+        });
+      }
+
       button.textContent = 'Reading…';
       setStatus(
-        '<span class="up-spinner"></span> Claude is reading it and building exercises. ' +
-        'This usually takes half a minute or so — you can leave this screen open.',
+        '<span class="up-spinner"></span> Claude is reading ' +
+        (upState.pages.length > 1 ? 'all ' + upState.pages.length + ' pages together' : 'it') +
+        ' and building exercises. This usually takes half a minute or so — ' +
+        'you can leave this screen open.',
         'working'
       );
 
@@ -14649,18 +14777,17 @@ window.bootApp = bootApp;
       );
 
       // Clear the form so the next upload starts clean.
-      upState.file = null;
+      upState.pages = [];
       el('upTitle').value = '';
       el('upNote').value = '';
       if (el('upText')) el('upText').value = '';
-      el('upPanel').innerHTML = panelHtml();
-      bindPanel();
+      repaintPanel();
 
       await window.refreshContent();
       await loadUploads();
     } catch (err) {
       setStatus(
-        '<div class="up-done-title">That didn’t work</div><p>' + esc(err.message) + '</p>',
+        '<div class="up-done-title">That didn\u2019t work</div><p>' + esc(err.message) + '</p>',
         'error'
       );
       await loadUploads();
@@ -14670,6 +14797,9 @@ window.bootApp = bootApp;
       button.textContent = 'Build exercises from this';
     }
   }
+
+  function isPdf(page) { return page.mimeType === 'application/pdf'; }
+
   window.submitUpload = submitUpload;
 
   var CHIP_LABELS = {
@@ -14742,11 +14872,14 @@ window.bootApp = bootApp;
       detail = '<button class="up-retry" onclick="retryUpload(\'' + u.id + '\')">Read it now</button>';
     }
 
+    var pages = Number(u.pages || 0);
+    var pageLabel = pages > 1 ? ' · ' + pages + ' pages' : '';
+
     return '<div class="up-row">' +
       '<div class="up-row-head">' +
         '<div class="up-row-title">' + esc(u.title) + '</div>' + badge +
       '</div>' +
-      '<div class="up-row-meta">' + esc(typeLabel(u.input_type)) + ' · ' + when + '</div>' +
+      '<div class="up-row-meta">' + esc(typeLabel(u.input_type)) + pageLabel + ' · ' + when + '</div>' +
       detail +
       '<button class="up-delete" onclick="deleteUpload(\'' + u.id + '\')" ' +
         'title="Delete this upload and everything built from it">Remove</button>' +

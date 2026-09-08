@@ -85,28 +85,40 @@ function imageBlock(base64, mediaType) {
 /**
  * Read one piece of material and return structured exercises.
  *
+ * Several pages go up in a single call rather than one call each: a vocabulary
+ * list on page one and the exercises using it on page two only make sense read
+ * together.
+ *
  * @param {object} input
- * @param {'text'|'image'|'pdf'} input.inputType
- * @param {string} [input.text]         pasted text
- * @param {string} [input.base64]       file bytes, base64, no newlines
- * @param {string} [input.mimeType]     e.g. image/jpeg
- * @param {string} [input.note]         the learner's own instruction for this upload
+ * @param {string} [input.text]   pasted text, when there are no files
+ * @param {Array<{base64: string, mimeType: string}>} [input.files]  pages, in order
+ * @param {string} [input.note]   the learner's own instruction for this upload
  */
-export async function parseMaterial({ inputType, text, base64, mimeType, note }) {
+export async function parseMaterial({ text, files, note }) {
+  const pages = files || [];
   const content = [];
 
-  if (inputType === 'pdf') {
-    if (!base64) throw new Error('No PDF data was supplied');
-    content.push(pdfBlock(base64));
-  } else if (inputType === 'image') {
-    if (!base64) throw new Error('No image data was supplied');
-    content.push(imageBlock(base64, mimeType || 'image/jpeg'));
-  }
+  pages.forEach((page, i) => {
+    if (!page?.base64) throw new Error(`Page ${i + 1} has no data`);
+    // Label each page so Claude can refer to them and keep their order straight.
+    if (pages.length > 1) {
+      content.push({ type: 'text', text: `--- Page ${i + 1} of ${pages.length} ---` });
+    }
+    content.push(page.mimeType === 'application/pdf'
+      ? pdfBlock(page.base64)
+      : imageBlock(page.base64, page.mimeType || 'image/jpeg'));
+  });
+
+  const source = pages.length === 0
+    ? 'Here is the lesson material:\n\n' + (text || '')
+    : pages.length === 1
+      ? 'The attached file is the lesson material.'
+      : `The ${pages.length} attached pages are one piece of material, in order. ` +
+        'Read them together — vocabulary introduced on one page is often practised ' +
+        'on another — and build one combined set of exercises, not one set per page.';
 
   const instruction = [
-    inputType === 'text'
-      ? 'Here is the lesson material:\n\n' + (text || '')
-      : 'The attached file is the lesson material.',
+    source,
     note ? `\n\nThe learner added this instruction — follow it:\n${note}` : '',
     '\n\nRead it and build the exercises. Reply with the JSON object and nothing ',
     'else — no explanation before or after it, no markdown code fence.',

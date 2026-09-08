@@ -39,6 +39,11 @@ create table if not exists sources (
   parsed_at   timestamptz
 );
 
+-- Pages of one upload: [{ url | data, mimeType, fileName, bytes }, ...].
+-- Added after the first release, so this runs as an alter rather than being
+-- part of the create above.
+alter table sources add column if not exists files jsonb not null default '[]'::jsonb;
+
 create index if not exists sources_user_idx on sources (user_id, created_at desc);
 
 -- ---------------------------------------------------------------- content --

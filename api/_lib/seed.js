@@ -1,8 +1,9 @@
-import { schemaStatements } from './schema-sql.js';
+import { schemaStatements, SCHEMA_VERSION } from './schema-sql.js';
 
-/** Create the tables. Safe to re-run — everything is IF NOT EXISTS. */
+/** Create or update the tables. Safe to re-run — every statement is idempotent. */
 export async function applySchema(sql) {
   for (const statement of schemaStatements()) await sql.query(statement);
+  await sql`update schema_meta set version = ${SCHEMA_VERSION} where only_row`;
 }
 
 /**

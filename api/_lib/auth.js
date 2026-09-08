@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
-import { db } from './db.js';
+import { db, ensureSchema } from './db.js';
 import { bad } from './http.js';
 
 const COOKIE = 'apprendre_session';
@@ -81,6 +81,9 @@ export async function currentUser(req) {
  */
 export function withAuth(handler) {
   return async (req, res) => {
+    // Every route that touches content comes through here, so this is where a
+    // deployment notices its database is behind and catches it up.
+    await ensureSchema();
     const user = await currentUser(req);
     if (!user) return bad(res, 'Not signed in', 401);
     return handler(req, res, user);

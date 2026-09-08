@@ -7456,6 +7456,16 @@
       this.lastPushedMastery = {};
       this.masteryDirty = false;
       this.signedIn = false;
+    },
+
+    /**
+     * Stop syncing. Used just before a deliberate reload or sign-out: the work
+     * has already been flushed, and letting the pagehide flush fire a request
+     * the navigation then aborts achieves nothing.
+     */
+    suspend: function () {
+      if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+      this.signedIn = false;
     }
   };
   window.Store = Store;
@@ -7577,8 +7587,23 @@
   }
   window.submitAuth = submitAuth;
 
+  /**
+   * Fetch the page fresh. Pull-to-refresh is off (overscroll-behavior: none
+   * stops the page bouncing), and a home-screen app has no address bar, so
+   * without this the only way to pick up an update is to force-quit.
+   */
+  async function reloadApp() {
+    try { await Store.flush(); } catch (e) {}
+    Store.suspend();
+    // The page is served no-store, so a plain reload is enough — and it keeps
+    // the URL clean, which matters for a home-screen app.
+    location.reload();
+  }
+  window.reloadApp = reloadApp;
+
   async function signOut() {
     await Store.flush();
+    Store.suspend();
     try { await Api.post('/api/auth/logout'); } catch (e) {}
     Store.reset();
     location.reload();
@@ -11799,6 +11824,13 @@ function renderSettings() {
           <div class="account-email">${escapeHtml((window.__user && window.__user.email) || '')}</div>
         </div>
         <button class="stg-reset" style="margin:0" onclick="signOut()">Sign out</button>
+      </div>
+      <div class="account-row">
+        <div>
+          <div class="account-label">App version</div>
+          <div class="account-email">Reload to pick up the latest</div>
+        </div>
+        <button class="stg-reset" style="margin:0" onclick="reloadApp()">Reload</button>
       </div>
     </div>
 

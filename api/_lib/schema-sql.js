@@ -2,12 +2,25 @@
 // without reading from disk. db/schema.sql is generated from this file by
 // `npm run schema` and `npm run check` fails if the two drift apart.
 
+// Bump this whenever the DDL below changes. A deployment whose database is on
+// an older version migrates itself on the next request — see ensureSchema().
+export const SCHEMA_VERSION = 2;
+
 export const SCHEMA_SQL = `-- Apprendre schema (Neon / Postgres 15+)
 -- Content rows with user_id IS NULL are the shared built-in library that every
 -- learner sees. Rows with a user_id belong to that learner alone and normally
 -- came out of something they uploaded.
 
 create extension if not exists pgcrypto;
+
+-- Which version of the DDL below this database has had applied.
+create table if not exists schema_meta (
+  only_row boolean primary key default true check (only_row),
+  version  integer not null default 0
+);
+
+insert into schema_meta (only_row, version) values (true, 0)
+  on conflict (only_row) do nothing;
 
 -- ---------------------------------------------------------------- accounts --
 

@@ -5,6 +5,15 @@
 
 create extension if not exists pgcrypto;
 
+-- Which version of the DDL below this database has had applied.
+create table if not exists schema_meta (
+  only_row boolean primary key default true check (only_row),
+  version  integer not null default 0
+);
+
+insert into schema_meta (only_row, version) values (true, 0)
+  on conflict (only_row) do nothing;
+
 -- ---------------------------------------------------------------- accounts --
 
 create table if not exists users (

@@ -45,6 +45,28 @@ uploaded. Deleting an upload removes everything built from it and nothing else.
 
 ---
 
+## The URL changes
+
+Wherever you opened this app before — a GitHub Pages link, or the file on your
+machine — that will not work any more, and there's no way around it. The app now
+talks to `/api/...` for sign-in, content and progress, and those are serverless
+functions. A static host has nothing to answer them with: you'd get the sign-in
+screen and then an error.
+
+It has to be deployed to Vercel, which gives you a new `*.vercel.app` address.
+If you'd rather keep a URL you can remember, add a custom domain to the project
+(**Settings → Domains**) once it's up.
+
+Two things to know before you deploy:
+
+- **This work is on a branch**, `claude/vercel-neon-content-exercises-4b7ll6`.
+  Vercel builds `main` as production, so merge the branch first — otherwise
+  production will be the old single-file version.
+- **Do the database setup below before you first open the app.** Without the
+  tables, sign-up fails.
+
+---
+
 ## Setting it up
 
 ### 1. A Neon database

@@ -97,6 +97,16 @@ async function initialise(res) {
   }
 
   await applySchema(sql);
+
+  // A previous attempt may have timed out part-way through. Since we've just
+  // established there are no accounts, clearing the built-in content is safe
+  // and makes a retry start from a clean slate rather than a half-load.
+  await sql`delete from sources where user_id is null`;
+  for (const table of ['decks', 'quizzes', 'verbs', 'drills', 'concepts', 'stories',
+                       'roleplays', 'grammar_notes', 'workbook_chapters']) {
+    await sql.query(`delete from ${table} where user_id is null`);
+  }
+
   const stats = await seedBuiltins(sql, seedData);
 
   return ok(res, {

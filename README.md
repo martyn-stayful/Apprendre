@@ -155,6 +155,23 @@ Uploads that fail can be retried from the same screen without re-uploading.
 
 ---
 
+## Learning partners
+
+Two people working through the same lessons can link up: **Settings → Learning
+partners**, invite by the email they signed up with, and they accept from their
+own Settings.
+
+Linking shares **uploaded content**, both ways. Whatever either of you
+photographs becomes exercises for both, marked "shared with you" in the deck
+list, and carries the week it arrived so it's prioritised for both of you.
+
+Linking does **not** share progress. Streak, practice time, mastery levels and
+spaced repetition stay personal — one person's answers never mark the other's
+cards as known. Unlinking removes each other's material from view and deletes
+nothing.
+
+---
+
 ## Your progress
 
 Everything the app tracks — spaced repetition, streak, time practised, workbook

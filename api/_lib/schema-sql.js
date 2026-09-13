@@ -4,7 +4,7 @@
 
 // Bump this whenever the DDL below changes. A deployment whose database is on
 // an older version migrates itself on the next request — see ensureSchema().
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const SCHEMA_SQL = `-- Apprendre schema (Neon / Postgres 15+)
 -- Content rows with user_id IS NULL are the shared built-in library that every
@@ -235,6 +235,36 @@ create table if not exists workbook_exercises (
 
 create index if not exists workbook_exercises_chapter_idx
   on workbook_exercises (chapter_id, position);
+
+-- --------------------------------------------------------------- partners --
+-- Learners working through the same lessons can link up. Linking shares
+-- uploaded *content* only: progress, streaks and spaced repetition stay
+-- personal, so one person's answers never mark another's cards as known.
+
+create table if not exists partner_invites (
+  id           uuid primary key default gen_random_uuid(),
+  from_user    uuid not null references users(id) on delete cascade,
+  to_email     text not null,
+  status       text not null default 'pending',   -- pending | accepted | declined | cancelled
+  created_at   timestamptz not null default now(),
+  responded_at timestamptz
+);
+
+create index if not exists partner_invites_to_idx on partner_invites (to_email, status);
+create index if not exists partner_invites_from_idx on partner_invites (from_user, status);
+
+-- At most one invitation outstanding between the same two people.
+create unique index if not exists partner_invites_one_pending
+  on partner_invites (from_user, to_email) where status = 'pending';
+
+-- Stored both ways round, so "who can I see?" is a single lookup.
+create table if not exists partnerships (
+  user_id    uuid not null references users(id) on delete cascade,
+  partner_id uuid not null references users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (user_id, partner_id),
+  check (user_id <> partner_id)
+);
 
 -- --------------------------------------------------------------- progress --
 

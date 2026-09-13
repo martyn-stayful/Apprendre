@@ -33,6 +33,9 @@
     },
     "api/uploads/file.js": {
       "maxDuration": 60
+    },
+    "api/partners.js": {
+      "maxDuration": 30
     }
   },
   "headers": [

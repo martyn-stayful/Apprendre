@@ -1,4 +1,5 @@
 import { db } from './db.js';
+import { visibleOwnerIds } from './partners.js';
 
 /**
  * Everything the app renders, for one learner: the shared built-in library
@@ -12,75 +13,88 @@ export async function loadContent(userId) {
   const sql = db();
   const uid = userId || null;
 
+  // Content uploaded by this learner or by anyone they learn with. Progress is
+  // never shared this way — only the material itself.
+  const owners = userId ? await visibleOwnerIds(userId) : [];
+
   // One HTTP round-trip for the lot.
   const [
     deckRows, cardRows, quizRows, questionRows, verbRows, drillRows,
     conceptRows, storyRows, roleplayRows, grammarRows, chapterRows, exerciseRows,
   ] = await sql.transaction([
-    sql`select id, slug, name, category, level, source_id, user_id is not null as mine,
+    sql`select id, slug, name, category, level, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
           from decks
-         where user_id is null or user_id = ${uid}::uuid
+         where user_id is null or user_id = any(${owners}::uuid[])
          order by user_id nulls first, position, name`,
 
     sql`select c.deck_id, c.fr, c.en, c.ex, c.level
           from cards c join decks d on d.id = c.deck_id
-         where d.user_id is null or d.user_id = ${uid}::uuid
+         where d.user_id is null or d.user_id = any(${owners}::uuid[])
          order by c.position`,
 
-    sql`select id, slug, title, level, source_id, user_id is not null as mine,
+    sql`select id, slug, title, level, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
           from quizzes
-         where user_id is null or user_id = ${uid}::uuid
+         where user_id is null or user_id = any(${owners}::uuid[])
          order by user_id nulls first, position, title`,
 
     sql`select q.quiz_id, q.prompt, q.en, q.opts, q.answer_idx, q.note
           from quiz_questions q join quizzes z on z.id = q.quiz_id
-         where z.user_id is null or z.user_id = ${uid}::uuid
+         where z.user_id is null or z.user_id = any(${owners}::uuid[])
          order by q.position`,
 
-    sql`select infinitive, meaning, forms, level, user_id is not null as mine,
+    sql`select infinitive, meaning, forms, level, coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
           from verbs
-         where user_id is null or user_id = ${uid}::uuid
+         where user_id is null or user_id = any(${owners}::uuid[])
          order by user_id nulls first, position, infinitive`,
 
-    sql`select id, cat, en, fr, note, level, user_id is not null as mine
+    sql`select id, cat, en, fr, note, level, coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from drills
-         where user_id is null or user_id = ${uid}::uuid
+         where user_id is null or user_id = any(${owners}::uuid[])
          order by user_id nulls first, position, id`,
 
     sql`select slug, title, subtitle, category, paragraphs, table_rows, examples,
-               pitfall, related, user_id is not null as mine
+               pitfall, related, coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from concepts
-         where user_id is null or user_id = ${uid}::uuid
+         where user_id is null or user_id = any(${owners}::uuid[])
          order by user_id nulls first, position, title`,
 
     sql`select slug, title, blurb, level, tags, focus, body, translation,
-               user_id is not null as mine
+               coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from stories
-         where user_id is null or user_id = ${uid}::uuid
+         where user_id is null or user_id = any(${owners}::uuid[])
          order by user_id nulls first, position, title`,
 
-    sql`select title, ctx, lines, notes, user_id is not null as mine
+    sql`select title, ctx, lines, notes, coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from roleplays
-         where user_id is null or user_id = ${uid}::uuid
+         where user_id is null or user_id = any(${owners}::uuid[])
          order by user_id nulls first, position, title`,
 
-    sql`select title, body, user_id is not null as mine
+    sql`select title, body, coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from grammar_notes
-         where user_id is null or user_id = ${uid}::uuid
+         where user_id is null or user_id = any(${owners}::uuid[])
          order by user_id nulls first, position, title`,
 
     sql`select id, slug, book, book_title, num, title, subtitle, level, rule, vocab,
-               user_id is not null as mine
+               coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from workbook_chapters
-         where user_id is null or user_id = ${uid}::uuid
+         where user_id is null or user_id = any(${owners}::uuid[])
          order by user_id nulls first, book, num`,
 
     sql`select e.chapter_id, e.slug, e.title, e.instructions, e.questions
           from workbook_exercises e join workbook_chapters c on c.id = e.chapter_id
-         where c.user_id is null or c.user_id = ${uid}::uuid
+         where c.user_id is null or c.user_id = any(${owners}::uuid[])
          order by e.position`,
   ]);
 
@@ -95,6 +109,7 @@ export async function loadContent(userId) {
       category: d.category,
       level: d.level || undefined,
       mine: d.mine,
+      shared: d.shared || undefined,
       week: d.week || undefined,
       sourceId: d.source_id,
       cards: (cardsByDeck[d.id] || []).map((c) => ({
@@ -109,6 +124,7 @@ export async function loadContent(userId) {
       title: q.title,
       level: q.level || undefined,
       mine: q.mine,
+      shared: q.shared || undefined,
       week: q.week || undefined,
       sourceId: q.source_id,
       qs: (questionsByQuiz[q.id] || []).map((x) => ({
@@ -121,7 +137,7 @@ export async function loadContent(userId) {
   for (const v of verbRows) {
     verbTables[v.infinitive] = {
       meaning: v.meaning, forms: v.forms, level: v.level || undefined,
-      mine: v.mine, week: v.week || undefined,
+      mine: v.mine, shared: v.shared || undefined, week: v.week || undefined,
     };
   }
 
@@ -135,6 +151,7 @@ export async function loadContent(userId) {
       subtitle: c.subtitle,
       level: c.level,
       mine: c.mine,
+      shared: c.shared || undefined,
       rule: c.rule || undefined,
       vocab: c.vocab || [],
       exercises: (exercisesByChapter[c.id] || []).map((e) => ({
@@ -158,6 +175,7 @@ export async function loadContent(userId) {
       pitfall: c.pitfall?.title ? c.pitfall : undefined,
       related: c.related || [],
       mine: c.mine,
+      shared: c.shared || undefined,
     };
   }
 
@@ -168,17 +186,18 @@ export async function loadContent(userId) {
     workbook,
     concepts,
     dailyDrills: drillRows.map((d) => ({
-      cat: d.cat, en: d.en, fr: d.fr, note: d.note, level: d.level || undefined, mine: d.mine,
+      cat: d.cat, en: d.en, fr: d.fr, note: d.note, level: d.level || undefined,
+      mine: d.mine, shared: d.shared || undefined,
     })),
     stories: storyRows.map((s) => ({
       slug: s.slug, title: s.title, blurb: s.blurb, level: s.level,
       tags: s.tags || [], focus: s.focus || [],
-      body: s.body, translation: s.translation, mine: s.mine,
+      body: s.body, translation: s.translation, mine: s.mine, shared: s.shared || undefined,
     })),
     roleplays: roleplayRows.map((r) => ({
-      title: r.title, ctx: r.ctx, lines: r.lines, notes: r.notes, mine: r.mine,
+      title: r.title, ctx: r.ctx, lines: r.lines, notes: r.notes, mine: r.mine, shared: r.shared || undefined,
     })),
-    grammar: grammarRows.map((g) => ({ title: g.title, body: g.body, mine: g.mine })),
+    grammar: grammarRows.map((g) => ({ title: g.title, body: g.body, mine: g.mine, shared: g.shared || undefined })),
   };
 }
 

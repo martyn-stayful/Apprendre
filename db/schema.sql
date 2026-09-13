@@ -53,6 +53,11 @@ create table if not exists sources (
 -- part of the create above.
 alter table sources add column if not exists files jsonb not null default '[]'::jsonb;
 
+-- When the current parse attempt began. A serverless function that times out
+-- leaves status = 'parsing' behind with nothing to clear it, so this is what
+-- lets a later attempt tell "in progress" from "abandoned".
+alter table sources add column if not exists parsing_started_at timestamptz;
+
 create index if not exists sources_user_idx on sources (user_id, created_at desc);
 
 -- ---------------------------------------------------------------- content --

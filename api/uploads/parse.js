@@ -4,6 +4,10 @@ import { withAuth } from '../_lib/auth.js';
 import { parseMaterial } from '../_lib/claude.js';
 import { importContent } from '../_lib/import.js';
 
+// Longer than the function's own 300s budget, so a parse that is genuinely
+// still running is never treated as abandoned.
+const STALE_AFTER_MINUTES = 6;
+
 /**
  * Read an upload with Claude and turn it into exercises.
  * Long-running: vercel.json gives this route 300s.
@@ -15,14 +19,26 @@ export default route('POST', withAuth(async (req, res, user) => {
 
   const [source] = await sql`
     select id, input_type, title, files, raw_text, status, stats,
-           file_url, file_data, mime_type
+           file_url, file_data, mime_type, parsing_started_at
       from sources where id = ${id}::uuid and user_id = ${user.id}::uuid limit 1`;
 
   if (!source) return bad(res, 'No such upload', 404);
-  if (source.status === 'parsing') return bad(res, 'That upload is already being read', 409);
   if (source.status === 'ready') return bad(res, 'That upload has already been turned into exercises', 409);
 
-  await sql`update sources set status = 'parsing', error = null where id = ${source.id}::uuid`;
+  // A parse that timed out leaves 'parsing' behind with nothing to clear it, so
+  // treat a stale one as abandoned rather than refusing every retry forever.
+  if (source.status === 'parsing') {
+    const startedAt = source.parsing_started_at ? new Date(source.parsing_started_at) : null;
+    const minutes = startedAt ? (Date.now() - startedAt.getTime()) / 60000 : Infinity;
+    if (minutes < STALE_AFTER_MINUTES) {
+      return bad(res, 'That upload is being read right now — give it a moment.', 409);
+    }
+    console.log(`Retrying source ${source.id}; previous attempt stalled ${Math.round(minutes)}m ago`);
+  }
+
+  await sql`
+    update sources set status = 'parsing', error = null, parsing_started_at = now()
+     where id = ${source.id}::uuid`;
 
   try {
     const files = source.input_type === 'text' ? [] : await loadPages(source);

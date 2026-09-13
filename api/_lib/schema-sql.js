@@ -4,7 +4,7 @@
 
 // Bump this whenever the DDL below changes. A deployment whose database is on
 // an older version migrates itself on the next request — see ensureSchema().
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 export const SCHEMA_SQL = `-- Apprendre schema (Neon / Postgres 15+)
 -- Content rows with user_id IS NULL are the shared built-in library that every
@@ -60,6 +60,11 @@ create table if not exists sources (
 -- Added after the first release, so this runs as an alter rather than being
 -- part of the create above.
 alter table sources add column if not exists files jsonb not null default '[]'::jsonb;
+
+-- When the current parse attempt began. A serverless function that times out
+-- leaves status = 'parsing' behind with nothing to clear it, so this is what
+-- lets a later attempt tell "in progress" from "abandoned".
+alter table sources add column if not exists parsing_started_at timestamptz;
 
 create index if not exists sources_user_idx on sources (user_id, created_at desc);
 

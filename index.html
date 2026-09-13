@@ -6556,6 +6556,20 @@
 
   .up-chip strong { font-weight: 900; }
 
+  .up-report {
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(26, 35, 50, 0.05);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    user-select: all;
+    -webkit-user-select: all;
+  }
+
   .up-empty {
     padding: 22px 18px;
     border: 1px dashed var(--slate-soft);
@@ -14899,7 +14913,8 @@ window.bootApp = bootApp;
         '<div class="up-chips">' + statChips(u.stats) + '</div>';
     } else if (u.status === 'failed') {
       detail = '<p class="up-row-error">' + esc(u.error || 'Something went wrong.') + '</p>' +
-        '<button class="up-retry" onclick="retryUpload(\'' + u.id + '\')">Try reading it again</button>';
+        '<button class="up-retry" onclick="retryUpload(\'' + u.id + '\')">Try reading it again</button>' +
+        '<button class="up-retry" onclick="copyUploadDetails(\'' + u.id + '\')">Copy details</button>';
     } else if (u.status === 'pending') {
       detail = '<button class="up-retry" onclick="retryUpload(\'' + u.id + '\')">Read it now</button>';
     }
@@ -14939,6 +14954,38 @@ window.bootApp = bootApp;
     await loadUploads();
   }
   window.retryUpload = retryUpload;
+
+  /**
+   * Put everything about a failed upload on the clipboard. Reading an error off
+   * a phone screen and retyping it loses exactly the details that matter.
+   */
+  async function copyUploadDetails(id) {
+    var upload = upState.uploads.filter(function (u) { return u.id === id; })[0];
+    if (!upload) return;
+
+    var report = [
+      'Apprendre upload report',
+      'when:    ' + new Date().toISOString(),
+      'id:      ' + upload.id,
+      'title:   ' + upload.title,
+      'type:    ' + upload.input_type + (upload.pages ? ' (' + upload.pages + ' pages)' : ''),
+      'status:  ' + upload.status,
+      'created: ' + upload.created_at,
+      'error:   ' + (upload.error || '(none)'),
+      'stats:   ' + JSON.stringify(upload.stats || {}),
+      'browser: ' + navigator.userAgent,
+    ].join('\n');
+
+    try {
+      await navigator.clipboard.writeText(report);
+      setStatus('Details copied — paste them to whoever is helping you.', 'done');
+    } catch (err) {
+      // Clipboard access is blocked in some contexts; show it to select by hand.
+      setStatus('<div class="up-done-title">Upload details</div>' +
+        '<pre class="up-report">' + esc(report) + '</pre>', 'error');
+    }
+  }
+  window.copyUploadDetails = copyUploadDetails;
 
   async function deleteUpload(id) {
     var upload = upState.uploads.filter(function (u) { return u.id === id; })[0];

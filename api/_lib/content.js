@@ -15,7 +15,11 @@ export async function loadContent(userId) {
 
   // Content uploaded by this learner or by anyone they learn with. Progress is
   // never shared this way — only the material itself.
-  const owners = userId ? await visibleOwnerIds(userId) : [];
+  //
+  // Passed as a JSON string rather than an array parameter: array serialisation
+  // differs between Postgres drivers, and a JSON text parameter behaves the
+  // same everywhere.
+  const owners = JSON.stringify(userId ? await visibleOwnerIds(userId) : []);
 
   // One HTTP round-trip for the lot.
   const [
@@ -26,75 +30,75 @@ export async function loadContent(userId) {
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
           from decks
-         where user_id is null or user_id = any(${owners}::uuid[])
+         where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, name`,
 
     sql`select c.deck_id, c.fr, c.en, c.ex, c.level
           from cards c join decks d on d.id = c.deck_id
-         where d.user_id is null or d.user_id = any(${owners}::uuid[])
+         where d.user_id is null or d.user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by c.position`,
 
     sql`select id, slug, title, level, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
           from quizzes
-         where user_id is null or user_id = any(${owners}::uuid[])
+         where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
 
     sql`select q.quiz_id, q.prompt, q.en, q.opts, q.answer_idx, q.note
           from quiz_questions q join quizzes z on z.id = q.quiz_id
-         where z.user_id is null or z.user_id = any(${owners}::uuid[])
+         where z.user_id is null or z.user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by q.position`,
 
     sql`select infinitive, meaning, forms, level, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
           from verbs
-         where user_id is null or user_id = any(${owners}::uuid[])
+         where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, infinitive`,
 
     sql`select id, cat, en, fr, note, level, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from drills
-         where user_id is null or user_id = any(${owners}::uuid[])
+         where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, id`,
 
     sql`select slug, title, subtitle, category, paragraphs, table_rows, examples,
                pitfall, related, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from concepts
-         where user_id is null or user_id = any(${owners}::uuid[])
+         where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
 
     sql`select slug, title, blurb, level, tags, focus, body, translation,
                coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from stories
-         where user_id is null or user_id = any(${owners}::uuid[])
+         where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
 
     sql`select title, ctx, lines, notes, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from roleplays
-         where user_id is null or user_id = any(${owners}::uuid[])
+         where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
 
     sql`select title, body, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from grammar_notes
-         where user_id is null or user_id = any(${owners}::uuid[])
+         where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
 
     sql`select id, slug, book, book_title, num, title, subtitle, level, rule, vocab,
                coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from workbook_chapters
-         where user_id is null or user_id = any(${owners}::uuid[])
+         where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, book, num`,
 
     sql`select e.chapter_id, e.slug, e.title, e.instructions, e.questions
           from workbook_exercises e join workbook_chapters c on c.id = e.chapter_id
-         where c.user_id is null or c.user_id = any(${owners}::uuid[])
+         where c.user_id is null or c.user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by e.position`,
   ]);
 

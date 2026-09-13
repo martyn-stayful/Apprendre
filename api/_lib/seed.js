@@ -2,7 +2,16 @@ import { schemaStatements, SCHEMA_VERSION } from './schema-sql.js';
 
 /** Create or update the tables. Safe to re-run — every statement is idempotent. */
 export async function applySchema(sql) {
-  for (const statement of schemaStatements()) await sql.query(statement);
+  for (const statement of schemaStatements()) {
+    try {
+      await sql.query(statement);
+    } catch (err) {
+      // Without this, a migration failure surfaces as an unrelated "column does
+      // not exist" on some later request, with nothing pointing at the cause.
+      const first = statement.split('\n')[0].slice(0, 120);
+      throw new Error(`Schema statement failed (${first}…): ${err.message}`);
+    }
+  }
   await sql`update schema_meta set version = ${SCHEMA_VERSION} where only_row`;
 }
 

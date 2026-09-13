@@ -10057,7 +10057,9 @@ function allTrackableItems() {
       const id = itemId('fc:' + key, c.fr);
       items.push({
         id, type: 'flashcard', sourceKey: key, sourceName: deck.name,
-        week: deckMeta.week || null,
+        // Uploaded decks carry the week they arrived; built-in ones use the
+        // static map. Either way this is what puts recent lessons first.
+        week: deck.week || deckMeta.week || null,
         card: c, rec: mastery[id] || null
       });
     });
@@ -10105,7 +10107,7 @@ function allTrackableItems() {
       const id = itemId('qz:' + key, item.prompt);
       items.push({
         id, type: 'quiz', sourceKey: key, sourceName: q.title,
-        week: qMeta.week || null,
+        week: q.week || qMeta.week || null,
         card: item, rec: mastery[id] || null
       });
     });
@@ -10118,7 +10120,7 @@ function allTrackableItems() {
       const id = itemId('conj:' + verb, pr);
       items.push({
         id, type: 'conj', sourceKey: verb, sourceName: verb,
-        week: vMeta.week || null,
+        week: data.week || vMeta.week || null,
         card: { verb, meaning: data.meaning, pr, fm }, rec: mastery[id] || null
       });
     });

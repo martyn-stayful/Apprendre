@@ -17,7 +17,8 @@ export async function loadContent(userId) {
     deckRows, cardRows, quizRows, questionRows, verbRows, drillRows,
     conceptRows, storyRows, roleplayRows, grammarRows, chapterRows, exerciseRows,
   ] = await sql.transaction([
-    sql`select id, slug, name, category, level, source_id, user_id is not null as mine
+    sql`select id, slug, name, category, level, source_id, user_id is not null as mine,
+               case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
           from decks
          where user_id is null or user_id = ${uid}::uuid
          order by user_id nulls first, position, name`,
@@ -27,7 +28,8 @@ export async function loadContent(userId) {
          where d.user_id is null or d.user_id = ${uid}::uuid
          order by c.position`,
 
-    sql`select id, slug, title, level, source_id, user_id is not null as mine
+    sql`select id, slug, title, level, source_id, user_id is not null as mine,
+               case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
           from quizzes
          where user_id is null or user_id = ${uid}::uuid
          order by user_id nulls first, position, title`,
@@ -37,7 +39,8 @@ export async function loadContent(userId) {
          where z.user_id is null or z.user_id = ${uid}::uuid
          order by q.position`,
 
-    sql`select infinitive, meaning, forms, level, user_id is not null as mine
+    sql`select infinitive, meaning, forms, level, user_id is not null as mine,
+               case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
           from verbs
          where user_id is null or user_id = ${uid}::uuid
          order by user_id nulls first, position, infinitive`,
@@ -92,6 +95,7 @@ export async function loadContent(userId) {
       category: d.category,
       level: d.level || undefined,
       mine: d.mine,
+      week: d.week || undefined,
       sourceId: d.source_id,
       cards: (cardsByDeck[d.id] || []).map((c) => ({
         fr: c.fr, en: c.en, ex: c.ex, level: c.level || undefined,
@@ -105,6 +109,7 @@ export async function loadContent(userId) {
       title: q.title,
       level: q.level || undefined,
       mine: q.mine,
+      week: q.week || undefined,
       sourceId: q.source_id,
       qs: (questionsByQuiz[q.id] || []).map((x) => ({
         prompt: x.prompt, en: x.en, opts: x.opts, a: x.answer_idx, note: x.note,
@@ -115,7 +120,8 @@ export async function loadContent(userId) {
   const verbTables = {};
   for (const v of verbRows) {
     verbTables[v.infinitive] = {
-      meaning: v.meaning, forms: v.forms, level: v.level || undefined, mine: v.mine,
+      meaning: v.meaning, forms: v.forms, level: v.level || undefined,
+      mine: v.mine, week: v.week || undefined,
     };
   }
 

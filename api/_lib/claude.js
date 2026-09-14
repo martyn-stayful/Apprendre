@@ -126,12 +126,25 @@ export async function parseMaterial({ text, files, note }) {
 
   content.push({ type: 'text', text: instruction });
 
-  const messages = [{ role: 'user', content }];
   let lastProblem = '';
+  let lastLength = 0;
+  let lastStop = '';
 
-  // Two attempts: a stray character in a long JSON reply shouldn't cost the
-  // learner their whole upload, so we hand the problem back and let Claude fix it.
+  // Two attempts. The second asks for a shorter answer rather than replaying the
+  // broken one back: a truncated reply in the history teaches the model that
+  // stopping half way is acceptable.
   for (let attempt = 0; attempt < 2; attempt++) {
+    const ask = attempt === 0
+      ? content
+      : content.concat([{
+          type: 'text',
+          text: 'Your previous answer did not come back as usable JSON — it was ' +
+            (lastProblem || 'malformed') + '. Try again, and keep it shorter this ' +
+            'time: fewer cards and questions, and leave out the optional sections ' +
+            '(stories, role-plays, workbook chapters) entirely. A compact reply that ' +
+            'parses is far more useful than a long one that does not.',
+        }]);
+
     let message;
     try {
       message = await client().messages.stream({
@@ -139,7 +152,7 @@ export async function parseMaterial({ text, files, note }) {
         max_tokens: 32000,
         system: SYSTEM,
         thinking: { type: 'adaptive' },
-        messages,
+        messages: [{ role: 'user', content: ask }],
       }).finalMessage();
     } catch (err) {
       throw new Error(explain(err));
@@ -152,58 +165,150 @@ export async function parseMaterial({ text, files, note }) {
       );
     }
 
-    if (message.stop_reason === 'max_tokens') {
-      throw new Error(
-        'That produced more exercises than fit in one response. ' +
-        'Try uploading it in smaller pieces — a page at a time.'
-      );
-    }
-
     const raw = message.content.filter((b) => b.type === 'text').map((b) => b.text).join('');
     if (!raw.trim()) throw new Error('Claude returned an empty response');
 
+    lastLength = raw.length;
+    lastStop = message.stop_reason || 'unknown';
+
     const parsed = parseJson(raw);
     if (parsed.ok) {
-      const result = ParsedContent.safeParse(parsed.value);
-      if (result.success) return { content: result.data, usage: message.usage };
+      // A repaired reply is missing whatever came after the break; the schema
+      // wants every section present, so fill the gaps with nothing.
+      const filled = { ...EMPTY_SECTIONS, ...parsed.value };
+      const result = ParsedContent.safeParse(filled);
+      if (result.success) {
+        return { content: result.data, usage: message.usage, truncated: Boolean(parsed.truncated) };
+      }
       const issue = result.error.issues[0];
       lastProblem = `${issue.path.join('.') || 'the response'}: ${issue.message}`;
     } else {
       lastProblem = parsed.error;
     }
-
-    if (attempt === 0) {
-      messages.push(
-        { role: 'assistant', content: raw.slice(0, 4000) },
-        { role: 'user', content:
-          `That didn't match the required shape — ${lastProblem}. ` +
-          'Send the whole JSON object again, corrected, with nothing around it.' }
-      );
-    }
   }
 
-  throw new Error(`Claude's reply did not match the expected shape (${lastProblem})`);
+  throw new Error(
+    `Claude's reply could not be read (${lastProblem}; ` +
+    `${lastLength} characters, finished with "${lastStop}"). ` +
+    'Try again, or upload fewer pages at once.'
+  );
 }
 
-/** Pull the JSON object out of a reply, tolerating a code fence or stray prose. */
+/** Every section the schema requires, empty — the base a partial reply fills in. */
+const EMPTY_SECTIONS = {
+  title: '', summary: '',
+  decks: [], quizzes: [], drills: [], verbs: [], concepts: [],
+  roleplays: [], stories: [], grammar_notes: [], workbook_chapters: [],
+};
+
+/**
+ * Pull the JSON object out of a reply, tolerating a code fence or stray prose,
+ * and repairing a reply that stopped part-way.
+ *
+ * A long answer can end mid-write. Everything before the break is perfectly
+ * good content, so rather than discard a worksheet's worth of exercises over a
+ * missing brace, we rewind to the last complete item and close what's open.
+ */
 function parseJson(raw) {
   let text = raw.trim();
 
-  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const fence = text.match(/```(?:json)?\s*([\s\S]*?)(?:```|$)/);
   if (fence) text = fence[1].trim();
 
   const first = text.indexOf('{');
-  const last = text.lastIndexOf('}');
-  if (first === -1 || last <= first) {
-    return { ok: false, error: 'no JSON object in the reply' };
-  }
-  text = text.slice(first, last + 1);
+  if (first === -1) return { ok: false, error: 'no JSON object in the reply' };
+  text = text.slice(first);
 
+  // Whole thing parses: nothing to do.
+  const direct = tryParse(text);
+  if (direct.ok) return direct;
+
+  const repaired = closeTruncated(text);
+  if (repaired) {
+    const result = tryParse(repaired);
+    if (result.ok) return { ok: true, value: result.value, truncated: true };
+  }
+
+  return { ok: false, error: `not valid JSON (${direct.error})`, length: raw.length };
+}
+
+function tryParse(text) {
   try {
     return { ok: true, value: JSON.parse(text) };
   } catch (err) {
-    return { ok: false, error: `not valid JSON (${err.message})` };
+    return { ok: false, error: err.message };
   }
+}
+
+/**
+ * Rewind to the last point where a whole item finished — a closed object or
+ * array, or a string inside an array — then close everything still open.
+ *
+ * Only whole items count. Rewinding to the last comma would keep a half-written
+ * object, which then fails validation and loses the rest of the page with it.
+ *
+ * Returns null if there's nothing salvageable.
+ */
+function closeTruncated(text) {
+  const stack = [];
+  let inString = false;
+  let escaped = false;
+  let lastComplete = -1;   // index just past the last finished value
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') {
+        inString = false;
+        // A finished string is a whole value only inside an array; inside an
+        // object it might be a key still waiting for its value.
+        if (stack[stack.length - 1] === ']') lastComplete = i + 1;
+      }
+      continue;
+    }
+
+    if (ch === '"') { inString = true; continue; }
+    if (ch === '{') { stack.push('}'); continue; }
+    if (ch === '[') { stack.push(']'); continue; }
+    if (ch === '}' || ch === ']') {
+      stack.pop();
+      lastComplete = i + 1;
+      continue;
+    }
+  }
+
+  if (lastComplete <= 0) return null;
+
+  const out = text.slice(0, lastComplete).replace(/,\s*$/, '');
+  const open = openBrackets(out);
+  if (!open.length) return null;
+
+  // Close everything still open, innermost first.
+  return out + open.reverse().join('');
+}
+
+/** The closers still owed by a fragment, outermost first. */
+function openBrackets(text) {
+  const stack = [];
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === '{') stack.push('}');
+    else if (ch === '[') stack.push(']');
+    else if (ch === '}' || ch === ']') stack.pop();
+  }
+  return stack;
 }
 
 /** Turn an SDK error into something worth reading on a phone. */

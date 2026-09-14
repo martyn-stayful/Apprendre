@@ -2,10 +2,10 @@
   "name": "apprendre",
   "version": "2.0.0",
   "private": true,
-  "description": "Apprendre \u2014 French revision app. Upload lesson material, Claude turns it into exercises.",
+  "description": "Apprendre — French revision app. Upload lesson material, Claude turns it into exercises.",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   },
   "scripts": {
     "check": "node scripts/check.mjs",

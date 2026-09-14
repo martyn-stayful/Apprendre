@@ -49,7 +49,7 @@ export default route('POST', withAuth(async (req, res, user) => {
       );
     }
 
-    const { content, usage } = await parseMaterial({
+    const { content, usage, truncated } = await parseMaterial({
       text: source.raw_text,
       files,
       note: source.stats?.note || '',
@@ -64,11 +64,16 @@ export default route('POST', withAuth(async (req, res, user) => {
       );
     }
 
+    const summary = (content.summary || '') + (truncated
+      ? ' (Claude\u2019s reply was cut short, so this may not cover everything on ' +
+        'the page — upload it again if something is missing.)'
+      : '');
+
     await sql`
       update sources
          set status = 'ready',
              title = ${content.title || source.title},
-             summary = ${content.summary || ''},
+             summary = ${summary},
              stats = stats || ${JSON.stringify({ ...stats, usage: tokenSummary(usage) })}::jsonb,
              parsed_at = now(),
              -- Drop the inline bytes now they've been read; keep the page list.
@@ -77,7 +82,7 @@ export default route('POST', withAuth(async (req, res, user) => {
                '[]'::jsonb)
        where id = ${source.id}::uuid`;
 
-    return ok(res, { status: 'ready', title: content.title, summary: content.summary, stats });
+    return ok(res, { status: 'ready', title: content.title, summary, stats, truncated: Boolean(truncated) });
   } catch (err) {
     console.error('Parse failed for source', source.id, err);
     const message = String(err?.message || 'Something went wrong reading that material').slice(0, 1000);

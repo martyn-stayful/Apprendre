@@ -879,6 +879,54 @@
   .conj-full-row .pr { color: var(--slate); font-style: italic; }
   .conj-full-row .fm { color: var(--ink); font-weight: 500; }
 
+  /* ========== PHONE NUMBERS ========== */
+  .mode-card[data-tone="phone" i] .icon { background: rgba(212, 162, 76, 0.16); color: var(--gold); }
+
+  .ph-section-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin: 26px 0 10px;
+  }
+  .ph-empty { font-size: 13px; color: var(--slate); line-height: 1.5; margin: 0; }
+  .ph-digits {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 14px;
+  }
+  .ph-pairs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .ph-pair { background: var(--cream); border-radius: 10px; padding: 8px 10px; min-width: 60px; }
+  .ph-pair.wrong { background: rgba(198, 75, 59, 0.12); }
+  .ph-pair-num { font-family: 'Lato', sans-serif; font-weight: 700; font-size: 15px; color: var(--ink); }
+  .ph-pair-fr { font-size: 12px; color: var(--pine); margin-top: 2px; }
+  .ph-pair-hint { font-size: 10px; color: var(--slate); margin-top: 2px; }
+  .ph-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .dr-reveal.ph-ghost { background: transparent; color: var(--pine); border: 1.5px solid var(--pine); }
+  .ph-answer {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid rgba(26, 35, 50, 0.12);
+    border-radius: 12px;
+    background: var(--paper);
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    outline: none;
+    margin-top: 14px;
+    -webkit-appearance: none;
+  }
+  .ph-verdict { margin-top: 14px; font-family: 'Lato', sans-serif; font-weight: 700; font-size: 14px; }
+  .ph-verdict.good { color: var(--moss); }
+  .ph-verdict.bad { color: var(--ember); }
+
   /* ========== ROLE-PLAY ========== */
   .rp-wrap { padding: 16px 24px 40px; }
 
@@ -6892,6 +6940,14 @@
         <div class="mode-sub">Sentences · guess before reveal</div>
       </button>
 
+      <button class="mode-card" data-tone="phone" onclick="showView('phone')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </div>
+        <div class="mode-title">Phone Numbers</div>
+        <div class="mode-sub">Your number · speaking · listening</div>
+      </button>
+
       <button class="mode-card" data-tone="roleplay" onclick="showView('roleplay')">
         <div class="icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
@@ -7154,6 +7210,18 @@
     <div class="dr-wrap" id="drWrap"></div>
   </section>
 
+  <!-- ================ PHONE NUMBERS ================ -->
+  <section class="view" id="phone">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Phone Numbers</div>
+        <div class="view-sub">Said in pairs, the French way</div>
+      </div>
+    </div>
+    <div class="dr-wrap" id="phWrap"></div>
+  </section>
+
   <!-- ================ STORY PICKER ================ -->
   <section class="view" id="storyPicker">
     <div class="view-header">
@@ -7381,7 +7449,7 @@
   var SYNC_KEYS = [
     'fr_settings', 'fr_streak', 'fr_last', 'fr_time', 'fr_workbook',
     'fr_custom', 'fr_today_done', 'fr_reminder', 'fr_welcomed',
-    'fr_translate_history', 'fr_last_backup'
+    'fr_translate_history', 'fr_last_backup', 'fr_phone'
   ];
   var SYNC = {};
   SYNC_KEYS.forEach(function (k) { SYNC[k] = true; });
@@ -8238,6 +8306,7 @@ const PRACTICE_VIEWS = new Set([
   'conjView',     // conjugation drill in session
   'roleplay',     // reading/practicing role-plays
   'drills',       // daily 10
+  'phone',        // phone numbers
   'storyView',    // reading a story
   'review',       // spaced repetition session — primary practice loop
   'grammar',      // reading grammar notes — counts like reading a story
@@ -8255,6 +8324,7 @@ function showView(id) {
   if (id === 'roleplay') renderRoleplay();
   if (id === 'grammar') renderGrammar();
   if (id === 'drills') renderDrills();
+  if (id === 'phone') renderPhone();
   if (id === 'storyPicker') renderStoryPicker();
   if (id === 'weeklyPlan') renderWeeklyPlan();
   if (id === 'upload') renderUpload();
@@ -9822,7 +9892,7 @@ let drillSession = {
 // Pick 10 new drills for the current category and reset verdicts
 function buildDrillSession() {
   const customPhrases = loadCustom().phrases;
-  const combined = [...dailyDrills, ...customPhrases];
+  const combined = [...dailyDrills, ...customPhrases, ...myPhoneDrills()];
   const pool = currentDrillCat === 'all'
     ? [...combined]
     : combined.filter(d => d.cat === currentDrillCat);
@@ -9865,7 +9935,7 @@ function renderDrills() {
     chat: { h: 'Catching up', p: 'Quoi de neuf, opinions, and missing people — the start of every lesson with Mathilde.' },
     story: { h: 'Telling stories', p: 'What happened and what it was like: passé composé for events, imparfait for the scene.' },
     plans: { h: 'Can, want, must', p: 'Pouvoir, vouloir, devoir for planning your week — and j\'aurais dû for what you should have done.' },
-    time: { h: 'Time & numbers', p: 'Mathilde\'s times, both the 24-hour and the everyday way, plus phone numbers read in pairs.' },
+    time: { h: 'Time & numbers', p: 'Mathilde\'s times, both the 24-hour and the everyday way, plus phone numbers read in pairs — save yours on the Phone Numbers screen and it joins this set.' },
     hotel: { h: 'Hotel & bar', p: 'Lois\'s side of the desk — walk-ins, rooms, breakfast, the door code — and Martyn as the guest.' }
   };
   const intro = introMsgs[currentDrillCat] || introMsgs.all;
@@ -10018,6 +10088,301 @@ function pickDrillCat(key) {
   renderDrills();
   // scroll back to top of drills section
   document.querySelector('#drills .view-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ====================== PHONE NUMBERS ====================== */
+/* The French say a phone number two digits at a time: 06 12 34 56 78 is
+   "zéro six, douze, trente-quatre, cinquante-six, soixante-dix-huit". This
+   turns any number into those pairs and words — the learner's own, saved to
+   their account, and random ones to practise saying and catching by ear. */
+
+const FR_UNITS = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
+  'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
+const FR_TENS = { 2: 'vingt', 3: 'trente', 4: 'quarante', 5: 'cinquante', 6: 'soixante' };
+
+// 0–999 in words, traditional spelling: soixante et onze, quatre-vingts.
+function frenchNumber(n) {
+  if (n < 20) return FR_UNITS[n];
+  if (n < 100) {
+    const tens = Math.floor(n / 10);
+    const unit = n % 10;
+    // 70–79 and 90–99 carry on counting from 60 and 80: 78 = 60 + 18
+    if (tens === 7) return 'soixante' + (unit === 1 ? ' et ' : '-') + FR_UNITS[10 + unit];
+    if (tens === 9) return 'quatre-vingt-' + FR_UNITS[10 + unit];
+    if (tens === 8) return unit === 0 ? 'quatre-vingts' : 'quatre-vingt-' + FR_UNITS[unit];
+    if (unit === 0) return FR_TENS[tens];
+    return FR_TENS[tens] + (unit === 1 ? ' et un' : '-' + FR_UNITS[unit]);
+  }
+  const hundreds = Math.floor(n / 100);
+  const rest = n % 100;
+  const head = hundreds === 1 ? 'cent' : FR_UNITS[hundreds] + ' cent' + (rest === 0 ? 's' : '');
+  return rest === 0 ? head : head + ' ' + frenchNumber(rest);
+}
+
+// The arithmetic behind the awkward ones, as a memory aid.
+function frenchNumberHint(n) {
+  if (n >= 70 && n < 80) return '60 + ' + (n - 60);
+  if (n === 80) return '4 × 20';
+  if (n > 80 && n < 100) return '4 × 20 + ' + (n - 80);
+  return '';
+}
+
+// Country codes starting 1 or 7 are one digit, these are two, the rest three.
+const TWO_DIGIT_CODES = new Set(['20', '27', '30', '31', '32', '33', '34', '36', '39', '40', '41', '43',
+  '44', '45', '46', '47', '48', '49', '51', '52', '53', '54', '55', '56', '57', '58', '60', '61', '62',
+  '63', '64', '65', '66', '81', '82', '84', '86', '90', '91', '92', '93', '94', '95', '98']);
+
+// Split a number into the groups it's said in. International: the country
+// code, then the rest in pairs without its leading 0, an odd digit first —
+// +44 7700900123 is +44 77 00 90 01 23, +33 612345678 is +33 6 12 34 56 78.
+// National: pairs from the left, 06 12 34 56 78.
+function groupPhone(raw) {
+  let s = String(raw || '').replace(/\(0\)/g, '').replace(/[^\d+]/g, '');
+  if (s.startsWith('00')) s = '+' + s.slice(2);
+  const groups = [];
+  let rest;
+  if (s.startsWith('+')) {
+    const digits = s.replace(/\+/g, '');
+    const codeLength = /^[17]/.test(digits) ? 1 : TWO_DIGIT_CODES.has(digits.slice(0, 2)) ? 2 : 3;
+    groups.push('+' + digits.slice(0, codeLength));
+    rest = digits.slice(codeLength).replace(/^0/, '');
+    if (rest.length % 2) { groups.push(rest[0]); rest = rest.slice(1); }
+  } else {
+    rest = s.replace(/\+/g, '');
+  }
+  for (let i = 0; i < rest.length; i += 2) groups.push(rest.slice(i, i + 2));
+  return groups.filter(g => g && g !== '+');
+}
+
+// One group in words: "+44" → plus quarante-quatre, "07" → zéro sept.
+function sayGroup(g) {
+  if (g.startsWith('+')) return 'plus ' + frenchNumber(Number(g.slice(1)));
+  if (g.length > 1 && g[0] === '0') return 'zéro ' + sayGroup(g.slice(1));
+  return frenchNumber(Number(g));
+}
+
+function phoneInFrench(groups) {
+  const words = groups.map(sayGroup).join(', ');
+  return words.charAt(0).toUpperCase() + words.slice(1) + '.';
+}
+
+// Digits in free text, read back as French words. Long runs are read in
+// pairs, the way a phone number is said.
+function numbersToWords(text) {
+  return String(text || '').replace(/\+?\d+/g, (m) => {
+    if (!m.startsWith('+') && m.length <= 3) return ' ' + sayGroup(m) + ' ';
+    return ' ' + groupPhone(m).map(sayGroup).join(' ') + ' ';
+  });
+}
+
+const PHONE_KEY = 'fr_phone';
+
+function loadMyPhone() {
+  try { return JSON.parse(Store.getItem(PHONE_KEY) || '{}').number || ''; }
+  catch (e) { return ''; }
+}
+
+function saveMyPhone(number) {
+  try { Store.setItem(PHONE_KEY, JSON.stringify({ number })); } catch (e) {}
+}
+
+// The learner's own number, as a Daily 10 prompt in Time & numbers.
+function myPhoneDrills() {
+  const number = loadMyPhone();
+  if (!number) return [];
+  const groups = groupPhone(number);
+  return [{
+    cat: 'time',
+    en: 'Say your phone number: ' + groups.join(' '),
+    fr: phoneInFrench(groups),
+    note: 'In pairs, the French way.'
+  }];
+}
+
+function randomPhone() {
+  const digits = (n) => Array.from({ length: n }, () => Math.floor(Math.random() * 10)).join('');
+  const kinds = [
+    () => '0' + (Math.random() < 0.5 ? '6' : '7') + digits(8),  // French mobile
+    () => '0450' + digits(6),                                     // Haute-Savoie landline
+    () => '+44 7' + digits(9),                                    // UK mobile
+    () => '+33 6' + digits(8)                                     // French mobile, from abroad
+  ];
+  // Your own number comes round now and then, so you learn to catch it too.
+  const mine = loadMyPhone();
+  if (mine && Math.random() < 0.2) return groupPhone(mine);
+  return groupPhone(kinds[Math.floor(Math.random() * kinds.length)]());
+}
+
+let phoneState = { mode: 'say', groups: null, revealed: false, answer: null };
+
+function phonePairsHtml(groups, wrongIdx) {
+  return `<div class="ph-pairs">${groups.map((g, i) => {
+    const n = g.startsWith('+') ? null : Number(g);
+    const hint = n !== null && !(g.length > 1 && g[0] === '0') ? frenchNumberHint(n) : '';
+    return `<div class="ph-pair${wrongIdx && wrongIdx.has(i) ? ' wrong' : ''}">
+      <div class="ph-pair-num">${escapeHtml(g)}</div>
+      <div class="ph-pair-fr">${escapeHtml(sayGroup(g))}</div>
+      ${hint ? `<div class="ph-pair-hint">${hint}</div>` : ''}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function phoneSpokenHtml(groups, id) {
+  const fr = phoneInFrench(groups);
+  return `
+    <div class="dr-fr">${escapeHtml(fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(fr)}\`)" aria-label="Listen">🔊</button></div>
+    ${pronounceButtonHtml(fr, id)}
+  `;
+}
+
+function renderPhone() {
+  const wrap = document.getElementById('phWrap');
+  if (!wrap) return;
+  const mine = loadMyPhone();
+  const groups = mine ? groupPhone(mine) : [];
+
+  wrap.innerHTML = `
+    <div class="dr-intro">
+      <div class="eyebrow">Phone numbers</div>
+      <h3>Two digits at a time</h3>
+      <p>The French read a phone number in pairs: 06 12 34 56 78 is zéro six, douze, trente-quatre, cinquante-six, soixante-dix-huit. Save your own number, then practise saying numbers and catching them by ear.</p>
+    </div>
+
+    <div class="ph-section-title">Your number</div>
+    <div class="tr-input-wrap">
+      <input type="tel" class="tr-input" id="phInput" placeholder="e.g. +44 7700 900123"
+             value="${escapeHtml(mine)}" autocomplete="tel" enterkeyhint="done">
+      <button class="tr-submit" onclick="savePhoneFromInput()" aria-label="Save">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </button>
+    </div>
+    <div id="phMine">${groups.length ? `
+      <div class="dr-prompt">
+        <div class="ph-digits">${escapeHtml(groups.join(' '))}</div>
+        ${phonePairsHtml(groups)}
+        ${phoneSpokenHtml(groups, 'ph-mine')}
+      </div>` : `
+      <p class="ph-empty">Type your number, with the country code if it isn't French, and tap ✓. It's saved to your account, so it's on every device, and it joins the Time &amp; numbers set in Daily 10.</p>`}
+    </div>
+
+    <div class="ph-section-title">Practise</div>
+    <div class="st-controls" style="margin-bottom:14px">
+      <button class="st-ctrl ${phoneState.mode === 'say' ? 'active' : ''}" onclick="setPhoneMode('say')">Speaking</button>
+      <button class="st-ctrl ${phoneState.mode === 'hear' ? 'active' : ''}" onclick="setPhoneMode('hear')">Listening</button>
+    </div>
+    <div id="phPractice"></div>
+  `;
+
+  const input = document.getElementById('phInput');
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); savePhoneFromInput(); }
+  };
+  if (!phoneState.groups) phoneState.groups = randomPhone();
+  renderPhonePractice();
+}
+
+function savePhoneFromInput() {
+  const raw = document.getElementById('phInput').value.trim();
+  const digitCount = raw.replace(/\D/g, '').length;
+  if (raw && (digitCount < 6 || digitCount > 15)) {
+    document.getElementById('phMine').innerHTML =
+      '<p class="ph-empty" style="color:var(--ember)">That doesn\'t look like a phone number — check the digits and try again.</p>';
+    return;
+  }
+  saveMyPhone(raw);
+  renderPhone();
+}
+
+function setPhoneMode(mode) {
+  phoneState = { mode, groups: randomPhone(), revealed: false, answer: null };
+  renderPhone();
+}
+
+function nextPhone() {
+  phoneState.groups = randomPhone();
+  phoneState.revealed = false;
+  phoneState.answer = null;
+  renderPhonePractice();
+}
+
+function revealPhone() {
+  phoneState.revealed = true;
+  renderPhonePractice();
+}
+
+function playPhone(rate) {
+  speak(phoneInFrench(phoneState.groups), rate);
+}
+
+function checkPhoneAnswer() {
+  const typed = document.getElementById('phAnswer').value;
+  if (!typed.replace(/\D/g, '')) return;
+  phoneState.answer = typed;
+  renderPhonePractice();
+}
+
+function renderPhonePractice() {
+  const el = document.getElementById('phPractice');
+  if (!el) return;
+  const groups = phoneState.groups;
+
+  if (phoneState.mode === 'say') {
+    el.innerHTML = `
+      <div class="dr-prompt">
+        <div class="dr-en">Say this number in pairs, then reveal.</div>
+        <div class="ph-digits">${escapeHtml(groups.join(' '))}</div>
+        ${phoneState.revealed ? phonePairsHtml(groups) + phoneSpokenHtml(groups, 'ph-say') : ''}
+        <div class="ph-actions">
+          ${phoneState.revealed ? '' : '<button class="dr-reveal" onclick="revealPhone()">Reveal</button>'}
+          <button class="dr-reveal ph-ghost" onclick="nextPhone()">Next number</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Hear it: the number is read out, you type the digits.
+  let result = '';
+  if (phoneState.answer !== null) {
+    const want = groups.join('').replace(/\D/g, '');
+    const got = phoneState.answer.replace(/\D/g, '');
+    const right = got === want;
+    // Line the answer up with the groups to show which pairs were missed.
+    const wrong = new Set();
+    let at = 0;
+    groups.forEach((g, i) => {
+      const d = g.replace(/\D/g, '');
+      if (got.slice(at, at + d.length) !== d) wrong.add(i);
+      at += d.length;
+    });
+    result = `
+      <div class="ph-verdict ${right ? 'good' : 'bad'}">${right ? '✓ Got it' : '✗ Not quite — the highlighted pairs were missed'}</div>
+      <div class="ph-digits" style="margin-top:12px">${escapeHtml(groups.join(' '))}</div>
+      ${phonePairsHtml(groups, right ? null : wrong)}
+    `;
+    if (right) playCorrectSound();
+  }
+
+  el.innerHTML = `
+    <div class="dr-prompt">
+      <div class="dr-en">Listen, then type the digits you hear.</div>
+      <div class="ph-actions" style="margin-top:4px">
+        <button class="dr-reveal" onclick="playPhone()">🔊 Play</button>
+        <button class="dr-reveal ph-ghost" onclick="playPhone(0.6)">Slower</button>
+      </div>
+      <input type="tel" class="ph-answer" id="phAnswer" placeholder="Type the number"
+             autocomplete="off" enterkeyhint="done" value="${escapeHtml(phoneState.answer || '')}">
+      <div class="ph-actions">
+        ${phoneState.answer === null ? '<button class="dr-reveal" onclick="checkPhoneAnswer()">Check</button>' : ''}
+        <button class="dr-reveal ph-ghost" onclick="nextPhone()">Next number</button>
+      </div>
+      ${result}
+    </div>
+  `;
+  const input = document.getElementById('phAnswer');
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); checkPhoneAnswer(); }
+  };
 }
 
 /* ====================== STORIES ====================== */
@@ -11437,8 +11802,9 @@ function tokenise(s) {
 // Score a spoken transcript against the target phrase.
 // Returns { score: 0..1, verdict: 'good' | 'close' | 'miss', matched, missing }
 function scorePronunciation(heard, target) {
-  const heardTokens = tokenise(heard);
-  const targetTokens = tokenise(target);
+  // Speech recognition writes "78 26" where the target spells the words out.
+  const heardTokens = tokenise(numbersToWords(heard));
+  const targetTokens = tokenise(numbersToWords(target));
 
   if (targetTokens.length === 0) return { score: 1, verdict: 'good', matched: [], missing: [] };
 
@@ -14295,12 +14661,12 @@ function playCorrectSound() {
   } catch (e) { /* fail silently */ }
 }
 
-function speak(text) {
+function speak(text, rate) {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'fr-FR';
-  u.rate = 0.9;
+  u.rate = rate || 0.9;
   // prefer a French voice
   const voices = window.speechSynthesis.getVoices();
   const frVoice = voices.find(v => v.lang === 'fr-FR' || v.lang.startsWith('fr'));

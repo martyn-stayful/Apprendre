@@ -205,6 +205,22 @@ options, and drill categories the Daily 10 screen knows about.
 
 ---
 
+## Phone numbers
+
+The French read a phone number two digits at a time, so the **Phone Numbers**
+screen turns any number into those pairs and words: +44 7700900123 becomes
++44 77 00 90 01 23, *plus quarante-quatre, soixante-dix-sept, zéro zéro…*.
+Each learner saves their own number there. It's stored in their account
+(`fr_phone`), not in the shared library, and it joins the Time & numbers
+Daily 10.
+
+The screen has two practice modes:
+
+- **Speaking:** say a random number, then reveal how it goes.
+- **Listening:** the app reads one out and you type the digits.
+
+---
+
 ## Learning partners
 
 Two people working through the same lessons can link up: **Settings → Learning

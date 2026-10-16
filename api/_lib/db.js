@@ -51,3 +51,27 @@ async function migrate() {
   console.log(`Migrating database to schema version ${SCHEMA_VERSION}`);
   await applySchema(sql);
 }
+
+let _packsChecked = null;
+
+/**
+ * Load any lesson packs this deployment ships that the database doesn't have
+ * yet (see db/packs). Once per process: a single cheap lookup, and the load
+ * itself only on the first request after a deploy that adds a pack.
+ *
+ * A failure here is logged rather than thrown — a pack that won't load
+ * shouldn't stop anyone opening the app — and retried on the next cold start.
+ */
+export function ensurePacks() {
+  if (!_packsChecked) _packsChecked = loadPacks().catch((err) => {
+    console.error('Could not load lesson packs:', err);
+  });
+  return _packsChecked;
+}
+
+async function loadPacks() {
+  const { seedPacks } = await import('./seed.js');
+  const { PACKS } = await import('../../db/packs/index.js');
+  const loaded = await seedPacks(db(), PACKS);
+  for (const key of Object.keys(loaded)) console.log(`Loaded lesson pack ${key}`);
+}

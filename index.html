@@ -884,6 +884,7 @@
 
   .rp-controls {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 16px;
     padding: 0;
@@ -901,10 +902,37 @@
     text-transform: uppercase;
     color: var(--slate);
     cursor: pointer;
+    white-space: nowrap;
     transition: all 0.15s;
   }
   .rp-ctrl:hover { border-color: var(--pine); color: var(--pine); }
   .rp-ctrl:active { transform: scale(0.97); }
+  .rp-ctrl.active { background: var(--ember); border-color: var(--ember); color: var(--paper); }
+
+  .rp-practise-hint {
+    font-size: 12px;
+    color: var(--slate);
+    margin: -6px 0 14px;
+    font-style: italic;
+  }
+
+  /* Practise mode: your lines show the English only, until you've said them
+     and tap to check. */
+  .rp-practise .you-line .rp-bubble { cursor: pointer; }
+  .rp-practise .you-line:not(.revealed) .rp-fr { display: none; }
+  .rp-practise .you-line:not(.revealed) .rp-en {
+    margin-top: 0;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--ink);
+  }
+  .rp-practise .you-line:not(.revealed) .rp-bubble::after {
+    content: 'Say it in French, then tap to check';
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--ember);
+  }
 
   .rp-scene {
     background: var(--paper);
@@ -7857,13 +7885,19 @@ var grammar = [];   // filled from Neon by bootstrapContent()
 
 // ---------- DAILY 10 (rotating set of practical speaking prompts) ----------
 // Each item has a category so the UI can filter by theme.
-// Categories: 'general', 'meeting', 'shop', 'bar', 'supermarket'
+// Categories: 'general', 'meeting', 'shop', 'bar', 'supermarket', and from the
+// lessons with Mathilde: 'time', 'chat', 'story', 'plans', 'hotel'
 var dailyDrills = [];   // filled from Neon by bootstrapContent()
 
 // Categories metadata for the UI
 const drillCategories = [
   { key: 'all', label: 'Mix' },
   { key: 'my', label: 'Mine' },
+  { key: 'chat', label: 'Catching up' },
+  { key: 'story', label: 'Telling stories' },
+  { key: 'plans', label: 'Can · want · must' },
+  { key: 'time', label: 'Time & numbers' },
+  { key: 'hotel', label: 'Hotel & bar' },
   { key: 'meeting', label: 'Meeting people' },
   { key: 'shop', label: 'Shops' },
   { key: 'supermarket', label: 'Supermarket' },
@@ -8135,7 +8169,7 @@ const CONCEPT_MAP = {
   // Core verbs
   'etre-verb':          { decks: ['essentials'], verbs: ['être'], quizzes: [] },
   'avoir-verb':         { decks: ['essentials'], verbs: ['avoir'], quizzes: [] },
-  'present-er-verbs':   { decks: [], verbs: ['parler', 'habiter', 'aimer', 'manger', 'regarder'], quizzes: [] },
+  'present-er-verbs':   { decks: [], verbs: ['parler', 'habiter', 'aimer', 'manger', 'regarder', 'commencer', 'manquer', 'gagner', 'rencontrer', 'goûter', 'tomber'], quizzes: [] },
   'negation':           { decks: [], quizzes: [] },
   'questions':          { decks: ['questions'], quizzes: ['questions'] },
   'questions-words':    { decks: ['questions'], quizzes: ['questions'] },
@@ -8148,8 +8182,14 @@ const CONCEPT_MAP = {
   'pc-avoir-irregular': { decks: ['pc_irregulars'], quizzes: [] },
   'faire-verb':         { decks: [], verbs: ['faire'], quizzes: [] },
   'boire-verb':         { decks: [], verbs: ['boire'], workbookChapters: ['ch09'] },
-  'modal-verbs':        { decks: [], verbs: ['pouvoir','vouloir','devoir'], quizzes: ['modaux'] },
-  'comparatives':       { decks: [], quizzes: ['comparisons'] }
+  'modal-verbs':        { decks: [], verbs: ['pouvoir','vouloir','devoir'], quizzes: ['modaux', 'mathilde_pvd'] },
+  'comparatives':       { decks: [], quizzes: ['comparisons'] },
+  // Lessons with Mathilde (db/packs/mathilde-2026.js)
+  'mathilde-telling-time':       { decks: ['mathilde_telling_time'], workbookChapters: ['mathilde-ch16'] },
+  'mathilde-past-stories':       { decks: ['mathilde_snow_trips'], quizzes: ['mathilde_past_tense'], workbookChapters: ['mathilde-ch17'] },
+  'mathilde-manquer':            { decks: ['mathilde_manquer'], quizzes: ['mathilde_manquer_quiz'], workbookChapters: ['mathilde-ch18'] },
+  'mathilde-should-have':        { workbookChapters: ['mathilde-ch19'] },
+  'mathilde-contracted-articles': { quizzes: ['mathilde_little_words'], workbookChapters: ['mathilde-ch20'] }
 };
 
 // Given an item, try to identify its concept id (returns null if unknown)
@@ -8762,7 +8802,7 @@ function renderReviewWorkbook(item) {
   if (!rvState.wbAnswered) {
     if (isMultiple) {
       const optsHtml = c.options.map(opt => `
-        <button class="wbx-option" data-opt="${escapeAttr(opt)}" onclick="answerReviewWorkbookMultiple(this)">${escapeHtml(opt)}</button>
+        <button class="wbx-option" data-opt="${escapeHtml(opt)}" onclick="answerReviewWorkbookMultiple(this)">${escapeHtml(opt)}</button>
       `).join('');
       return `
         <div class="rv-wb">
@@ -9056,7 +9096,7 @@ function renderDeckList() {
       if (s.learning > 0) parts.push(`${s.learning} learning`);
       metaMastered = `${deck.category} · ${parts.join(' · ')}`;
     }
-    const levelCode = (DECK_LEVELS[key] && DECK_LEVELS[key].level) || '';
+    const levelCode = (DECK_LEVELS[key] && DECK_LEVELS[key].level) || deck.level || '';
     const dueN = dueCountForDeck(key);
     const duePill = dueN > 0 ? ` <span class="deck-due-pill">${dueN} due</span>` : '';
     const btn = document.createElement('button');
@@ -9309,7 +9349,7 @@ function renderQuizList() {
       if (s.learning > 0) parts.push(`${s.learning} learning`);
       meta = `Quiz · ${parts.join(' · ')}`;
     }
-    const levelCode = (QUIZ_LEVELS[key] && QUIZ_LEVELS[key].level) || '';
+    const levelCode = (QUIZ_LEVELS[key] && QUIZ_LEVELS[key].level) || q.level || '';
     const dueN = dueCountForQuiz(key);
     const duePill = dueN > 0 ? ` <span class="deck-due-pill">${dueN} due</span>` : '';
     const btn = document.createElement('button');
@@ -9447,7 +9487,7 @@ function renderConjList() {
       if (s.learning > 0) parts.push(`${s.learning} learning`);
       meta = `${v.meaning} · ${parts.join(' · ')}`;
     }
-    const levelCode = (VERB_LEVELS[key] && VERB_LEVELS[key].level) || '';
+    const levelCode = (VERB_LEVELS[key] && VERB_LEVELS[key].level) || v.level || '';
     const dueN = dueCountForVerb(key);
     const duePill = dueN > 0 ? ` <span class="deck-due-pill" style="font-style:normal">${dueN} due</span>` : '';
     const btn = document.createElement('button');
@@ -9468,7 +9508,7 @@ function renderConjList() {
   mix.innerHTML = `
     <div>
       <div class="deck-name" style="color:var(--ember)">Mix all verbs</div>
-      <div class="deck-meta">All 10 verbs, random order</div>
+      <div class="deck-meta">All ${Object.keys(verbTables).length} verbs, random order</div>
     </div>
     <div class="deck-count">20</div>
   `;
@@ -9652,7 +9692,9 @@ function renderRoleplay() {
     <div class="rp-controls">
       <button class="rp-ctrl" id="rpExpandAll" onclick="rpExpandAll()">Expand all</button>
       <button class="rp-ctrl" id="rpCollapseAll" onclick="rpCollapseAll()">Collapse all</button>
+      <button class="rp-ctrl" id="rpPractise" onclick="rpTogglePractise()">Practise my lines</button>
     </div>
+    <div class="rp-practise-hint" id="rpPractiseHint" style="display:none">Your lines are hidden. Read the English, say it out loud in French, then tap the bubble to check.</div>
     <div id="rpScenes"></div>
   `;
 
@@ -9674,7 +9716,7 @@ function renderRoleplay() {
         ${rp.lines.map(line => `
           <div class="rp-line ${line.who === 'you' ? 'you-line' : ''}">
             <div class="rp-speaker ${line.who}">${line.who === 'you' ? 'Y' : ''}</div>
-            <div class="rp-bubble">
+            <div class="rp-bubble"${line.who === 'you' ? ' onclick="rpRevealLine(this)"' : ''}>
               <div class="rp-fr">${escapeHtml(line.fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(line.fr)}\`)" aria-label="Listen">🔊</button></div>
               <div class="rp-en">${escapeHtml(line.en)}</div>
             </div>
@@ -9693,6 +9735,20 @@ function rpExpandAll() {
 
 function rpCollapseAll() {
   document.querySelectorAll('#rpScenes .rp-scene').forEach(s => s.classList.remove('open'));
+}
+
+// Practise mode hides your own lines, so the dialogue becomes a speaking drill.
+function rpTogglePractise() {
+  const scenes = document.getElementById('rpScenes');
+  const on = scenes.classList.toggle('rp-practise');
+  scenes.querySelectorAll('.you-line.revealed').forEach(l => l.classList.remove('revealed'));
+  document.getElementById('rpPractise').classList.toggle('active', on);
+  document.getElementById('rpPractiseHint').style.display = on ? 'block' : 'none';
+}
+
+function rpRevealLine(bubble) {
+  if (!document.getElementById('rpScenes').classList.contains('rp-practise')) return;
+  bubble.closest('.rp-line').classList.add('revealed');
 }
 
 /* ====================== GRAMMAR ====================== */
@@ -9800,7 +9856,12 @@ function renderDrills() {
     shop: { h: 'At the shop', p: 'Clothes shops, boutiques, tourist shops. All the essentials to browse, try things, and check out.' },
     supermarket: { h: 'At the supermarket', p: 'Navigating the supermarché — finding things, weighing, paying. The stuff you use at Sherpa every week.' },
     bar: { h: 'Bar, café & restaurant', p: 'From ordering a drink to asking for the bill. Works in any café, bar or restaurant in Morzine.' },
-    general: { h: 'Everyday essentials', p: 'Core phrases for daily life — time, numbers, apologies, small talk.' }
+    general: { h: 'Everyday essentials', p: 'Core phrases for daily life — time, numbers, apologies, small talk.' },
+    chat: { h: 'Catching up', p: 'Quoi de neuf, opinions, and missing people — the start of every lesson with Mathilde.' },
+    story: { h: 'Telling stories', p: 'What happened and what it was like: passé composé for events, imparfait for the scene.' },
+    plans: { h: 'Can, want, must', p: 'Pouvoir, vouloir, devoir for planning your week — and j\'aurais dû for what you should have done.' },
+    time: { h: 'Time & numbers', p: 'Mathilde\'s times, both the 24-hour and the everyday way, plus phone numbers read in pairs.' },
+    hotel: { h: 'Hotel & bar', p: 'Lois\'s side of the desk — walk-ins, rooms, breakfast, the door code — and Martyn as the guest.' }
   };
   const intro = introMsgs[currentDrillCat] || introMsgs.all;
 
@@ -11136,6 +11197,11 @@ const DRILL_CAT_LEVELS = {
   supermarket: 'A2.1',
   bar:         'A2.2',
   general:     'A1.3',
+  time:        'A1.3',
+  chat:        'A2.1',
+  plans:       'A2.1',
+  story:       'A2.2',
+  hotel:       'A2.2',
   my:          null  // user-assigned; picks up user's current level
 };
 
@@ -11204,9 +11270,9 @@ function gatherAllItems() {
   const items = [];
   const mastery = loadMastery();
 
-  // Baked-in flashcards
+  // Baked-in flashcards (uploads and lesson packs carry their own level)
   Object.entries(decks).forEach(([key, deck]) => {
-    const { level, skill } = DECK_LEVELS[key] || { level: 'A1.2', skill: 'vocab' };
+    const { level, skill } = DECK_LEVELS[key] || { level: deck.level || 'A1.2', skill: 'vocab' };
     deck.cards.forEach(c => {
       const id = itemId('fc:' + key, c.fr);
       items.push({ id, level, skill, rec: mastery[id] || null });
@@ -11348,7 +11414,7 @@ function normForCompare(s) {
     .replace(/[ôö]/g, 'o')
     .replace(/[ûü]/g, 'u')
     .replace(/ç/g, 'c')
-    .replace(/['']/g, "'")     // normalise apostrophes
+    .replace(/[\u2018\u2019\u02bc]/g, "'")     // normalise apostrophes
     .replace(/[^a-z0-9' ]+/g, ' ')   // strip punctuation
     .replace(/\s+/g, ' ')
     .trim();
@@ -13432,10 +13498,14 @@ function normaliseForGrading(s, opts) {
   if (!s) return '';
   opts = opts || {};
   let out = String(s).toLowerCase().trim();
+  // Phone keyboards type curly apostrophes; the answers use straight ones
+  out = out.replace(/[\u2018\u2019\u02bc]/g, "'");
+  // Commas are punctuation, not part of the answer
+  out = out.replace(/,/g, ' ');
   // Collapse internal whitespace
   out = out.replace(/\s+/g, ' ');
-  // Strip trailing punctuation (. ! ? ,)
-  out = out.replace(/[.!?,;:]+$/g, '');
+  // Strip trailing punctuation (. ! ? ;), and the space French puts before it
+  out = out.replace(/[.!?;:]+$/g, '').trim();
   // Strip surrounding quotes
   out = out.replace(/^["'«»]|["'«»]$/g, '');
   if (opts.stripAccents) {
@@ -13659,7 +13729,7 @@ function renderExerciseQuestion() {
   let inputHtml;
   if (exType === 'multiple') {
     const opts = q.options.map((opt, i) => `
-      <button class="wbx-option" data-opt="${escapeAttr(opt)}" onclick="answerMultiple(this)">${escapeHtml(opt)}</button>
+      <button class="wbx-option" data-opt="${escapeHtml(opt)}" onclick="answerMultiple(this)">${escapeHtml(opt)}</button>
     `).join('');
     inputHtml = `<div class="wbx-options">${opts}</div>`;
   } else {
@@ -13859,7 +13929,12 @@ function renderConceptList() {
     grouped[c.category].push({ id, ...c });
   });
 
+  // Any other band (an upload or lesson pack can bring B1 material) goes after
+  // these, in level order, rather than being left out.
   const order = ['A1.1', 'A1.2', 'A1.3', 'A2.1', 'A2.2'];
+  Object.keys(grouped).filter(cat => !order.includes(cat))
+    .sort((a, b) => levelIdx(a) - levelIdx(b) || a.localeCompare(b))
+    .forEach(cat => order.push(cat));
   order.forEach(cat => {
     if (!grouped[cat] || grouped[cat].length === 0) return;
     const label = document.createElement('div');

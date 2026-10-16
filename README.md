@@ -155,6 +155,40 @@ Uploads that fail can be retried from the same screen without re-uploading.
 
 ---
 
+## Lesson packs
+
+Some material belongs to everyone, not to one upload: a lesson pack is shared
+content that every account sees, existing accounts and new ones alike. Packs
+live in `db/packs/` as hand-written modules in the same shape the upload parser
+produces.
+
+You don't run anything to load one. The first time the app is opened after a
+deploy that adds a pack, it loads into the shared library in a single
+transaction, and the database remembers it so it never loads twice. The pack's
+material goes to the top of each list, and that week's review puts it first.
+
+**Lessons with Mathilde** (`db/packs/mathilde-2026.js`) is the first: spoken
+French from the August–October 2026 lessons. It covers telling the time, phone
+numbers, telling stories in the past, *manquer*, *pouvoir / vouloir / devoir*,
+and the hotel and bar. It adds:
+
+- **Daily 10:** five new categories (Catching up, Telling stories, Can · want ·
+  must, Time & numbers, Hotel & bar), about 125 prompts to say out loud
+- **Role-plays:** seven new scenes. The new **Practise my lines** button hides
+  your side of every dialogue until you've said it.
+- **Flashcards, quizzes and verbs:** 8 decks, 5 quizzes, 10 verbs
+- **Workbook:** Book II, chapters 16–21
+- **Concepts, grammar notes and stories:** explainers, notes and three stories
+  to listen to with **Read aloud**
+
+To add a pack, write a module like that one and list it in
+`db/packs/index.js`. A pack's key and its slugs are permanent, because progress
+is stored against them. `npm run check` validates every pack: slugs that clash
+with the built-in library, quiz answers, multiple-choice options, and drill
+categories the Daily 10 screen knows about.
+
+---
+
 ## Learning partners
 
 Two people working through the same lessons can link up: **Settings → Learning

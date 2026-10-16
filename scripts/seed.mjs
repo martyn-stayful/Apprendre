@@ -6,13 +6,15 @@
 //
 // You normally don't need this: the app can set itself up from the browser the
 // first time you open it. This is here for local work and for reloading the
-// built-in library after changing db/seed-content.json.
+// built-in library after changing db/seed-content.json. Lesson packs (db/packs)
+// load here too, though a deployment also picks up new ones by itself.
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { neon } from '@neondatabase/serverless';
-import { applySchema, seedBuiltins } from '../api/_lib/seed.js';
+import { applySchema, seedBuiltins, seedPacks } from '../api/_lib/seed.js';
+import { PACKS } from '../db/packs/index.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = new Set(process.argv.slice(2));
@@ -47,4 +49,10 @@ if (!stats) {
 } else {
   console.log('\nSeeded the built-in library:');
   for (const [key, value] of Object.entries(stats)) console.log(`  ${key.padEnd(14)} ${value}`);
+}
+
+const packs = await seedPacks(sql, PACKS);
+for (const [key, counts] of Object.entries(packs)) {
+  console.log(`\nLoaded lesson pack ${key}:`);
+  for (const [k, v] of Object.entries(counts)) console.log(`  ${k.padEnd(14)} ${v}`);
 }

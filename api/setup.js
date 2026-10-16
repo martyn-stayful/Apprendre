@@ -1,5 +1,6 @@
 import { route, ok, bad } from './_lib/http.js';
 import seedData from '../db/seed-content.json' with { type: 'json' };
+import { PACKS } from '../db/packs/index.js';
 
 /**
  * What still needs configuring. Deliberately unauthenticated — it runs before
@@ -83,7 +84,7 @@ async function initialise(res) {
   }
 
   const { db } = await import('./_lib/db.js');
-  const { applySchema, seedBuiltins } = await import('./_lib/seed.js');
+  const { applySchema, seedBuiltins, seedPacks } = await import('./_lib/seed.js');
   const sql = db();
 
   try {
@@ -108,6 +109,7 @@ async function initialise(res) {
   }
 
   const stats = await seedBuiltins(sql, seedData);
+  await seedPacks(sql, PACKS);
 
   return ok(res, {
     initialised: true,

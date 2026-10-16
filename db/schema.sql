@@ -32,7 +32,7 @@ create table if not exists users (
 create table if not exists sources (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid references users(id) on delete cascade,
-  kind        text not null default 'upload',   -- builtin | upload
+  kind        text not null default 'upload',   -- builtin | pack | upload
   input_type  text,                             -- text | image | pdf
   title       text not null default '',
   file_name   text,
@@ -59,6 +59,14 @@ alter table sources add column if not exists files jsonb not null default '[]'::
 alter table sources add column if not exists parsing_started_at timestamptz;
 
 create index if not exists sources_user_idx on sources (user_id, created_at desc);
+
+-- Lesson packs: shared content added to the library after it first shipped
+-- (see db/packs). The key says which pack a row is, so a deployment can tell
+-- which ones this database already has, and the unique index means two
+-- instances loading the same pack at once can't both succeed.
+alter table sources add column if not exists pack text;
+
+create unique index if not exists sources_pack_key on sources (pack) where pack is not null;
 
 -- ---------------------------------------------------------------- content --
 

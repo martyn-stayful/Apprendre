@@ -16,6 +16,9 @@ export async function loadContent(userId) {
   // Content uploaded by this learner or by anyone they learn with. Progress is
   // never shared this way — only the material itself.
   //
+  // `week` is when an upload or a lesson pack arrived. Review puts the current
+  // week's items first, so recent lessons come up before older material.
+  //
   // Passed as a JSON string rather than an array parameter: array serialisation
   // differs between Postgres drivers, and a JSON text parameter behaves the
   // same everywhere.
@@ -28,7 +31,8 @@ export async function loadContent(userId) {
   ] = await sql.transaction([
     sql`select id, slug, name, category, level, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
-               case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
+               case when user_id is not null or source_id in (select id from sources where pack is not null)
+                    then to_char(created_at, 'IYYY-"W"IW') end as week
           from decks
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, name`,
@@ -40,7 +44,8 @@ export async function loadContent(userId) {
 
     sql`select id, slug, title, level, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
-               case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
+               case when user_id is not null or source_id in (select id from sources where pack is not null)
+                    then to_char(created_at, 'IYYY-"W"IW') end as week
           from quizzes
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
@@ -52,7 +57,8 @@ export async function loadContent(userId) {
 
     sql`select infinitive, meaning, forms, level, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
-               case when user_id is not null then to_char(created_at, 'IYYY-"W"IW') end as week
+               case when user_id is not null or source_id in (select id from sources where pack is not null)
+                    then to_char(created_at, 'IYYY-"W"IW') end as week
           from verbs
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, infinitive`,
@@ -161,6 +167,9 @@ export async function loadContent(userId) {
       exercises: (exercisesByChapter[c.id] || []).map((e) => ({
         id: `${c.slug}-${e.slug}`,
         title: e.title,
+        // Not stored: an exercise whose questions all offer options is
+        // multiple choice, and the rest are typed.
+        type: isMultipleChoice(e.questions) ? 'multiple' : undefined,
         instructions: e.instructions,
         questions: e.questions,
       })),
@@ -203,6 +212,11 @@ export async function loadContent(userId) {
     })),
     grammar: grammarRows.map((g) => ({ title: g.title, body: g.body, mine: g.mine, shared: g.shared || undefined })),
   };
+}
+
+function isMultipleChoice(questions) {
+  return Array.isArray(questions) && questions.length > 0
+    && questions.every((q) => Array.isArray(q.options) && q.options.length > 1);
 }
 
 function groupBy(rows, key) {

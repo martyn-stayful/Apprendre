@@ -174,6 +174,170 @@ export async function seedBuiltins(sql, data) {
   return stats;
 }
 
+/**
+ * Load any lesson packs (db/packs) the database doesn't have yet, as shared
+ * content. Returns what was written, keyed by pack.
+ *
+ * Packs sit on top of the original library, so they wait for it: on a fresh
+ * database, setup seeds the library and then calls this.
+ */
+export async function seedPacks(sql, packs) {
+  const rows = await sql`
+    select kind, pack from sources
+     where user_id is null and kind in ('builtin', 'pack')`;
+  if (!rows.some((r) => r.kind === 'builtin')) return {};
+
+  const have = new Set(rows.map((r) => r.pack));
+  const loaded = {};
+  for (const pack of packs) {
+    if (have.has(pack.key)) continue;
+    try {
+      loaded[pack.key] = await seedPack(sql, pack);
+    } catch (err) {
+      // Several functions cold-start together after a deploy, and each tries.
+      // The unique index lets one win; for the others that's not a failure.
+      const [again] = await sql`select 1 as found from sources where pack = ${pack.key}`;
+      if (!again) throw err;
+    }
+  }
+  return loaded;
+}
+
+/**
+ * Write one pack. Each table goes in as a single statement over a JSON array,
+ * so the whole pack is one transaction: it lands complete or not at all, and a
+ * deployment never sees half a pack marked as loaded.
+ */
+export async function seedPack(sql, pack) {
+  const id = () => crypto.randomUUID();
+  const sid = id();
+  // Negative positions put a pack ahead of the original library in every
+  // list: it's the material from recent lessons, so it's what to see first.
+  const at = (i) => i - 1000;
+  const t = {
+    decks: [], cards: [], quizzes: [], questions: [], verbs: [], drills: [], concepts: [],
+    stories: [], roleplays: [], grammar: [], chapters: [], exercises: [],
+  };
+
+  for (const [i, d] of (pack.decks || []).entries()) {
+    const deckId = id();
+    t.decks.push({ id: deckId, slug: d.slug, name: d.name, category: d.category || 'Vocabulary',
+                   level: d.level || null, position: at(i) });
+    for (const [j, c] of d.cards.entries()) {
+      t.cards.push({ deck_id: deckId, fr: c.fr, en: c.en, ex: c.ex || '', level: d.level || null, position: j });
+    }
+  }
+  for (const [i, q] of (pack.quizzes || []).entries()) {
+    const quizId = id();
+    t.quizzes.push({ id: quizId, slug: q.slug, title: q.title, level: q.level || null, position: at(i) });
+    for (const [j, x] of q.questions.entries()) {
+      t.questions.push({ quiz_id: quizId, prompt: x.prompt, en: x.en || '', opts: x.opts,
+                         answer_idx: x.answer_idx, note: x.note || '', position: j });
+    }
+  }
+  for (const [i, v] of (pack.verbs || []).entries()) {
+    t.verbs.push({ infinitive: v.infinitive, meaning: v.meaning || '', forms: v.forms,
+                   level: v.level || null, position: at(i) });
+  }
+  for (const [i, d] of (pack.drills || []).entries()) {
+    t.drills.push({ cat: d.cat, en: d.en, fr: d.fr, note: d.note || '', level: d.level || null, position: at(i) });
+  }
+  for (const [i, c] of (pack.concepts || []).entries()) {
+    t.concepts.push({ slug: c.slug, title: c.title, subtitle: c.subtitle || '', category: c.category || 'A1.1',
+                      paragraphs: c.paragraphs || [], table_rows: c.table_rows || [],
+                      examples: c.examples || [], pitfall: c.pitfall?.title ? c.pitfall : null,
+                      related: c.related || [], position: at(i) });
+  }
+  for (const [i, s] of (pack.stories || []).entries()) {
+    t.stories.push({ slug: s.slug, title: s.title, blurb: s.blurb || '', level: s.level || 'A1',
+                     tags: s.tags || [], focus: s.focus || [], body: s.body,
+                     translation: s.translation || '', position: at(i) });
+  }
+  for (const [i, r] of (pack.roleplays || []).entries()) {
+    t.roleplays.push({ title: r.title, ctx: r.ctx || '', lines: r.lines, notes: r.notes || '', position: at(i) });
+  }
+  for (const [i, g] of (pack.grammar_notes || []).entries()) {
+    t.grammar.push({ title: g.title, body: g.body, position: at(i) });
+  }
+  for (const [i, ch] of (pack.workbook_chapters || []).entries()) {
+    const chapterId = id();
+    t.chapters.push({ id: chapterId, slug: ch.slug, book: ch.book || 'I', book_title: ch.book_title || '',
+                      num: ch.num, title: ch.title, subtitle: ch.subtitle || '', level: ch.level || 'A1.1',
+                      rule: ch.rule || null, vocab: ch.vocab || [], position: at(i) });
+    for (const [j, ex] of (ch.exercises || []).entries()) {
+      t.exercises.push({ chapter_id: chapterId, slug: ex.slug, title: ex.title,
+                         instructions: ex.instructions || '', questions: ex.questions, position: j });
+    }
+  }
+
+  const stats = Object.fromEntries(Object.entries(t).map(([k, v]) => [k, v.length]));
+  const json = (rows) => JSON.stringify(rows);
+
+  await sql.transaction([
+    sql`insert into sources (id, user_id, kind, input_type, title, status, summary, stats, pack, parsed_at)
+        values (${sid}::uuid, null, 'pack', 'text', ${pack.title}, 'ready', ${pack.summary || ''},
+                ${JSON.stringify(stats)}::jsonb, ${pack.key}, now())`,
+    sql`insert into decks (id, user_id, source_id, slug, name, category, level, position)
+        select id, null, ${sid}::uuid, slug, name, category, level, position
+          from jsonb_to_recordset(${json(t.decks)}::jsonb)
+            as x(id uuid, slug text, name text, category text, level text, position int)`,
+    sql`insert into cards (deck_id, fr, en, ex, level, position)
+        select deck_id, fr, en, ex, level, position
+          from jsonb_to_recordset(${json(t.cards)}::jsonb)
+            as x(deck_id uuid, fr text, en text, ex text, level text, position int)`,
+    sql`insert into quizzes (id, user_id, source_id, slug, title, level, position)
+        select id, null, ${sid}::uuid, slug, title, level, position
+          from jsonb_to_recordset(${json(t.quizzes)}::jsonb)
+            as x(id uuid, slug text, title text, level text, position int)`,
+    sql`insert into quiz_questions (quiz_id, prompt, en, opts, answer_idx, note, position)
+        select quiz_id, prompt, en, opts, answer_idx, note, position
+          from jsonb_to_recordset(${json(t.questions)}::jsonb)
+            as x(quiz_id uuid, prompt text, en text, opts jsonb, answer_idx int, note text, position int)`,
+    sql`insert into verbs (user_id, source_id, infinitive, meaning, forms, level, position)
+        select null, ${sid}::uuid, infinitive, meaning, forms, level, position
+          from jsonb_to_recordset(${json(t.verbs)}::jsonb)
+            as x(infinitive text, meaning text, forms jsonb, level text, position int)`,
+    sql`insert into drills (user_id, source_id, cat, en, fr, note, level, position)
+        select null, ${sid}::uuid, cat, en, fr, note, level, position
+          from jsonb_to_recordset(${json(t.drills)}::jsonb)
+            as x(cat text, en text, fr text, note text, level text, position int)`,
+    sql`insert into concepts (user_id, source_id, slug, title, subtitle, category,
+                              paragraphs, table_rows, examples, pitfall, related, position)
+        select null, ${sid}::uuid, slug, title, subtitle, category,
+               paragraphs, table_rows, examples, pitfall, related, position
+          from jsonb_to_recordset(${json(t.concepts)}::jsonb)
+            as x(slug text, title text, subtitle text, category text, paragraphs jsonb,
+                 table_rows jsonb, examples jsonb, pitfall jsonb, related jsonb, position int)`,
+    sql`insert into stories (user_id, source_id, slug, title, blurb, level, tags, focus,
+                             body, translation, position)
+        select null, ${sid}::uuid, slug, title, blurb, level, tags, focus, body, translation, position
+          from jsonb_to_recordset(${json(t.stories)}::jsonb)
+            as x(slug text, title text, blurb text, level text, tags jsonb, focus jsonb,
+                 body text, translation text, position int)`,
+    sql`insert into roleplays (user_id, source_id, title, ctx, lines, notes, position)
+        select null, ${sid}::uuid, title, ctx, lines, notes, position
+          from jsonb_to_recordset(${json(t.roleplays)}::jsonb)
+            as x(title text, ctx text, lines jsonb, notes text, position int)`,
+    sql`insert into grammar_notes (user_id, source_id, title, body, position)
+        select null, ${sid}::uuid, title, body, position
+          from jsonb_to_recordset(${json(t.grammar)}::jsonb)
+            as x(title text, body text, position int)`,
+    sql`insert into workbook_chapters (id, user_id, source_id, slug, book, book_title, num,
+                                       title, subtitle, level, rule, vocab, position)
+        select id, null, ${sid}::uuid, slug, book, book_title, num, title, subtitle, level,
+               rule, vocab, position
+          from jsonb_to_recordset(${json(t.chapters)}::jsonb)
+            as x(id uuid, slug text, book text, book_title text, num int, title text,
+                 subtitle text, level text, rule jsonb, vocab jsonb, position int)`,
+    sql`insert into workbook_exercises (chapter_id, slug, title, instructions, questions, position)
+        select chapter_id, slug, title, instructions, questions, position
+          from jsonb_to_recordset(${json(t.exercises)}::jsonb)
+            as x(chapter_id uuid, slug text, title text, instructions text, questions jsonb, position int)`,
+  ]);
+
+  return stats;
+}
+
 /** VERB_LEVELS uses accented infinitives; verbTables does not. Match either. */
 function verbLevel(data, infinitive) {
   const exact = data.VERB_LEVELS?.[infinitive];

@@ -181,11 +181,27 @@ and the hotel and bar. It adds:
 - **Concepts, grammar notes and stories:** explainers, notes and three stories
   to listen to with **Read aloud**
 
-To add a pack, write a module like that one and list it in
+**From your notebooks** (`db/packs/notebook-2026.js`) is the second. It holds
+the new material from photos of Lois and Martyn's own notebooks:
+
+- asking questions with *est-ce que* and *qu'est-ce que*, with a new **Asking
+  questions** Daily 10 category
+- phrases for the lesson
+- *bon / bien* and *meilleur / mieux*
+- the mountain
+- the paragraph about last week
+
+It also includes a page of corrections for the mistakes in the notes, and
+workbook chapters 22–24.
+
+Each new pack's material goes ahead of the packs before it.
+
+To add a pack, write a module like those (the builders are in
+`db/packs/helpers.js`) and add it to the end of the list in
 `db/packs/index.js`. A pack's key and its slugs are permanent, because progress
 is stored against them. `npm run check` validates every pack: slugs that clash
-with the built-in library, quiz answers, multiple-choice options, and drill
-categories the Daily 10 screen knows about.
+with the built-in library or another pack, quiz answers, multiple-choice
+options, and drill categories the Daily 10 screen knows about.
 
 ---
 

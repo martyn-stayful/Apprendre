@@ -189,10 +189,10 @@ export async function seedPacks(sql, packs) {
 
   const have = new Set(rows.map((r) => r.pack));
   const loaded = {};
-  for (const pack of packs) {
+  for (const [n, pack] of packs.entries()) {
     if (have.has(pack.key)) continue;
     try {
-      loaded[pack.key] = await seedPack(sql, pack);
+      loaded[pack.key] = await seedPack(sql, pack, n);
     } catch (err) {
       // Several functions cold-start together after a deploy, and each tries.
       // The unique index lets one win; for the others that's not a failure.
@@ -208,12 +208,13 @@ export async function seedPacks(sql, packs) {
  * so the whole pack is one transaction: it lands complete or not at all, and a
  * deployment never sees half a pack marked as loaded.
  */
-export async function seedPack(sql, pack) {
+export async function seedPack(sql, pack, n = 0) {
   const id = () => crypto.randomUUID();
   const sid = id();
   // Negative positions put a pack ahead of the original library in every
   // list: it's the material from recent lessons, so it's what to see first.
-  const at = (i) => i - 1000;
+  // The nth pack in db/packs sits ahead of the ones before it.
+  const at = (i) => i - 1000 * (n + 1);
   const t = {
     decks: [], cards: [], quizzes: [], questions: [], verbs: [], drills: [], concepts: [],
     stories: [], roleplays: [], grammar: [], chapters: [], exercises: [],

@@ -7,10 +7,14 @@
 // existing ones alike.
 //
 // To add one, write a module in the shape of mathilde-2026.js — the same shape
-// the upload parser produces — and list it here. A pack's key is permanent:
-// it's how a database remembers having loaded it. Slugs are permanent too,
-// because progress is recorded against them; `npm run check` validates both.
+// the upload parser produces, built with ./helpers.js — and add it to the end
+// of the list. A pack's key is permanent: it's how a database remembers having
+// loaded it. Slugs are permanent too, because progress is recorded against
+// them; `npm run check` validates both.
 
 import mathilde2026 from './mathilde-2026.js';
+import notebook2026 from './notebook-2026.js';
 
-export const PACKS = [mathilde2026];
+// Oldest first. Each pack's material goes ahead of the ones before it in every
+// list, so the most recent lessons are what you see first.
+export const PACKS = [mathilde2026, notebook2026];

@@ -54,8 +54,8 @@ try {
   const seed = JSON.parse(fs.readFileSync(path.join(root, 'db/seed-content.json'), 'utf8'));
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const { PACKS } = await import(path.join(root, 'db/packs/index.js'));
-  for (const pack of PACKS) {
-    const problems = checkPack(pack, seed, html);
+  for (const [n, pack] of PACKS.entries()) {
+    const problems = checkPack(pack, seed, html, PACKS.slice(0, n));
     if (problems.length) bad(`pack ${pack.key}`, problems.join('\n        '));
     else ok(`${pack.key}: ${packSummary(pack)}`);
   }
@@ -79,9 +79,10 @@ process.exit(failures ? 1 : 0);
 
 /**
  * A pack is hand-written and loads into every account, and a slug clash with
- * the built-in library would fail the whole load — so catch it here.
+ * the built-in library or an earlier pack would fail the whole load — so catch
+ * it here.
  */
-function checkPack(pack, seed, html) {
+function checkPack(pack, seed, html, earlier) {
   const out = [];
   const fail = (msg) => out.push(msg);
   const fold = (s) => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -97,15 +98,20 @@ function checkPack(pack, seed, html) {
   };
 
   if (!pack.key || !pack.title) fail('a pack needs a key and a title');
+  if (earlier.some((p) => p.key === pack.key)) fail(`pack key ${pack.key} is used twice`);
+  // Everything the built-in library and the packs before this one already use.
+  const before = (list, slug) => earlier.flatMap((p) => (p[list] || []).map(slug));
 
-  unique('deck slug', (pack.decks || []).map((d) => d.slug), Object.keys(seed.decks));
+  unique('deck slug', (pack.decks || []).map((d) => d.slug),
+    [...Object.keys(seed.decks), ...before('decks', (d) => d.slug)]);
   for (const d of pack.decks || []) {
     if (!d.cards?.length) fail(`deck ${d.slug} has no cards`);
     if ((d.cards || []).some((c) => !c.fr || !c.en)) fail(`deck ${d.slug} has a card missing fr or en`);
     unique(`card in ${d.slug}`, (d.cards || []).map((c) => c.fr));
   }
 
-  unique('quiz slug', (pack.quizzes || []).map((q) => q.slug), Object.keys(seed.quizzes));
+  unique('quiz slug', (pack.quizzes || []).map((q) => q.slug),
+    [...Object.keys(seed.quizzes), ...before('quizzes', (q) => q.slug)]);
   for (const q of pack.quizzes || []) {
     unique(`question in ${q.slug}`, q.questions.map((x) => x.prompt));
     for (const x of q.questions) {
@@ -115,9 +121,9 @@ function checkPack(pack, seed, html) {
     }
   }
 
-  const seedVerbs = Object.keys(seed.verbTables).map(fold);
+  const seedVerbs = [...Object.keys(seed.verbTables), ...before('verbs', (v) => v.infinitive)].map(fold);
   for (const v of pack.verbs || []) {
-    if (seedVerbs.includes(fold(v.infinitive))) fail(`verb ${v.infinitive} is already in the built-in library`);
+    if (seedVerbs.includes(fold(v.infinitive))) fail(`verb ${v.infinitive} is already in the library or an earlier pack`);
     const persons = ['je', 'tu', 'il/elle/on', 'nous', 'vous', 'ils/elles'];
     if (persons.some((p) => !v.forms?.[p])) fail(`verb ${v.infinitive} is missing a form`);
   }
@@ -131,10 +137,12 @@ function checkPack(pack, seed, html) {
     if (!d.en || !d.fr) fail(`a drill in ${d.cat} is missing en or fr`);
   }
 
-  unique('concept slug', (pack.concepts || []).map((c) => c.slug), Object.keys(seed.concepts));
+  unique('concept slug', (pack.concepts || []).map((c) => c.slug),
+    [...Object.keys(seed.concepts), ...before('concepts', (c) => c.slug)]);
 
   const seedStories = seed.stories.map((s) => fold(s.title).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''));
-  unique('story slug', (pack.stories || []).map((s) => s.slug), seedStories);
+  unique('story slug', (pack.stories || []).map((s) => s.slug),
+    [...seedStories, ...before('stories', (s) => s.slug)]);
   for (const s of pack.stories || []) {
     const opened = (s.body.match(/\[\[/g) || []).length;
     const glosses = [...s.body.matchAll(/\[\[([^\]|]+)\|([^\]|]+)(?:\|([^\]]+))?\]\]/g)].length;
@@ -147,7 +155,8 @@ function checkPack(pack, seed, html) {
     }
   }
 
-  unique('workbook chapter slug', (pack.workbook_chapters || []).map((c) => c.slug), Object.keys(seed.workbook));
+  unique('workbook chapter slug', (pack.workbook_chapters || []).map((c) => c.slug),
+    [...Object.keys(seed.workbook), ...before('workbook_chapters', (c) => c.slug)]);
   for (const ch of pack.workbook_chapters || []) {
     if (!ch.rule?.heading) fail(`chapter ${ch.slug} needs a rule heading`);
     unique(`exercise in ${ch.slug}`, (ch.exercises || []).map((e) => e.slug));

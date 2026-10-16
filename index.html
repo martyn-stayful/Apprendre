@@ -7886,13 +7886,14 @@ var grammar = [];   // filled from Neon by bootstrapContent()
 // ---------- DAILY 10 (rotating set of practical speaking prompts) ----------
 // Each item has a category so the UI can filter by theme.
 // Categories: 'general', 'meeting', 'shop', 'bar', 'supermarket', and from the
-// lessons with Mathilde: 'time', 'chat', 'story', 'plans', 'hotel'
+// lesson packs: 'ask', 'time', 'chat', 'story', 'plans', 'hotel'
 var dailyDrills = [];   // filled from Neon by bootstrapContent()
 
 // Categories metadata for the UI
 const drillCategories = [
   { key: 'all', label: 'Mix' },
   { key: 'my', label: 'Mine' },
+  { key: 'ask', label: 'Asking questions' },
   { key: 'chat', label: 'Catching up' },
   { key: 'story', label: 'Telling stories' },
   { key: 'plans', label: 'Can · want · must' },
@@ -8189,7 +8190,10 @@ const CONCEPT_MAP = {
   'mathilde-past-stories':       { decks: ['mathilde_snow_trips'], quizzes: ['mathilde_past_tense'], workbookChapters: ['mathilde-ch17'] },
   'mathilde-manquer':            { decks: ['mathilde_manquer'], quizzes: ['mathilde_manquer_quiz'], workbookChapters: ['mathilde-ch18'] },
   'mathilde-should-have':        { workbookChapters: ['mathilde-ch19'] },
-  'mathilde-contracted-articles': { quizzes: ['mathilde_little_words'], workbookChapters: ['mathilde-ch20'] }
+  'mathilde-contracted-articles': { quizzes: ['mathilde_little_words'], workbookChapters: ['mathilde-ch20'] },
+  // From your notebooks (db/packs/notebook-2026.js)
+  'notebook-est-ce-que':         { decks: ['notebook_questions', 'notebook_lesson_phrases'], quizzes: ['notebook_est_ce_que'], workbookChapters: ['notebook-ch22'] },
+  'notebook-bon-bien':           { decks: ['notebook_good_better'], quizzes: ['notebook_good_better_quiz'], workbookChapters: ['notebook-ch23'] }
 };
 
 // Given an item, try to identify its concept id (returns null if unknown)
@@ -9857,6 +9861,7 @@ function renderDrills() {
     supermarket: { h: 'At the supermarket', p: 'Navigating the supermarché — finding things, weighing, paying. The stuff you use at Sherpa every week.' },
     bar: { h: 'Bar, café & restaurant', p: 'From ordering a drink to asking for the bill. Works in any café, bar or restaurant in Morzine.' },
     general: { h: 'Everyday essentials', p: 'Core phrases for daily life — time, numbers, apologies, small talk.' },
+    ask: { h: 'Asking questions', p: 'Est-ce que, qu\'est-ce que, pourquoi est-ce que — and what to say when you don\'t understand.' },
     chat: { h: 'Catching up', p: 'Quoi de neuf, opinions, and missing people — the start of every lesson with Mathilde.' },
     story: { h: 'Telling stories', p: 'What happened and what it was like: passé composé for events, imparfait for the scene.' },
     plans: { h: 'Can, want, must', p: 'Pouvoir, vouloir, devoir for planning your week — and j\'aurais dû for what you should have done.' },
@@ -11198,6 +11203,7 @@ const DRILL_CAT_LEVELS = {
   bar:         'A2.2',
   general:     'A1.3',
   time:        'A1.3',
+  ask:         'A1.3',
   chat:        'A2.1',
   plans:       'A2.1',
   story:       'A2.2',

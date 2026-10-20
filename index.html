@@ -4355,6 +4355,10 @@
   }
   .review-block:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(198, 75, 59, 0.25); }
   .review-block:active { transform: translateY(0); }
+  .review-block.recent {
+    background: linear-gradient(135deg, var(--pine) 0%, var(--pine-deep) 100%);
+  }
+  .review-block.recent:hover { box-shadow: 0 6px 18px rgba(30, 53, 41, 0.3); }
   .review-block .eyebrow {
     color: var(--gold);
     margin-bottom: 4px;
@@ -6887,6 +6891,8 @@
 
     <button class="review-block" id="reviewBlock" onclick="startReview('review')" style="display:none"></button>
 
+    <button class="review-block recent" id="recentLessonsBlock" onclick="startReview('this-week')" style="display:none"></button>
+
     <div class="phrase-of-day">
       <div class="eyebrow">Phrase du jour</div>
       <div class="phrase-fr" id="podFr">Ça a l'air bon !</div>
@@ -8384,7 +8390,8 @@ function startReview(mode, limit) {
   if (mode === 'new') {
     items = getNewItems(limit || 10);
   } else if (mode === 'this-week') {
-    // All items from this week's lesson, prioritising new/low-level first
+    // All items from recent lessons (current + last ISO week), prioritising
+    // new/low-level first
     items = getThisWeekItems()
       .filter(it => !it.rec || it.rec.level < 5)
       .sort((a, b) => {
@@ -8393,7 +8400,7 @@ function startReview(mode, limit) {
         return al - bl;  // lower levels first
       });
     // Cap it so the session isn't overwhelming
-    if (items.length > 15) items = items.slice(0, 15);
+    if (items.length > 20) items = items.slice(0, 20);
   } else {
     items = getDueItems();
   }
@@ -8429,8 +8436,8 @@ function startReview(mode, limit) {
     if (title) title.textContent = 'Learn new';
     if (sub) sub.textContent = `${items.length} brand-new items`;
   } else if (mode === 'this-week') {
-    if (title) title.textContent = "This week's lesson";
-    if (sub) sub.textContent = `${items.length} items from your current tutor material`;
+    if (title) title.textContent = "Recent lessons";
+    if (sub) sub.textContent = `${items.length} items from your recent tutor material`;
   } else {
     if (title) title.textContent = "Today's Review";
     if (sub) sub.textContent = `${items.length} items ready`;
@@ -9052,7 +9059,7 @@ function renderReviewComplete(wrap) {
   const settings = loadSettings();
   const dailyLimit = settings.newCardsPerDay || 5;
 
-  // "Practise this week's lesson" option — count items from current week that
+  // "Practise recent lessons" option — count items from recent uploads that
   // aren't already at L5. Practising an L5 item is allowed but less interesting.
   const weekItems = getThisWeekItems();
   const weekPracticeable = weekItems.filter(it => !it.rec || it.rec.level < 5);
@@ -9068,7 +9075,7 @@ function renderReviewComplete(wrap) {
   const subcopy = rvState.mode === 'new'
     ? `You'll see these again tomorrow. Come back each day and they'll gradually move further apart.`
     : rvState.mode === 'this-week'
-      ? `You've worked through this week's new material.`
+      ? `You've worked through your recent lesson material.`
       : (levelledUp > held
           ? `${levelledUp} items moved forward. Spaced repetition working as designed.`
           : `Some items held at their current level — they'll be scheduled for another review soon.`);
@@ -9092,8 +9099,8 @@ function renderReviewComplete(wrap) {
   if (weekPracticeable.length > 0 && rvState.mode !== 'this-week') {
     options.push({
       primary: !options.length,  // primary if nothing else is
-      label: `Practise this week's lesson`,
-      sub: `${weekPracticeable.length} items from this week's new material`,
+      label: `Practise recent lessons`,
+      sub: `${weekPracticeable.length} items from your recent material`,
       onclick: `startReview('this-week')`
     });
   }
@@ -10712,11 +10719,19 @@ function getNewItems(limit) {
   return brand;
 }
 
-// All items from this week's lesson (regardless of due state).
-// Used for "practise this week's content" button.
+// Is this item from a recent lesson — current ISO week or the one before it?
+// Broader than isCurrentWeekItem: a lesson uploaded a few days ago can already
+// have rolled into "last week" by ISO week numbering, and it should still
+// count as recent.
+function isRecentItem(item, weeksBack) {
+  return !!(item.week && isRecentWeek(item.week, weeksBack));
+}
+
+// All items from recent lessons (current + last ISO week), regardless of due
+// state. Used for the "practise recent lessons" home card and post-session button.
 function getThisWeekItems() {
   const items = allTrackableItems();
-  return items.filter(isCurrentWeekItem);
+  return items.filter(it => isRecentItem(it, 1));
 }
 
 // Breakdown of due items by source (for the home card)
@@ -13593,7 +13608,32 @@ function renderTodayCard() {
   renderNudgeSlot();
   renderInsightSlot();
   renderReviewBlock();
+  renderRecentLessonsBlock();
   renderProgressBlock();
+}
+
+// Direct entry point for practising recent uploads — previously only
+// reachable via a button on the post-session "what's next" screen.
+function renderRecentLessonsBlock() {
+  const el = document.getElementById('recentLessonsBlock');
+  if (!el) return;
+
+  const items = getThisWeekItems().filter(it => !it.rec || it.rec.level < 5);
+  if (items.length === 0) {
+    el.style.display = 'none';
+    return;
+  }
+
+  el.style.display = 'block';
+  el.onclick = () => startReview('this-week');
+  el.innerHTML = `
+    <div class="eyebrow">Recent lessons · your latest uploads</div>
+    <div class="rb-headline">${items.length} items from recent lessons</div>
+    <div class="rb-detail">Focus on what your tutor just covered.</div>
+    <div class="rb-cta">
+      Practise now <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 6.71a.996.996 0 0 0 0 1.41L13.17 12l-3.88 3.88a.996.996 0 1 0 1.41 1.41l4.59-4.59a.996.996 0 0 0 0-1.41L10.7 6.7c-.38-.38-1.02-.38-1.41.01z"/></svg>
+    </div>
+  `;
 }
 
 function renderReviewBlock() {

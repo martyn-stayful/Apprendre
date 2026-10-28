@@ -5092,6 +5092,12 @@
     gap: 8px;
     margin-bottom: 16px;
     flex-wrap: wrap;
+    /* Stays under the top bar, so Stop and English are in reach while reading. */
+    position: sticky;
+    top: var(--topbar-h, 74px);
+    z-index: 5;
+    padding-block: 8px;
+    background: var(--snow);
   }
 
   .st-ctrl {
@@ -5151,7 +5157,148 @@
     border-bottom: 1.5px solid var(--gold);
   }
 
-  /* Tooltip / translation popover */
+  .st-body .st-s.playing {
+    background: rgba(212, 162, 76, 0.24);
+    border-radius: 4px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .st-practise { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; position: relative; }
+  .st-practise span {
+    font-size: 12px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: rgba(254, 252, 247, 0.12);
+    color: var(--paper);
+  }
+
+  .st-rate {
+    margin-top: 22px;
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .st-rate h4 { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 500; color: var(--ink); }
+  .st-rate-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .st-rate-btn {
+    padding: 10px 4px;
+    border: 1px solid rgba(26, 35, 50, 0.12);
+    border-radius: 10px;
+    background: var(--snow);
+    color: var(--ink-soft);
+    font: 700 11px 'Lato', sans-serif;
+    line-height: 1.2;
+    cursor: pointer;
+  }
+  .st-rate-btn.on { background: var(--pine); border-color: var(--pine); color: var(--paper); }
+  .st-rate-btn:disabled { cursor: default; }
+  .st-rate-msg { font-size: 13px; color: var(--ink-soft); }
+
+  /* ========== STORY GENERATOR ========== */
+  .sg-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--pine) 0%, var(--pine-deep) 100%);
+    color: var(--paper);
+  }
+  .sg-card::before {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(212, 162, 76, 0.22), transparent 70%);
+    pointer-events: none;
+  }
+  .sg-card > * { position: relative; }
+  .sg-eyebrow, .sg-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .sg-eyebrow { color: var(--gold); }
+  .sg-label { color: rgba(254, 252, 247, 0.65); margin-top: 4px; }
+  .sg-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+  .sg-sub { font-size: 13px; line-height: 1.45; color: rgba(254, 252, 247, 0.82); }
+  .sg-chips, .sg-opts, .sg-key { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sg-chip {
+    padding: 3px 9px;
+    border: 1px solid rgba(254, 252, 247, 0.2);
+    border-radius: 999px;
+    background: rgba(254, 252, 247, 0.08);
+    font-size: 12px;
+  }
+  .sg-chip.lesson { border-color: var(--gold); }
+  .sg-chip.review { border-color: #f0a090; }
+  .sg-chip.saved { border-color: #a6d6bb; }
+  .sg-key { gap: 12px; font-size: 11px; color: rgba(254, 252, 247, 0.7); }
+  .sg-key span::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 5px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    vertical-align: 0;
+  }
+  .sg-key .lesson::before { border-color: var(--gold); }
+  .sg-key .review::before { border-color: #f0a090; }
+  .sg-key .saved::before { border-color: #a6d6bb; }
+  .sg-opt {
+    padding: 6px 12px;
+    border: 1px solid rgba(254, 252, 247, 0.28);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--paper);
+    font: 700 11px 'Lato', sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .sg-opt.on { background: var(--paper); border-color: var(--paper); color: var(--pine-deep); }
+  .sg-link {
+    align-self: flex-start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: rgba(254, 252, 247, 0.85);
+    font: 700 12px 'Lato', sans-serif;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .sg-go {
+    margin-top: 6px;
+    padding: 13px 16px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--gold);
+    color: var(--ink);
+    font: 900 12px 'Lato', sans-serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .sg-go:disabled { opacity: 0.7; cursor: default; }
+  .st-rate .sg-go { background: var(--pine); color: var(--paper); }
+  .sg-status { font-size: 12px; line-height: 1.45; color: rgba(254, 252, 247, 0.85); }
+  .sg-status:empty { display: none; }
+  .sg-status.err { color: #ffc2b6; }
+  .sg-opt:focus-visible, .sg-go:focus-visible, .sg-link:focus-visible, .st-rate-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
   /* ========== TAP TO TRANSLATE ========== */
   ::highlight(tap-word) { background-color: rgba(212, 162, 76, 0.45); }
 
@@ -7261,7 +7408,7 @@
       <button class="back-btn" onclick="showView('home')">←</button>
       <div>
         <div class="view-title">Short Stories</div>
-        <div class="view-sub">Tap underlined words for translations</div>
+        <div class="view-sub">New episodes from what you're learning · tap any word</div>
       </div>
     </div>
     <div class="sp-wrap" id="spList"></div>
@@ -8354,6 +8501,7 @@ const PRACTICE_VIEWS = new Set([
 
 function showView(id) {
   closeTapPop();
+  stopStory();
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'instant' });
@@ -14565,7 +14713,7 @@ function startConceptDrill(conceptId) {
 
 function renderStoryPicker() {
   const list = document.getElementById('spList');
-  list.innerHTML = '';
+  list.innerHTML = storyGeneratorHtml();
   stories.forEach((s, idx) => {
     const btn = document.createElement('button');
     btn.className = 'sp-item';
@@ -14576,6 +14724,7 @@ function renderStoryPicker() {
         <div class="sp-meta">${escapeHtml(s.blurb)}</div>
         <div class="sp-tags">
           ${s.tags.map(t => `<span class="sp-tag">${escapeHtml(t)}</span>`).join('')}
+          ${s.shared ? '<span class="sp-tag">from your partner</span>' : ''}
         </div>
       </div>
     `;
@@ -14595,16 +14744,25 @@ function openStory(idx) {
     return `<span class="hl" data-en="${escapeHtml(en)}"${noteAttr}>${escapeHtml(fr)}</span>`;
   });
 
+  // Stories the app wrote come a sentence at a time, so they can be played a
+  // sentence at a time; older ones are read in one go.
+  const bySentence = s.body.includes('class="st-s"');
+  const practised = s.meta ? (s.meta.targets || []).filter(t => t.used !== false) : [];
+
   const wrap = document.getElementById('stWrap');
   wrap.innerHTML = `
     <div class="st-intro">
-      <div class="eyebrow">${s.level} · story</div>
+      <div class="eyebrow">${s.level} · ${s.meta ? 'new story' : 'story'}${s.shared ? ' · from your partner' : ''}</div>
       <h3>${escapeHtml(s.title)}</h3>
-      <p>Tap any word to see what it means. <u>Underlined</u> words have notes from the lesson. Read each paragraph out loud before you look things up.</p>
+      <p>${s.meta ? `${escapeHtml(s.blurb)} ` : ''}Tap any word to see what it means. <u>Underlined</u> words have notes. Read each paragraph out loud before you look things up.</p>
+      ${practised.length ? `<div class="st-practise">${practised.map(t => `<span>${escapeHtml(t.fr)}</span>`).join('')}</div>` : ''}
     </div>
 
-    <div class="st-controls">
-      <button class="st-ctrl" id="stBtnListen" onclick="readStoryAloud()">🔊 Read aloud</button>
+    <div class="st-controls" id="stControls">
+      ${bySentence
+        ? `<button class="st-ctrl" id="stBtnListen" onclick="playStory(this)">▶ Play</button>
+           <button class="st-ctrl" id="stBtnSpeed" onclick="cycleStorySpeed(this)">Speed ${storyRate()}×</button>`
+        : `<button class="st-ctrl" id="stBtnListen" onclick="readStoryAloud()">🔊 Read aloud</button>`}
       <button class="st-ctrl" id="stBtnShowAll" onclick="toggleShowAll(this)">Highlight all</button>
       <button class="st-ctrl" id="stBtnTrans" onclick="toggleTranslation(this)">English version</button>
     </div>
@@ -14616,6 +14774,17 @@ function openStory(idx) {
       <ul>${s.focus.map(f => `<li>${f}</li>`).join('')}</ul>
     </div>
 
+    ${s.meta ? `
+    <div class="st-rate">
+      <h4>How was the level?</h4>
+      <div class="st-rate-row">
+        ${[['Far too easy', 2], ['Easy', 1], ['Just right', 0], ['Hard', -1], ['Far too hard', -2]]
+          .map(([label, d]) => `<button class="st-rate-btn" onclick="rateStory(this, ${d})">${label}</button>`).join('')}
+      </div>
+      <div class="st-rate-msg" id="stRateMsg">Your answer sets the level of the next story (now ${storyLevel()}).</div>
+      <button class="sg-go" onclick="showView('storyPicker')">Write the next episode</button>
+    </div>` : ''}
+
     <div class="st-translation" id="stTrans">
       <h4>Full English translation</h4>
       ${s.translation}
@@ -14623,6 +14792,8 @@ function openStory(idx) {
   `;
 
   showView('storyView');
+  const topbar = document.querySelector('.topbar');
+  if (topbar) document.documentElement.style.setProperty('--topbar-h', `${topbar.offsetHeight}px`);
 }
 
 function toggleShowAll(btn) {
@@ -14644,6 +14815,235 @@ function readStoryAloud() {
   // Get just the French text (the <span> innerText is already French)
   const text = body.innerText.replace(/\s+/g, ' ').trim();
   speak(text);
+}
+
+/* ====================== STORY GENERATOR ======================
+   Writes the next episode of a series about a made-up cast in Morzine, from
+   what you're learning now: words from recent lessons, words due for review,
+   words you've saved, and the grammar most of them belong to. /api/stories
+   does the writing and keeps the story in your library, which your learning
+   partner sees too.
+*/
+
+const STORY_GENRES = [['everyday', 'Everyday'], ['comedy', 'Comedy'], ['mystery', 'Mystery'], ['romance', 'Romance'], ['adventure', 'Adventure']];
+const STORY_LEVEL_SCALE = ['A1.1', 'A1.2', 'A1.3', 'A2.1', 'A2.2', 'A2.3', 'B1.1', 'B1.2', 'B1.3'];
+const STORY_RATES = [0.7, 0.9, 1];
+let storyDraft = null;
+let storyPlay = null;
+
+function storyLevel() {
+  const s = loadSettings();
+  return STORY_LEVEL_SCALE.includes(s.storyLevel) ? s.storyLevel : 'A2.1';
+}
+
+function storyRate() {
+  const r = loadSettings().storyRate;
+  return STORY_RATES.includes(r) ? r : 0.9;
+}
+
+/** What the next story should use. */
+function storyRecipe() {
+  // Lesson words used in the last few stories wait their turn.
+  const recent = new Set(stories.filter(s => s.meta).slice(0, 3)
+    .flatMap(s => (s.meta.targets || []).map(t => tapNorm(t.fr))));
+  const taken = new Set();
+  const usable = (it) => it.type === 'flashcard' && it.card && it.card.fr && it.card.en && it.card.fr.length <= 60;
+  const pick = (list, n, kind, shuffle) => {
+    let ordered = list.filter(usable);
+    if (shuffle) {
+      ordered = ordered.map(it => ({ it, r: Math.random() + (recent.has(tapNorm(it.card.fr)) ? 1 : 0) }))
+        .sort((a, b) => a.r - b.r).map(x => x.it);
+    }
+    const out = [];
+    for (const it of ordered) {
+      const key = tapNorm(it.card.fr);
+      if (!key || taken.has(key)) continue;
+      taken.add(key);
+      out.push({ fr: it.card.fr, en: it.card.en, kind, item: it });
+      if (out.length >= n) break;
+    }
+    return out;
+  };
+
+  // Saved words come back in five stories, newest first.
+  const saved = loadCustom().flashcards.filter(c => (c.storyUses || 0) < 5)
+    .sort((a, b) => (b.id || 0) - (a.id || 0))
+    .map(c => ({ type: 'flashcard', card: c, sourceKey: '__mine__' }));
+  const targets = [
+    ...pick(saved, 4, 'saved', false),
+    ...pick(getThisWeekItems().filter(it => !it.rec || it.rec.level < 4), 6, 'lesson', true),
+    ...pick(getDueItems(), 4, 'review', true),
+  ];
+  if (targets.length < 8) targets.push(...pick(getNewItems(80), 8 - targets.length, 'new', true));
+
+  // The grammar most of those words belong to.
+  const counts = {};
+  targets.forEach(t => {
+    const id = conceptForItem(t.item);
+    if (id && concepts[id]) counts[id] = (counts[id] || 0) + 1;
+  });
+  const grammar = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 1).map(([id]) => ({
+    title: concepts[id].title,
+    rule: stripTags((concepts[id].paragraphs || [])[0] || concepts[id].subtitle || '').slice(0, 300),
+  }));
+
+  // Words already learned, for Claude to build the rest of the story from.
+  const known = allTrackableItems()
+    .filter(it => usable(it) && it.rec && it.rec.level >= 3 && !taken.has(tapNorm(it.card.fr)))
+    .map(it => it.card.fr)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 150);
+
+  return { targets, grammar, known };
+}
+
+function storyGeneratorHtml() {
+  if (!storyDraft) storyDraft = { recipe: storyRecipe(), busy: false, error: '' };
+  const { recipe, busy, error } = storyDraft;
+  const s = loadSettings();
+  const genre = s.storyGenre || 'everyday';
+  const length = s.storyLength === 'short' ? 'short' : 'long';
+  const episode = stories.filter(x => x.meta).length + 1;
+  const ready = recipe.targets.length >= 3;
+  const status = busy ? 'Writing takes up to a minute. You can leave this screen and come back.'
+    : error || (ready ? '' : 'Practise a few flashcards first, so the story has words to use.');
+  const opt = (key, value, label, on) =>
+    `<button class="sg-opt${on ? ' on' : ''}" onclick="setStoryOption('${key}', '${value}')"${busy ? ' disabled' : ''}>${label}</button>`;
+
+  return `
+    <div class="sg-card" id="sgCard">
+      <div class="sg-eyebrow">New story · episode ${episode}</div>
+      <div class="sg-title">What happens next in Morzine?</div>
+      <div class="sg-sub">Chloé at the bakery, Hugo and his dog, nosy Madame Perrin, Sam behind the bar. Written for you from what you're learning now, and shared with your learning partner.</div>
+      <div class="sg-label">This story will use</div>
+      <div class="sg-chips">${recipe.targets.map(t =>
+        `<span class="sg-chip ${t.kind}"${frAttrs(t.en)}>${escapeHtml(t.fr)}</span>`).join('')}</div>
+      <div class="sg-key"><span class="lesson">recent lessons</span><span class="review">due for review</span><span class="saved">saved by you</span></div>
+      ${recipe.grammar.length ? `<div class="sg-label">Grammar</div><div class="sg-sub">${escapeHtml(recipe.grammar.map(g => g.title).join(' · '))}</div>` : ''}
+      ${busy ? '' : '<button class="sg-link" onclick="reshuffleStory()">Use different words</button>'}
+      <div class="sg-label">Genre</div>
+      <div class="sg-opts">${STORY_GENRES.map(([k, label]) => opt('storyGenre', k, label, genre === k)).join('')}</div>
+      <div class="sg-label">Length · level ${storyLevel()}</div>
+      <div class="sg-opts">${opt('storyLength', 'short', 'Short', length === 'short')}${opt('storyLength', 'long', 'Longer', length === 'long')}</div>
+      <button class="sg-go" onclick="generateStory()"${busy || !ready ? ' disabled' : ''}>${busy ? 'Writing your story…' : 'Write my story'}</button>
+      <div class="sg-status${error && !busy ? ' err' : ''}">${escapeHtml(status)}</div>
+    </div>`;
+}
+
+function refreshStoryGenerator() {
+  const card = document.getElementById('sgCard');
+  if (card) card.outerHTML = storyGeneratorHtml();
+}
+
+function setStoryOption(key, value) {
+  const s = loadSettings();
+  s[key] = value;
+  saveSettings(s);
+  refreshStoryGenerator();
+}
+
+function reshuffleStory() {
+  if (storyDraft && storyDraft.busy) return;
+  storyDraft = null;
+  refreshStoryGenerator();
+}
+
+async function generateStory() {
+  const draft = storyDraft;
+  if (!draft || draft.busy) return;
+  const s = loadSettings();
+  draft.busy = true;
+  draft.error = '';
+  refreshStoryGenerator();
+  try {
+    const { story } = await window.Api.post('/api/stories', {
+      level: storyLevel(),
+      genre: s.storyGenre || 'everyday',
+      length: s.storyLength === 'short' ? 'short' : 'long',
+      targets: draft.recipe.targets.map(({ fr, en, kind }) => ({ fr, en, kind })),
+      grammar: draft.recipe.grammar,
+      known: draft.recipe.known,
+    });
+    // Count the saved words this story used: after five stories they're left to spaced repetition.
+    const used = new Set((story.meta.targets || []).filter(t => t.used && t.kind === 'saved').map(t => tapNorm(t.fr)));
+    if (used.size) {
+      const mine = loadCustom();
+      mine.flashcards.forEach(c => { if (used.has(tapNorm(c.fr))) c.storyUses = (c.storyUses || 0) + 1; });
+      saveCustom(mine);
+    }
+    stories.unshift(story);
+    storyDraft = null;
+    if (document.getElementById('storyPicker').classList.contains('active')) openStory(0);
+  } catch (err) {
+    draft.busy = false;
+    draft.error = err.message || "Couldn't write the story. Try again.";
+    if (storyDraft === draft) refreshStoryGenerator();
+  }
+}
+
+function rateStory(btn, delta) {
+  const s = loadSettings();
+  const before = storyLevel();
+  // "Far too" moves the level at once; "easy" or "hard" twice in a row does.
+  let nudge = delta === 0 ? 0 : (s.storyNudge || 0) + delta / 2;
+  let i = STORY_LEVEL_SCALE.indexOf(before);
+  if (nudge >= 1 && i < STORY_LEVEL_SCALE.length - 1) { i++; nudge = 0; }
+  if (nudge <= -1 && i > 0) { i--; nudge = 0; }
+  s.storyLevel = STORY_LEVEL_SCALE[i];
+  s.storyNudge = Math.max(-1, Math.min(1, nudge));
+  saveSettings(s);
+
+  btn.parentElement.querySelectorAll('button').forEach(b => { b.disabled = true; b.classList.toggle('on', b === btn); });
+  const after = s.storyLevel;
+  document.getElementById('stRateMsg').textContent = after !== before
+    ? `Your next story will be ${after}, ${levelIdx(after) > levelIdx(before) ? 'up' : 'down'} from ${before}.`
+    : `Your next story stays at ${after}.${s.storyNudge ? ' One more like that and it moves.' : ''}`;
+}
+
+function playStory(btn) {
+  if (storyPlay) { stopStory(); return; }
+  const spans = [...document.querySelectorAll('#stBody .st-s')];
+  if (!spans.length || !('speechSynthesis' in window)) { readStoryAloud(); return; }
+  storyPlay = { i: 0, spans, btn };
+  btn.textContent = '■ Stop';
+  btn.classList.add('active');
+  playSentence();
+}
+
+function playSentence() {
+  const play = storyPlay;
+  if (!play) return;
+  play.spans.forEach(el => el.classList.remove('playing'));
+  if (play.i >= play.spans.length) { stopStory(); return; }
+  const el = play.spans[play.i];
+  el.classList.add('playing');
+  // Scroll only when the sentence is about to go out of sight.
+  const box = el.getBoundingClientRect();
+  const controls = document.getElementById('stControls');
+  const top = controls ? controls.getBoundingClientRect().bottom : 0;
+  if (box.top < top + 12 || box.bottom > window.innerHeight - 60) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  speak(el.textContent, storyRate(), () => {
+    if (storyPlay !== play) return;
+    play.i++;
+    playSentence();
+  });
+}
+
+function stopStory() {
+  const play = storyPlay;
+  if (!play) return;
+  storyPlay = null;
+  play.spans.forEach(el => el.classList.remove('playing'));
+  play.btn.textContent = '▶ Play';
+  play.btn.classList.remove('active');
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+}
+
+function cycleStorySpeed(btn) {
+  const s = loadSettings();
+  s.storyRate = STORY_RATES[(STORY_RATES.indexOf(storyRate()) + 1) % STORY_RATES.length];
+  saveSettings(s);
+  btn.textContent = `Speed ${s.storyRate}×`;
 }
 
 /* ====================== TAP TO TRANSLATE ======================
@@ -14908,7 +15308,7 @@ function onTapPopClick(e) {
   if (!btn || !st) return;
   const act = btn.dataset.act;
   if (act === 'close') closeTapPop();
-  if (act === 'speak') speak(st.hit.word);
+  if (act === 'speak') { stopStory(); speak(st.hit.word); }
   if (act === 'sentence') {
     st.showSentence = true;
     if (!st.known && !st.result) tapLookup();
@@ -14977,12 +15377,13 @@ function playCorrectSound() {
   } catch (e) { /* fail silently */ }
 }
 
-function speak(text, rate) {
+function speak(text, rate, onEnd) {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'fr-FR';
   u.rate = rate || 0.9;
+  if (onEnd) { u.onend = onEnd; u.onerror = onEnd; }
   // prefer a French voice
   const voices = window.speechSynthesis.getVoices();
   const frVoice = voices.find(v => v.lang === 'fr-FR' || v.lang.startsWith('fr'));

@@ -39,6 +39,9 @@
     },
     "api/translate.js": {
       "maxDuration": 30
+    },
+    "api/stories.js": {
+      "maxDuration": 300
     }
   },
   "headers": [

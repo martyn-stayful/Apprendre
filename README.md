@@ -282,11 +282,16 @@ learner can write five stories a day.
 
 ---
 
-## Tap to translate
+## Tap or highlight to translate
 
-Tap any French word in the app to see what it means. It works in stories,
-role-plays, Daily 10 answers, quizzes, workbook gap-fills, explainers, grammar
-notes and flashcard examples. The popup gives:
+Tap any French word to see what it means. Tapping works in stories, role-plays,
+Daily 10 answers, quizzes, workbook gap-fills, explainers and grammar notes.
+
+Anywhere else, highlight text instead: long-press on a phone, or drag or
+double-click with a mouse. Highlighting works on any text in the app: a word, a
+phrase, or a sentence or two. Highlighted English comes back as French.
+
+The popup gives:
 
 - the meaning of the word in that sentence, its dictionary form, and a short
   grammar note
@@ -294,14 +299,18 @@ notes and flashcard examples. The popup gives:
 - **+ My vocab**, which saves the word, with its sentence as the example, to
   your own flashcards
 
+After a highlight, the popup sits below the text, so it doesn't cover the
+phone's own Copy menu.
+
+**Flashcards are the exception:** nothing on a flashcard, whether in a deck or in
+Today's Review, can be tapped or highlighted for a translation, because the
+point there is to remember it.
+
 Words a lesson already glosses show the lesson's own note straight away. For
 anything else, `/api/translate` asks Claude, then stores the answer in the
 `translations` table, shared by every account. So each word in each sentence is
-only paid for once, and tapping it again is instant. A new lookup costs about
+only paid for once, and looking it up again is instant. A new lookup costs about
 half a US cent. Each learner gets 300 new lookups a day.
-
-English prompts in the workbook can't be tapped, because translating them would
-give the answer away.
 
 ---
 

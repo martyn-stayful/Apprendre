@@ -9,6 +9,7 @@ import { client, explain } from './claude.js';
 const MODEL = 'claude-opus-5-5';
 
 export const Translation = z.object({
+  language: z.enum(['fr', 'en', 'other']),
   word: z.string(),
   base: z.string(),
   meaning: z.string(),
@@ -17,23 +18,37 @@ export const Translation = z.object({
 });
 
 const SYSTEM = `You help a British English speaker read French while they learn it (roughly
-A1 to B1). They are using a revision app and tapped a word or phrase in a French
-sentence because they didn't understand it. Reply with:
+A1 to B1). In their revision app they tapped or highlighted some text (a word, a
+phrase, or a sentence or two) because they want to know what it means. Reply with:
 
-- word: the word or phrase exactly as tapped.
+- language: "fr" if the text is French, "en" if it is English, "other" if neither.
+- word: the text exactly as given.
+
+When it is French:
 - base: its dictionary form — the infinitive for a verb, the masculine singular for an
   adjective, the noun with un or une ("un casque"). For an elided or set chunk such as
-  "c'était" or "y aller", give the most useful form ("être", "aller").
-- meaning: what it means in this sentence, in a few English words.
+  "c'était" or "y aller", give the most useful form ("être", "aller"). For a whole
+  sentence, an empty string.
+- meaning: what it means here in English: a few words for a word or phrase, a full
+  translation for a sentence or more.
 - grammar: one short line a learner would find useful — tense and person for a verb,
   gender for a noun, what an elision stands for — or an empty string if nothing is
   worth saying.
-- sentence: a natural English translation of the whole sentence.
+- sentence: a natural English translation of the whole sentence it sits in.
+
+When it is English, go the other way, so the learner gets the French:
+- meaning: the French for it, as it would be said here.
+- base: for a single word, the French dictionary form ("un casque", "aller");
+  otherwise an empty string.
+- grammar: a short note on the French if it helps (gender, the preposition that goes
+  with it), or an empty string.
+- sentence: the whole sentence in French.
+
+When it is neither, say which language it is in meaning and leave the rest empty.
 
 A blank (___) is a gap in an exercise; translate around it. English words in brackets
 are exercise hints; leave them out. If the app already has an English version of the
-sentence it is given too: keep your meaning consistent with it. If the tapped text is
-not French, say so in meaning.`;
+sentence it is given too: keep your meaning consistent with it.`;
 
 /** The cache key: the same word in the same sentence, however it was typed. */
 export function translationKey(word, sentence) {

@@ -23,6 +23,7 @@ api/
   uploads/          create · list · delete, and parse
   state.js          settings, streak, time tracking, workbook progress
   translate.js      what a tapped word means in its sentence (cached)
+  stories.js        writes the next story from what you're learning
   mastery.js        the spaced-repetition records
   _lib/
     claude.js       the prompt and the Claude call
@@ -232,6 +233,52 @@ The screen has two practice modes:
 
 - **Speaking:** say a random number, then reveal how it goes.
 - **Listening:** the app reads one out and you type the digits.
+
+---
+
+## Stories written for you
+
+The top of the **Stories** screen writes a new short story whenever you ask.
+Each one is the next episode of a series set in Morzine, with a made-up cast who
+come back every time:
+
+- Chloé, who runs the bakery-café
+- Hugo, the ski instructor, and his croissant-stealing dog Biscotte
+- Madame Perrin next door, and her cat Gaston
+- Sam, the English barman who's learning French
+- Inès, Chloé's teenage cousin
+
+Every story is built from what you're learning at that moment:
+
+- **Saved words** (green): words you saved with **+ My vocab**. Each one comes
+  back in your next five stories.
+- **Recent lessons** (gold): items from this week's and last week's lessons you
+  haven't mastered. Words used in your last three stories wait their turn.
+- **Due for review** (red): your spaced-repetition items that are due.
+- **Grammar**: the explainer most of those words belong to.
+
+The card shows the words before you start, and **Use different words** picks
+again. You choose a genre and a length.
+
+The story is also built from about 150 words you've already mastered, and
+Claude is asked to use each target at least twice. The server checks the story
+before saving it: the glosses must be well formed and most targets used. If not,
+Claude rewrites it once.
+
+You can tap any word in the story. Each sentence carries its own English, so
+**Whole sentence** shows straight away. **Play** reads the story a sentence at a
+time and highlights each one, and **Speed** changes how fast it reads.
+
+At the end, **How was the level?** sets the level of your next story. "Far too
+easy" or "Far too hard" moves it one step straight away; two "Easy" or two
+"Hard" answers in a row also move it. The level starts at A2.1.
+
+Stories are saved to your library, so a learning partner sees them too, marked
+"from your partner". The series carries on across both of you: each new episode
+is given the last three episodes' summaries, whoever wrote them.
+
+`/api/stories` uses Claude Opus 5.5, about 15 to 20 US cents a story. Each
+learner can write five stories a day.
 
 ---
 

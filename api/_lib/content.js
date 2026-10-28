@@ -76,12 +76,14 @@ export async function loadContent(userId) {
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
 
-    sql`select slug, title, blurb, level, tags, focus, body, translation,
+    // Your own and your partners' stories first, newest at the top: that's
+    // where a story the app has just written for you belongs.
+    sql`select slug, title, blurb, level, tags, focus, body, translation, meta,
                coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from stories
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
-         order by user_id nulls first, position, title`,
+         order by user_id is null, case when user_id is not null then created_at end desc, position, title`,
 
     sql`select title, ctx, lines, notes, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
@@ -206,6 +208,7 @@ export async function loadContent(userId) {
       slug: s.slug, title: s.title, blurb: s.blurb, level: s.level,
       tags: s.tags || [], focus: s.focus || [],
       body: s.body, translation: s.translation, mine: s.mine, shared: s.shared || undefined,
+      meta: s.meta && s.meta.generated ? s.meta : undefined,
     })),
     roleplays: roleplayRows.map((r) => ({
       title: r.title, ctx: r.ctx, lines: r.lines, notes: r.notes, mine: r.mine, shared: r.shared || undefined,

@@ -183,6 +183,12 @@ create table if not exists stories (
   unique nulls not distinct (user_id, slug)
 );
 
+-- Stories the app writes on request (api/stories.js) carry what they were
+-- built from: { generated, genre, targets, summary }. Added after the first
+-- release, so this runs as an alter.
+alter table stories add column if not exists meta jsonb not null default '{}'::jsonb;
+create index if not exists stories_user_created on stories (user_id, created_at);
+
 create table if not exists roleplays (
   id         uuid primary key default gen_random_uuid(),
   user_id    uuid references users(id) on delete cascade,

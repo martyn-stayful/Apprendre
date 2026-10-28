@@ -14,7 +14,8 @@
 
 import mathilde2026 from './mathilde-2026.js';
 import notebook2026 from './notebook-2026.js';
+import mathilde20261028 from './mathilde-2026-10-28.js';
 
 // Oldest first. Each pack's material goes ahead of the ones before it in every
 // list, so the most recent lessons are what you see first.
-export const PACKS = [mathilde2026, notebook2026];
+export const PACKS = [mathilde2026, notebook2026, mathilde20261028];

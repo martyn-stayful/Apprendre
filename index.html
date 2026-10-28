@@ -8761,7 +8761,7 @@ function renderReviewFlashcard(item) {
   if (!rvState.flipped) {
     return `
       <div class="rv-fc">${escapeHtml(c.fr)}
-        <button class="phrase-speak" style="margin-left:8px; width:32px; height:32px; vertical-align:-4px" onclick="speak('${escapeJs(c.fr)}')" aria-label="Listen">
+        <button class="phrase-speak" style="margin-left:8px; width:32px; height:32px; vertical-align:-4px" onclick="${speakHandler(c.fr)}" aria-label="Listen">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
         </button>
       </div>
@@ -8770,7 +8770,7 @@ function renderReviewFlashcard(item) {
   }
   return `
     <div class="rv-fc">${escapeHtml(c.fr)}
-      <button class="phrase-speak" style="margin-left:8px; width:32px; height:32px; vertical-align:-4px" onclick="speak('${escapeJs(c.fr)}')" aria-label="Listen">
+      <button class="phrase-speak" style="margin-left:8px; width:32px; height:32px; vertical-align:-4px" onclick="${speakHandler(c.fr)}" aria-label="Listen">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
       </button>
     </div>
@@ -8926,7 +8926,7 @@ function renderReviewQuiz(item) {
 
   return `
     <div class="rv-quiz-prompt"${frAttrs(q.en)}>${promptHtml}
-      <button class="phrase-speak" style="margin-left:6px; width:28px; height:28px; vertical-align:-3px" onclick="speak('${escapeJs(q.prompt.replace(/___/g, q.opts[q.a]))}')" aria-label="Listen">
+      <button class="phrase-speak" style="margin-left:6px; width:28px; height:28px; vertical-align:-3px" onclick="${speakHandler(q.prompt.replace(/___/g, q.opts[q.a]))}" aria-label="Listen">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
       </button>
     </div>
@@ -8993,7 +8993,7 @@ function renderReviewConj(item) {
       ${rvState.conjAnswered ? `
         <div style="margin-top:14px; font-size:14px; color:var(--ink); font-family:'Fraunces',serif">
           ${rvState.conjCorrect ? '✓ Correct' : `Correct: <strong>${escapeHtml(c.fm)}</strong>`}
-          <button class="phrase-speak" style="margin-left:6px; width:26px; height:26px; vertical-align:-3px" onclick="speak('${escapeJs(c.pr + ' ' + c.fm)}')" aria-label="Listen">
+          <button class="phrase-speak" style="margin-left:6px; width:26px; height:26px; vertical-align:-3px" onclick="${speakHandler(sayConjugated(c.pr, c.fm))}" aria-label="Listen">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
           </button>
         </div>
@@ -9875,7 +9875,7 @@ function checkConj() {
 
   inp.className = 'conj-input ' + (correct ? 'correct' : 'wrong');
   const masteryTag = ` <span style="font-size:11px;color:var(--slate);letter-spacing:0.04em">${levelDots(rec.level)}</span>`;
-  const speakBtn = ` <button class="phrase-speak" style="width:26px;height:26px;vertical-align:-4px;margin-left:4px" onclick="speak('${escapeJs(cur.pr + ' ' + cur.fm)}')" aria-label="Listen"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg></button>`;
+  const speakBtn = ` <button class="phrase-speak" style="width:26px;height:26px;vertical-align:-4px;margin-left:4px" onclick="${speakHandler(sayConjugated(cur.pr, cur.fm))}" aria-label="Listen"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg></button>`;
   if (correct) {
     conjState.correct++;
     playCorrectSound();
@@ -9981,7 +9981,7 @@ function renderRoleplay() {
           <div class="rp-line ${line.who === 'you' ? 'you-line' : ''}">
             <div class="rp-speaker ${line.who}">${line.who === 'you' ? 'Y' : ''}</div>
             <div class="rp-bubble"${line.who === 'you' ? ' onclick="rpRevealLine(this)"' : ''}>
-              <div class="rp-fr"${frAttrs(line.en)}>${escapeHtml(line.fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(line.fr)}\`)" aria-label="Listen">🔊</button></div>
+              <div class="rp-fr"${frAttrs(line.en)}>${escapeHtml(line.fr)}<button class="rp-speak" onclick="${speakHandler(line.fr)}" aria-label="Listen">🔊</button></div>
               <div class="rp-en">${escapeHtml(line.en)}</div>
             </div>
           </div>
@@ -10194,7 +10194,7 @@ function renderDrills() {
         <div class="dr-your-turn">
           ${isRevealed ? '' : `<button class="dr-reveal" onclick="revealDrill(${i})">Reveal</button>`}
           <div class="dr-answer${isRevealed ? ' show' : ''}">
-            <div class="dr-fr"${frAttrs(drillEnglish(d.en))}>${escapeHtml(d.fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(d.fr)}\`)" aria-label="Listen">🔊</button></div>
+            <div class="dr-fr"${frAttrs(drillEnglish(d.en))}>${escapeHtml(d.fr)}<button class="rp-speak" onclick="${speakHandler(d.fr)}" aria-label="Listen">🔊</button></div>
             <div class="dr-note">${d.note}</div>
             ${pronounceButtonHtml(d.fr, 'dr-' + i)}
             ${verdict ? `
@@ -10418,7 +10418,7 @@ function phonePairsHtml(groups, wrongIdx) {
 function phoneSpokenHtml(groups, id) {
   const fr = phoneInFrench(groups);
   return `
-    <div class="dr-fr"${frAttrs(groups.join(' '))}>${escapeHtml(fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(fr)}\`)" aria-label="Listen">🔊</button></div>
+    <div class="dr-fr"${frAttrs(groups.join(' '))}>${escapeHtml(fr)}<button class="rp-speak" onclick="${speakHandler(fr)}" aria-label="Listen">🔊</button></div>
     ${pronounceButtonHtml(fr, id)}
   `;
 }
@@ -12311,7 +12311,7 @@ function renderTranslate() {
     ${history.length > 0 ? `
       <div class="tr-recent-title">Recent lookups</div>
       <div>${history.slice(0, 8).map(h => `
-        <button class="tr-recent-item" onclick="replayLookup('${escapeJs(h.query)}', '${h.direction}')">
+        <button class="tr-recent-item" onclick="${escapeHtml(`replayLookup(${JSON.stringify(h.query)}, ${JSON.stringify(h.direction)})`)}">
           <span class="tr-recent-fr">${escapeHtml(h.query)}</span>
           <span class="tr-recent-arr">→</span>
           <span class="tr-recent-en">${escapeHtml(h.translation)}</span>
@@ -12421,7 +12421,7 @@ function showTranslateResult(result) {
       <div class="tr-result-text">${escapeHtml(result.main)}</div>
 
       <div class="tr-result-actions">
-        <button class="tr-action-btn" onclick="speak('${escapeJs(french)}')">
+        <button class="tr-action-btn" onclick="${speakHandler(french)}">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
           Hear
         </button>
@@ -13243,7 +13243,7 @@ function renderMyFlashcardsTab() {
               ${c.level ? `<span class="my-item-tag">${escapeHtml(c.level)}</span>` : ''}
             </div>
             <div class="my-item-actions">
-              <button class="my-icon-btn" onclick="speak('${escapeJs(c.fr)}')" aria-label="Listen">
+              <button class="my-icon-btn" onclick="${speakHandler(c.fr)}" aria-label="Listen">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
               </button>
               <button class="my-icon-btn danger" onclick="removeCustomItem('flashcards', ${c.id})" aria-label="Delete">
@@ -13309,7 +13309,7 @@ function renderMyPhrasesTab() {
               <span class="my-item-tag">${escapeHtml(catLabels[p.cat] || p.cat)}</span>
             </div>
             <div class="my-item-actions">
-              <button class="my-icon-btn" onclick="speak('${escapeJs(p.fr)}')" aria-label="Listen">
+              <button class="my-icon-btn" onclick="${speakHandler(p.fr)}" aria-label="Listen">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
               </button>
               <button class="my-icon-btn danger" onclick="removeCustomItem('phrases', ${p.id})" aria-label="Delete">
@@ -14229,7 +14229,7 @@ function renderWorkbookChapter() {
         <div class="wbc-vocab-row">
           <div class="wbc-vocab-fr"${frAttrs(v.en)}>${escapeHtml(v.fr)}</div>
           <div class="wbc-vocab-en">${escapeHtml(v.en)}</div>
-          <button class="wbc-vocab-speak" onclick="speak('${escapeAttr(v.fr)}')" aria-label="Listen">
+          <button class="wbc-vocab-speak" onclick="${speakHandler(v.fr)}" aria-label="Listen">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
           </button>
         </div>
@@ -14263,11 +14263,6 @@ function renderWorkbookChapter() {
 
   wrap.innerHTML = ruleHtml + vocabHtml + exercisesHtml;
   wrap.querySelectorAll('.wbc-rule em').forEach(el => { el.lang = 'fr'; });
-}
-
-// escapeAttr — needed for inline onclick strings containing apostrophes
-function escapeAttr(s) {
-  return String(s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
 }
 
 // ---------- Exercise runner ----------
@@ -14597,7 +14592,7 @@ function renderConceptDetail() {
             <div class="cpt-example-en">${escapeHtml(ex.en)}</div>
             ${ex.note ? `<div class="cpt-example-note">${escapeHtml(ex.note)}</div>` : ''}
           </div>
-          <button class="cpt-example-speak" onclick="speak('${escapeAttr(ex.fr)}')" aria-label="Listen">
+          <button class="cpt-example-speak" onclick="${speakHandler(ex.fr)}" aria-label="Listen">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
           </button>
         </div>
@@ -15036,7 +15031,7 @@ function stopStory() {
   play.spans.forEach(el => el.classList.remove('playing'));
   play.btn.textContent = '▶ Play';
   play.btn.classList.remove('active');
-  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  stopSpeech();
 }
 
 function cycleStorySpeed(btn) {
@@ -15377,22 +15372,109 @@ function playCorrectSound() {
   } catch (e) { /* fail silently */ }
 }
 
-function speak(text, rate, onEnd) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'fr-FR';
-  u.rate = rate || 0.9;
-  if (onEnd) { u.onend = onEnd; u.onerror = onEnd; }
-  // prefer a French voice
-  const voices = window.speechSynthesis.getVoices();
-  const frVoice = voices.find(v => v.lang === 'fr-FR' || v.lang.startsWith('fr'));
-  if (frVoice) u.voice = frVoice;
-  window.speechSynthesis.speak(u);
+/**
+ * An onclick attribute that says `text`. The text goes in as a JSON string,
+ * HTML-escaped, so apostrophes and quotes can't break the handler. Pasting it
+ * into '...' used to leave every button for "C'est…" or "J'ai…" silent.
+ */
+function speakHandler(text) {
+  return escapeHtml(`speak(${JSON.stringify(String(text || ''))})`);
 }
 
-// Pre-load voices
+// Utterances stay referenced until they finish: Chrome otherwise garbage-collects
+// one mid-sentence, and the speech stops without an end event.
+let speaking = [];
+// Bumped by every new speak() and by stopSpeech(), so a start that's been
+// held back (below) doesn't play once something newer has asked for silence.
+let speechTurn = 0;
+
+function speak(text, rate, onEnd) {
+  const synth = window.speechSynthesis;
+  if (!synth) return;
+  const chunks = speechChunks(text);
+  if (!chunks.length) return;
+
+  const turn = ++speechTurn;
+  const voice = frenchVoice();
+  const utterances = chunks.map(chunk => {
+    const u = new SpeechSynthesisUtterance(chunk);
+    u.lang = voice ? voice.lang.replace('_', '-') : 'fr-FR';
+    if (voice) u.voice = voice;
+    u.rate = rate || 0.9;
+    return u;
+  });
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    speaking = speaking.filter(u => !utterances.includes(u));
+    if (onEnd) onEnd();
+  };
+  utterances[utterances.length - 1].onend = finish;
+  utterances.forEach(u => { u.onerror = finish; });
+
+  const start = () => {
+    if (turn !== speechTurn) return;
+    speaking.push(...utterances);
+    // iOS can leave speech paused after the app has been in the background.
+    if (synth.paused) synth.resume();
+    utterances.forEach(u => synth.speak(u));
+  };
+  if (synth.speaking || synth.pending) {
+    // Safari drops an utterance queued straight after cancel(), so give it a moment.
+    synth.cancel();
+    setTimeout(start, 80);
+  } else {
+    // Straight away: iOS only lets speech start inside the tap that asked for it.
+    start();
+  }
+}
+
+/** "je" + "essaie" as it's said: "j'essaie". "il/elle/on" is read as "il". */
+function sayConjugated(pronoun, form) {
+  const pr = String(pronoun || '').split('/')[0].trim();
+  return pr === 'je' && /^[aeiouyéèêàâîôh]/i.test(form) ? `j'${form}` : `${pr} ${form}`;
+}
+
+function stopSpeech() {
+  speechTurn++;
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+/**
+ * Long text in pieces of a sentence or so. Some voices, Chrome's online ones
+ * especially, stop dead about 15 seconds into a single utterance.
+ */
+function speechChunks(text) {
+  const clean = String(text || '').replace(/\s+/g, ' ').trim();
+  if (clean.length <= 180) return clean ? [clean] : [];
+  const chunks = [];
+  let current = '';
+  for (const part of clean.match(/[^.!?…]+[.!?…»"]*\s*/g) || [clean]) {
+    if (current && (current + part).length > 180) { chunks.push(current.trim()); current = ''; }
+    current += part;
+  }
+  if (current.trim()) chunks.push(current.trim());
+  return chunks;
+}
+
+/**
+ * The best French voice on this device. Voices on the device come first: the
+ * online ones need a good connection and are the ones that cut out. The novelty
+ * voices iOS and macOS list under French come last.
+ */
+function frenchVoice() {
+  const novelty = /^(Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley|Jacques)\b/i;
+  const score = (v) => (/^fr[-_]FR$/i.test(v.lang) ? 2 : 0) + (v.localService ? 3 : 0)
+    + (/enhanced|premium|amélie|amelie|thomas|audrey|aurélie|marie/i.test(v.name) ? 1 : 0)
+    - (novelty.test(v.name) ? 10 : 0);
+  const voices = window.speechSynthesis.getVoices().filter(v => /^fr([-_]|$)/i.test(v.lang));
+  return voices.sort((a, b) => score(b) - score(a))[0] || null;
+}
+
+// Voices load in the background on some browsers; ask early so they're ready.
 if ('speechSynthesis' in window) {
+  window.speechSynthesis.getVoices();
   window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 }
 
@@ -15400,9 +15482,6 @@ if ('speechSynthesis' in window) {
 
 function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-function escapeJs(s) {
-  return s.replace(/[`\\$]/g, c => '\\' + c);
 }
 
 /* ====================== PHRASE OF DAY + STREAK ====================== */

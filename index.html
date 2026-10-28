@@ -5358,6 +5358,14 @@
     font-size: 16px;
     font-weight: 600;
   }
+  .tap-label {
+    margin-top: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(254, 252, 247, 0.6);
+  }
   .tap-meaning.waiting { color: rgba(254, 252, 247, 0.75); font-family: 'Lato', sans-serif; font-size: 13px; font-weight: 400; font-style: italic; }
   .tap-gram { margin-top: 2px; font-size: 12px; color: rgba(254, 252, 247, 0.75); }
   .tap-sentence {
@@ -7240,7 +7248,7 @@
   </section>
 
   <!-- ================ FLASHCARD VIEW ================ -->
-  <section class="view" id="flashView">
+  <section class="view" id="flashView" data-no-translate>
     <div class="view-header">
       <button class="back-btn" onclick="showView('decks')">←</button>
       <div>
@@ -7266,7 +7274,7 @@
           <div class="fc-face back">
             <div class="fc-category" id="fcCatBack">—</div>
             <div class="fc-word" id="fcBack">—</div>
-            <div class="fc-example" id="fcExample" lang="fr"></div>
+            <div class="fc-example" id="fcExample"></div>
             <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcBack').textContent)" aria-label="Listen">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
             </button>
@@ -8573,8 +8581,7 @@ function startReview(mode, limit) {
   } else if (mode === 'this-week') {
     // All items from recent lessons (current + last ISO week), prioritising
     // new/low-level first
-    items = getThisWeekItems()
-      .filter(it => !it.rec || it.rec.level < 5)
+    items = recentToPractise()
       .sort((a, b) => {
         const al = a.rec ? a.rec.level : -1;
         const bl = b.rec ? b.rec.level : -1;
@@ -8713,7 +8720,7 @@ function renderReviewCard() {
   wrap.innerHTML = `
     ${introHtml}
     ${progressHtml}
-    <div class="rv-card">
+    <div class="rv-card"${item.type === 'flashcard' ? ' data-no-translate' : ''}>
       ${headerHtml}
       ${bodyHtml}
     </div>
@@ -9241,10 +9248,9 @@ function renderReviewComplete(wrap) {
   const settings = loadSettings();
   const dailyLimit = settings.newCardsPerDay || 5;
 
-  // "Practise recent lessons" option — count items from recent uploads that
-  // aren't already at L5. Practising an L5 item is allowed but less interesting.
+  // "Practise recent lessons" option — recent items that are new or due again.
   const weekItems = getThisWeekItems();
-  const weekPracticeable = weekItems.filter(it => !it.rec || it.rec.level < 5);
+  const weekPracticeable = recentToPractise();
   const weekTotal = weekItems.length;
   const weekMastered = weekItems.filter(it => it.rec && it.rec.level >= 5).length;
 
@@ -9409,7 +9415,7 @@ function startDeck(key) {
         <div class="fc-face back">
           <div class="fc-category" id="fcCatBack">—</div>
           <div class="fc-word" id="fcBack">—</div>
-          <div class="fc-example" id="fcExample" lang="fr"></div>
+          <div class="fc-example" id="fcExample"></div>
           <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcBack').textContent)" aria-label="Listen">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
           </button>
@@ -10905,6 +10911,13 @@ function getNewItems(limit) {
 // count as recent.
 function isRecentItem(item, weeksBack) {
   return !!(item.week && isRecentWeek(item.week, weeksBack));
+}
+
+// Recent-lesson items that want practice now: never seen, or due again. Once
+// you've practised one it drops out until spaced repetition brings it back, so
+// the count goes down as you work through them.
+function recentToPractise() {
+  return getThisWeekItems().filter(it => !it.rec || (it.rec.level < 5 && isDueForReview(it.rec)));
 }
 
 // All items from recent lessons (current + last ISO week), regardless of due
@@ -13799,7 +13812,7 @@ function renderRecentLessonsBlock() {
   const el = document.getElementById('recentLessonsBlock');
   if (!el) return;
 
-  const items = getThisWeekItems().filter(it => !it.rec || it.rec.level < 5);
+  const items = recentToPractise();
   if (items.length === 0) {
     el.style.display = 'none';
     return;
@@ -13809,7 +13822,7 @@ function renderRecentLessonsBlock() {
   el.onclick = () => startReview('this-week');
   el.innerHTML = `
     <div class="eyebrow">Recent lessons · your latest uploads</div>
-    <div class="rb-headline">${items.length} items from recent lessons</div>
+    <div class="rb-headline">${items.length} to practise from recent lessons</div>
     <div class="rb-detail">Focus on what your tutor just covered.</div>
     <div class="rb-cta">
       Practise now <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 6.71a.996.996 0 0 0 0 1.41L13.17 12l-3.88 3.88a.996.996 0 1 0 1.41 1.41l4.59-4.59a.996.996 0 0 0 0-1.41L10.7 6.7c-.38-.38-1.02-.38-1.41.01z"/></svg>
@@ -15044,8 +15057,12 @@ function cycleStorySpeed(btn) {
 /* ====================== TAP TO TRANSLATE ======================
    Any French marked lang="fr" can be tapped: the word under the finger gets
    what it means in that sentence, and "Whole sentence" gives the sentence in
-   English. Lookups go through /api/translate, which caches them for everyone,
-   so each word in each sentence is only ever paid for once.
+   English. Anywhere else, highlighting text does the same, and English comes
+   back as French. Flashcards (anything marked data-no-translate) are left
+   alone, since the point there is to remember.
+
+   Lookups go through /api/translate, which caches them for everyone, so each
+   word in each sentence is only ever paid for once.
 */
 
 let tapState = null;
@@ -15082,14 +15099,56 @@ document.addEventListener('scroll', (e) => { if (e.target !== document) closeTap
 function onTapTranslate(e) {
   const target = e.target;
   if (!(target instanceof Element) || target.closest('.tap-pop')) return;
+  // The click that ends a mouse highlight belongs to the highlight.
+  const sel = window.getSelection();
+  if (sel && !sel.isCollapsed && sel.toString().trim()) return;
   const zone = target.closest('[lang="fr"]');
-  if (!zone || target.closest('button, a, input, textarea, select, label')) { closeTapPop(); return; }
+  if (!zone || target.closest('button, a, input, textarea, select, label, [data-no-translate]')) { closeTapPop(); return; }
   const hit = tapWordAt(e.clientX, e.clientY, zone, target);
   if (!hit) { closeTapPop(); return; }
   // The tap is ours: don't also flip the card or open the line underneath.
   e.stopPropagation();
   e.preventDefault();
   openTapPop(hit, zone);
+}
+
+// Highlighting: wait until the selection stops changing (finger lifted, handles
+// dragged), then translate it.
+let selectTimer = null;
+let mouseSelecting = false;
+document.addEventListener('selectionchange', () => {
+  clearTimeout(selectTimer);
+  selectTimer = setTimeout(onSelectionSettled, 600);
+});
+document.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse') mouseSelecting = true; }, true);
+document.addEventListener('pointerup', (e) => {
+  if (e.pointerType !== 'mouse') return;
+  mouseSelecting = false;
+  clearTimeout(selectTimer);
+  selectTimer = setTimeout(onSelectionSettled, 30);
+}, true);
+
+function onSelectionSettled() {
+  if (mouseSelecting) return;
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) return;
+  const text = sel.toString().replace(/\s+/g, ' ').trim();
+  if (!text || text.length > 300 || !/\p{L}/u.test(text)) return;
+  const active = document.activeElement;
+  if (active && /^(INPUT|TEXTAREA)$/.test(active.tagName)) return;
+  const range = sel.getRangeAt(0);
+  const node = range.commonAncestorContainer;
+  const el = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+  if (!el || el.closest('.tap-pop, [data-no-translate], input, textarea, [contenteditable="true"]')) return;
+  if (tapState && tapState.hit.fromSelection && tapState.hit.word === text) return;
+
+  const zone = el.closest('[lang="fr"]')
+    || el.closest('p, li, td, th, h1, h2, h3, h4, h5, h6, blockquote, dd, dt')
+    || el.closest('div') || el;
+  const plain = (x) => x.toLowerCase().replace(/\s+/g, ' ');
+  let sentence = text.length > 80 ? text : tapSentence(zone, range);
+  if (!sentence || !plain(sentence).includes(plain(text))) sentence = text;
+  openTapPop({ word: text, range: range.cloneRange(), sentence, gloss: null, fromSelection: true }, zone);
 }
 
 function caretFromPoint(x, y) {
@@ -15182,20 +15241,23 @@ function openTapPop(hit, zone) {
   pop.setAttribute('role', 'dialog');
   pop.setAttribute('aria-label', `Translation of ${hit.word}`);
   pop.addEventListener('click', onTapPopClick);
+  // Pressing a button in the popup mustn't clear the highlight it belongs to.
+  pop.addEventListener('mousedown', (e) => e.preventDefault());
   document.body.appendChild(pop);
 
   const local = hit.gloss
     ? { meaning: hit.gloss.getAttribute('data-en') || '', grammar: hit.gloss.getAttribute('data-note') || '' }
-    : tapDictionary().get(tapNorm(hit.word)) || null;
+    : (/\s/.test(hit.word) ? null : tapDictionary().get(tapNorm(hit.word)) || null);
+  const french = zone.closest('[lang="fr"]');
   tapState = {
     pop, hit, local,
-    known: zone.getAttribute('data-tr-en') || '',
+    known: (french && french.getAttribute('data-tr-en')) || '',
     result: null, loading: false, error: '', showSentence: false, saved: false,
   };
 
   if (window.CSS && CSS.highlights && window.Highlight) CSS.highlights.set('tap-word', new Highlight(hit.range));
   if (hit.gloss) hit.gloss.classList.add('revealed');
-  if (zone.classList.contains('gr-speak')) speak(zone.textContent);
+  if (!hit.fromSelection && zone.classList.contains('gr-speak')) speak(zone.textContent);
 
   renderTapPop();
   requestAnimationFrame(() => pop.classList.add('show'));
@@ -15245,11 +15307,15 @@ function renderTapPop() {
   const grammar = st.hit.gloss ? st.local.grammar
     : r ? [base, r.grammar].filter(Boolean).join(' · ')
     : (st.local && st.local.grammar) || '';
-  const sentenceEn = st.known || (r && r.sentence) || '';
+  // Highlighted English comes back as French.
+  const english = !!(r && r.language === 'en');
+  const sentenceEn = (english ? '' : st.known) || (r && r.sentence) || '';
   const wholeLine = tapNorm(st.hit.word) === tapNorm(st.hit.sentence);
+  const shown = st.hit.word.length > 120 ? `${st.hit.word.slice(0, 117)}…` : st.hit.word;
+  const saveable = meaning && st.hit.word.length <= 60 && !(r && r.language === 'other');
 
   let meaningHtml = '';
-  if (meaning) meaningHtml = `<div class="tap-meaning">${escapeHtml(meaning)}</div>`;
+  if (meaning) meaningHtml = `${english ? '<div class="tap-label">In French</div>' : ''}<div class="tap-meaning"${english ? ' lang="fr"' : ''}>${escapeHtml(meaning)}</div>`;
   else if (st.loading) meaningHtml = `<div class="tap-meaning waiting">Translating…</div>`;
   else if (st.error) meaningHtml = `<div class="tap-meaning waiting">${escapeHtml(st.error)}</div>`;
 
@@ -15265,7 +15331,7 @@ function renderTapPop() {
 
   st.pop.innerHTML = `
     <div class="tap-head">
-      <div class="tap-word" lang="fr">${escapeHtml(st.hit.word)}</div>
+      <div class="tap-word"${english ? '' : ' lang="fr"'}>${escapeHtml(shown)}</div>
       <button class="tap-icon" data-act="speak" aria-label="Listen">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
       </button>
@@ -15274,7 +15340,7 @@ function renderTapPop() {
     ${meaningHtml}${gramHtml}${sentenceHtml}
     <div class="tap-actions">${
       (!wholeLine && !st.showSentence ? '<button class="tap-btn" data-act="sentence">Whole sentence</button>' : '') +
-      (meaning ? `<button class="tap-btn" data-act="save"${st.saved ? ' disabled' : ''}>${st.saved ? 'In My vocab ✓' : '+ My vocab'}</button>` : '')
+      (saveable ? `<button class="tap-btn" data-act="save"${st.saved ? ' disabled' : ''}>${st.saved ? 'In My vocab ✓' : '+ My vocab'}</button>` : '')
     }</div>`;
   positionTapPop();
 }
@@ -15288,9 +15354,16 @@ function positionTapPop() {
   const w = pop.offsetWidth, h = pop.offsetHeight;
   const vw = document.documentElement.clientWidth;
   const left = Math.max(12, Math.min(rect.left + rect.width / 2 - w / 2, vw - w - 12));
-  let top = rect.top - h - 10;
-  const below = top < 8;
-  if (below) top = rect.bottom + 10;
+  let top, below;
+  if (st.hit.fromSelection) {
+    // Phones put their Copy menu above a selection, so go underneath.
+    below = rect.bottom + 12 + h <= window.innerHeight - 8 || rect.top - h - 10 < 8;
+    top = below ? rect.bottom + 12 : rect.top - h - 10;
+  } else {
+    top = rect.top - h - 10;
+    below = top < 8;
+    if (below) top = rect.bottom + 10;
+  }
   pop.classList.toggle('below', below);
   pop.style.left = `${left + window.scrollX}px`;
   pop.style.top = `${top + window.scrollY}px`;
@@ -15303,7 +15376,8 @@ function onTapPopClick(e) {
   if (!btn || !st) return;
   const act = btn.dataset.act;
   if (act === 'close') closeTapPop();
-  if (act === 'speak') { stopStory(); speak(st.hit.word); }
+  const english = !!(st.result && st.result.language === 'en');
+  if (act === 'speak') { stopStory(); speak(english ? st.result.meaning : st.hit.word); }
   if (act === 'sentence') {
     st.showSentence = true;
     if (!st.known && !st.result) tapLookup();
@@ -15311,8 +15385,8 @@ function onTapPopClick(e) {
   }
   if (act === 'save') {
     const r = st.result;
-    const fr = (r && r.base) || st.hit.word;
-    const en = st.hit.gloss ? st.local.meaning : (r ? r.meaning : st.local.meaning);
+    const fr = english ? (r.base || r.meaning) : (r && r.base) || st.hit.word;
+    const en = english ? st.hit.word : st.hit.gloss ? st.local.meaning : (r ? r.meaning : st.local.meaning);
     const mine = loadCustom().flashcards;
     if (!mine.some(c => tapNorm(c.fr) === tapNorm(fr))) addCustomFlashcard(fr, en, st.hit.sentence);
     tapDict = null;

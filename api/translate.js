@@ -7,12 +7,13 @@ import { translateInSentence, translationKey } from './_lib/translate.js';
 // cache and don't count, so this only stops a runaway script spending credit.
 const DAILY_LIMIT = 300;
 
-// POST { word, sentence, known? } -> { translation: { word, base, meaning, grammar, sentence } }
+// POST { word, sentence, known? } -> { translation: { language, word, base, meaning, grammar, sentence } }
+// `word` is whatever was tapped or highlighted: a word, a phrase or a sentence or two.
 export default route('POST', withAuth(async (req, res, user) => {
   const { word, sentence, known } = body(req);
   if (typeof word !== 'string' || !word.trim()) return bad(res, 'Which word?');
   if (typeof sentence !== 'string' || !sentence.trim()) return bad(res, 'The sentence is missing');
-  if (word.length > 80 || sentence.length > 600) return bad(res, 'That is too long to look up');
+  if (word.length > 300 || sentence.length > 600) return bad(res, 'That is too much to translate at once. Try a sentence or two.');
 
   const sql = db();
   const key = translationKey(word, sentence);

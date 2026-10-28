@@ -163,47 +163,6 @@
     max-width: 52ch;
   }
 
-  .phrase-of-day {
-    margin: 24px;
-    padding: 24px 24px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--pine) 0%, var(--pine-deep) 100%);
-    color: var(--paper);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .phrase-of-day::before {
-    content: '';
-    position: absolute;
-    top: -40px;
-    right: -40px;
-    width: 160px;
-    height: 160px;
-    background: radial-gradient(circle, rgba(212, 162, 76, 0.25), transparent 70%);
-    pointer-events: none;
-  }
-
-  .phrase-of-day .eyebrow {
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
-
-  .phrase-fr {
-    font-family: 'Fraunces', serif;
-    font-size: 24px;
-    line-height: 1.25;
-    font-weight: 400;
-    letter-spacing: -0.015em;
-    margin-bottom: 10px;
-  }
-
-  .phrase-en {
-    font-size: 14px;
-    color: rgba(254, 252, 247, 0.7);
-    font-style: italic;
-  }
-
   .phrase-speak {
     position: absolute;
     top: 20px;
@@ -6331,8 +6290,6 @@
     .topbar { padding: 18px 20px 14px; }
     .logo { font-size: 18px; }
     .hero { padding: 14px 20px 24px; }
-    .phrase-of-day { margin: 20px; padding: 20px; }
-    .phrase-fr { font-size: 20px; }
     .section-title { padding: 0 20px; font-size: 18px; }
     .deck-picker, .fc-wrap, .quiz-wrap, .conj-wrap, .rp-wrap, .gr-wrap, .dr-wrap { padding-left: 20px; padding-right: 20px; }
     .view-header { padding: 14px 20px 6px; }
@@ -7074,15 +7031,6 @@
     <button class="review-block" id="reviewBlock" onclick="startReview('review')" style="display:none"></button>
 
     <button class="review-block recent" id="recentLessonsBlock" onclick="startReview('this-week')" style="display:none"></button>
-
-    <div class="phrase-of-day">
-      <div class="eyebrow">Phrase du jour</div>
-      <div class="phrase-fr" id="podFr" lang="fr">Ça a l'air bon !</div>
-      <div class="phrase-en" id="podEn">That looks / sounds good!</div>
-      <button class="phrase-speak" onclick="speak(document.getElementById('podFr').textContent)" aria-label="Listen">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-      </button>
-    </div>
 
     <!-- These render conditionally. Populated by JS. -->
     <div id="weeklySummarySlot"></div>
@@ -15558,34 +15506,9 @@ function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-/* ====================== PHRASE OF DAY + STREAK ====================== */
+/* ====================== STREAK ====================== */
 
-const phrases = [
-  { fr: "Ça a l'air bon !", en: "That looks/sounds good!" },
-  { fr: "Je m'en occupe.", en: "I'll take care of it." },
-  { fr: "Tu veux qu'on se fasse la bise ?", en: "Shall we do the cheek-kiss greeting?" },
-  { fr: "On se dit tu ?", en: "Shall we switch to 'tu'?" },
-  { fr: "Je ne suis pas du coin.", en: "I'm not from around here." },
-  { fr: "C'est bon à savoir.", en: "That's good to know." },
-  { fr: "Ça ne me dit rien.", en: "That doesn't ring a bell / I don't fancy it." },
-  { fr: "Je n'en peux plus !", en: "I can't take any more!" },
-  { fr: "Comme tu veux.", en: "As you wish." },
-  { fr: "On verra bien.", en: "We'll see." },
-  { fr: "Tu parles !", en: "Yeah right! / No way!" },
-  { fr: "Je te tiens au courant.", en: "I'll keep you posted." },
-  { fr: "Ça ne sert à rien.", en: "It's pointless." },
-  { fr: "J'ai la flemme.", en: "I can't be bothered." },
-  { fr: "Ça marche !", en: "Sounds good! / Deal!" }
-];
-
-function initPhrase() {
-  // rotate phrase by date so it's stable across the day
-  const d = new Date();
-  const idx = (d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate()) % phrases.length;
-  document.getElementById('podFr').textContent = phrases[idx].fr;
-  document.getElementById('podEn').textContent = phrases[idx].en;
-  document.getElementById('podFr').dataset.trEn = phrases[idx].en;
-
+function initStreak() {
   // simple streak: stored in localStorage
   try {
     const today = new Date().toDateString();
@@ -15875,7 +15798,7 @@ document.addEventListener('visibilitychange', () => {
 // Called by the bootstrap script once the learner is signed in and their
 // content and progress have come back from the server.
 function bootApp() {
-  initPhrase();
+  initStreak();
   renderTracker();
   renderTodayCard();
   startTracking();

@@ -64,14 +64,18 @@ export async function loadContent(userId) {
          order by user_id nulls first, position, infinitive`,
 
     sql`select id, cat, en, fr, note, level, coalesce(user_id = ${uid}::uuid, false) as mine,
-               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
+               case when user_id is not null or source_id in (select id from sources where pack is not null)
+                    then to_char(created_at, 'IYYY-"W"IW') end as week
           from drills
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, id`,
 
     sql`select slug, title, subtitle, category, paragraphs, table_rows, examples,
                pitfall, related, coalesce(user_id = ${uid}::uuid, false) as mine,
-               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
+               case when user_id is not null or source_id in (select id from sources where pack is not null)
+                    then to_char(created_at, 'IYYY-"W"IW') end as week
           from concepts
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
@@ -86,7 +90,9 @@ export async function loadContent(userId) {
          order by user_id is null, case when user_id is not null then created_at end desc, position, title`,
 
     sql`select title, ctx, lines, notes, coalesce(user_id = ${uid}::uuid, false) as mine,
-               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
+               case when user_id is not null or source_id in (select id from sources where pack is not null)
+                    then to_char(created_at, 'IYYY-"W"IW') end as week
           from roleplays
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
@@ -99,7 +105,9 @@ export async function loadContent(userId) {
 
     sql`select id, slug, book, book_title, num, title, subtitle, level, rule, vocab,
                coalesce(user_id = ${uid}::uuid, false) as mine,
-               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
+               case when user_id is not null or source_id in (select id from sources where pack is not null)
+                    then to_char(created_at, 'IYYY-"W"IW') end as week
           from workbook_chapters
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, book, num`,
@@ -166,6 +174,7 @@ export async function loadContent(userId) {
       shared: c.shared || undefined,
       rule: c.rule || undefined,
       vocab: c.vocab || [],
+      week: c.week || undefined,
       exercises: (exercisesByChapter[c.id] || []).map((e) => ({
         id: `${c.slug}-${e.slug}`,
         title: e.title,
@@ -191,6 +200,7 @@ export async function loadContent(userId) {
       related: c.related || [],
       mine: c.mine,
       shared: c.shared || undefined,
+      week: c.week || undefined,
     };
   }
 
@@ -202,7 +212,7 @@ export async function loadContent(userId) {
     concepts,
     dailyDrills: drillRows.map((d) => ({
       cat: d.cat, en: d.en, fr: d.fr, note: d.note, level: d.level || undefined,
-      mine: d.mine, shared: d.shared || undefined,
+      mine: d.mine, shared: d.shared || undefined, week: d.week || undefined,
     })),
     stories: storyRows.map((s) => ({
       slug: s.slug, title: s.title, blurb: s.blurb, level: s.level,
@@ -212,6 +222,7 @@ export async function loadContent(userId) {
     })),
     roleplays: roleplayRows.map((r) => ({
       title: r.title, ctx: r.ctx, lines: r.lines, notes: r.notes, mine: r.mine, shared: r.shared || undefined,
+      week: r.week || undefined,
     })),
     grammar: grammarRows.map((g) => ({ title: g.title, body: g.body, mine: g.mine, shared: g.shared || undefined })),
   };

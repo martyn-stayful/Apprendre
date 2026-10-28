@@ -3728,6 +3728,37 @@
     color: var(--pine-deep);
   }
 
+  .today-also {
+    margin: 4px 0 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(254, 252, 247, 0.55);
+    position: relative;
+  }
+  .today-foot {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(254, 252, 247, 0.6);
+    position: relative;
+  }
+  .today-swap {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(254, 252, 247, 0.25);
+    border-radius: 50%;
+    background: transparent;
+    color: rgba(254, 252, 247, 0.8);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .today-swap:hover { border-color: var(--gold); color: var(--gold); }
+  .today-swap:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
   .today-task-hint {
     font-size: 10px;
     color: rgba(212, 162, 76, 0.75);
@@ -7028,6 +7059,8 @@
       <div class="tracker-week" id="trackerWeek"></div>
     </div>
 
+    <div class="today-card" id="todayCard"></div>
+
     <button class="review-block" id="reviewBlock" onclick="startReview('review')" style="display:none"></button>
 
     <button class="review-block recent" id="recentLessonsBlock" onclick="startReview('this-week')" style="display:none"></button>
@@ -7036,8 +7069,6 @@
     <div id="weeklySummarySlot"></div>
     <div id="nudgeSlot"></div>
     <div id="insightSlot"></div>
-
-    <div class="today-card" id="todayCard"></div>
 
     <div class="progress-block" id="progressBlock" onclick="showView('progress')"></div>
 
@@ -7584,7 +7615,7 @@
   // (translation cache, for instance) stays local.
   var SYNC_KEYS = [
     'fr_settings', 'fr_streak', 'fr_last', 'fr_time', 'fr_workbook',
-    'fr_custom', 'fr_today_done', 'fr_reminder', 'fr_welcomed',
+    'fr_custom', 'fr_today_done', 'fr_today_plan', 'fr_reminder', 'fr_welcomed',
     'fr_translate_history', 'fr_last_backup', 'fr_phone'
   ];
   var SYNC = {};
@@ -8272,6 +8303,7 @@ function buildDynamicWeeklyPlan() {
   for (let i = 0; i < 7; i++) {
     const role = dayRoles[i] || 'light';
     out[i] = roleTemplates[role]();
+    out[i].role = role;
 
     // Prepend a "Today's Review" task to every day's plan. This task auto-ticks
     // when the user opens the review view, uses the SR queue as its engine,
@@ -9584,6 +9616,7 @@ function renderQuizList() {
 }
 
 function startQuiz(key) {
+  tickPlan(`quiz:${key}`);
   quizState = { key, i: 0, score: 0, answered: false, qs: [...quizzes[key].qs].sort(() => Math.random() - 0.5) };
   document.getElementById('qTitle').textContent = quizzes[key].title;
   document.getElementById('qTotal').textContent = quizState.qs.length;
@@ -9735,6 +9768,7 @@ function renderConjList() {
 }
 
 function startConj(verbKey) {
+  tickPlan(`conj:${verbKey}`);
   let queue = [];
   if (verbKey === '__mix__') {
     Object.entries(verbTables).forEach(([vk, v]) => {
@@ -10226,6 +10260,7 @@ function addMissedToMyVocab() {
 
 
 function pickDrillCat(key) {
+  tickPlan(`drill:${key}`);
   currentDrillCat = key;
   renderDrills();
   // scroll back to top of drills section
@@ -13585,6 +13620,260 @@ function daysUntilDeadline() {
   return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
 }
 
+/* ====================== TODAY'S EXERCISES ======================
+   Each day the plan picks a few specific exercises to go with Today's Review,
+   so there's a clear path through the day without choosing from the menus:
+   a quiz, a workbook exercise, a Daily 10 set, a role-play scene, a verb, an
+   explainer, a story. Every pick is a different kind. They lean on recent
+   lessons and on what still needs work, follow the day's place in the weekly
+   rhythm (speaking before a conversation, consolidation after a lesson), and
+   avoid what the last few days had.
+
+   The picks are fixed for the day and synced (fr_today_plan), so a phone and
+   a laptop show the same plan. Each one can be swapped for another.
+*/
+
+const PLAN_KEY = 'fr_today_plan';
+
+// The kinds of exercise that suit each day of the weekly rhythm, best first.
+// Other kinds fill in after these when a day needs more picks.
+const ROLE_KINDS = {
+  tutor:         ['drill', 'conj'],
+  consolidation: ['quiz', 'workbook', 'concept', 'drill'],
+  speakingPrep:  ['drill', 'roleplay', 'conj', 'phone'],
+  conversation:  ['drill', 'roleplay'],
+  heavyInput:    ['story'],
+  review:        ['quiz', 'workbook', 'conj', 'roleplay'],
+  light:         ['story', 'concept', 'roleplay', 'drill'],
+};
+const PLAN_KINDS = ['quiz', 'workbook', 'drill', 'roleplay', 'conj', 'concept', 'story'];
+// Days with a lesson, a conversation or a big session get fewer picks.
+const ROLE_MAX_PICKS = { tutor: 2, conversation: 2, heavyInput: 1 };
+
+function todaysRole() {
+  const plan = weeklyPlan[new Date().getDay()];
+  return (plan && plan.role) || 'light';
+}
+
+/** About one exercise per five minutes of the daily goal, besides the review. */
+function planPickCount(role) {
+  const goal = loadSettings().dailyGoalMinutes || 15;
+  const n = Math.max(2, Math.min(5, Math.round(goal / 5)));
+  return Math.min(n, ROLE_MAX_PICKS[role] || n);
+}
+
+function loadPlan() {
+  try { return JSON.parse(Store.getItem(PLAN_KEY) || '{}'); } catch (e) { return {}; }
+}
+
+function savePlan(plan) {
+  try { Store.setItem(PLAN_KEY, JSON.stringify(plan)); } catch (e) {}
+}
+
+/** Every specific exercise the plan could pick, with how much it's worth doing now. */
+function planCandidates() {
+  const bySource = {};
+  allTrackableItems().forEach(it => { (bySource[`${it.type}:${it.sourceKey}`] ||= []).push(it); });
+  // 1 when every item is new or weak, 0 when all are mastered; 0.5 when nothing's tracked.
+  const need = (list) => !list || !list.length ? 0.5
+    : list.reduce((n, it) => n + (it.rec ? 1 - Math.min(5, it.rec.level) / 5 : 1), 0) / list.length;
+  const recent = (week) => !!(week && isRecentWeek(week, 1));
+  const out = [];
+  const add = (kind, ref, score) => out.push({ id: `${kind}:${ref}`, kind, ref, score });
+
+  Object.entries(quizzes || {}).forEach(([key, q]) =>
+    add('quiz', key, need(bySource[`quiz:${key}`]) + (recent(q.week) ? 1 : 0)));
+
+  // The next exercise in each chapter; chapters already started, and the newer
+  // ones (higher numbers come from recent lessons), come first.
+  const wb = loadWbProgress();
+  Object.entries(workbook || {}).forEach(([key, ch]) => {
+    const exercises = ch.exercises || [];
+    const next = exercises.find(e => !(wb[e.id] && wb[e.id].done));
+    if (!next) return;
+    const started = exercises.some(e => wb[e.id] && wb[e.id].done);
+    add('workbook', `${key}|${next.id}`, 0.6 + (started ? 0.4 : 0) + (recent(ch.week) ? 0.8 : 0));
+  });
+
+  const cats = new Set((dailyDrills || []).map(d => d.cat));
+  const recentCats = new Set((dailyDrills || []).filter(d => recent(d.week)).map(d => d.cat));
+  drillCategories.filter(c => c.key !== 'all' && c.key !== 'my' && cats.has(c.key))
+    .forEach(c => add('drill', c.key, 0.6 + (recentCats.has(c.key) ? 0.8 : 0)));
+
+  (roleplays || []).forEach(rp => add('roleplay', rp.title, 0.5 + (recent(rp.week) ? 0.8 : 0)));
+
+  Object.entries(verbTables || {}).forEach(([verb, v]) =>
+    add('conj', verb, need(bySource[`conj:${verb}`]) + (recent(v.week) ? 1 : 0)));
+
+  // Explainers for the grammar behind what you're learning now.
+  const conceptCounts = {};
+  recentToPractise().forEach(it => {
+    const id = conceptForItem(it);
+    if (id) conceptCounts[id] = (conceptCounts[id] || 0) + 1;
+  });
+  Object.entries(concepts || {}).forEach(([id, c]) =>
+    add('concept', id, conceptCounts[id] ? 1.2 : recent(c.week) ? 0.9 : 0.3));
+
+  add('story', 'new', 0.9);
+  add('phone', 'numbers', 0.4);
+  return out;
+}
+
+/** Choose `count` picks, each a different kind, the day's kinds first. */
+function choosePicks(role, count, avoid) {
+  const cands = planCandidates();
+  cands.forEach(c => { c.total = c.score + Math.random() * 0.6 - (avoid.has(c.id) ? 3 : 0); });
+  const preferred = ROLE_KINDS[role] || ROLE_KINDS.light;
+  const kinds = [...preferred, ...PLAN_KINDS.filter(k => !preferred.includes(k))];
+  const picks = [];
+  for (const kind of kinds) {
+    if (picks.length >= count) break;
+    const best = cands.filter(c => c.kind === kind).sort((a, b) => b.total - a.total)[0];
+    if (best) picks.push(best.id);
+  }
+  return picks;
+}
+
+/** Today's picks, chosen the first time the day's plan is shown. */
+function todaysPicks() {
+  const today = dateKey();
+  const plan = loadPlan();
+  if (plan.date === today && Array.isArray(plan.picks)) return plan.picks;
+
+  const role = todaysRole();
+  const history = plan.history || {};
+  const avoid = new Set(Object.values(history).flat());
+  const picks = choosePicks(role, planPickCount(role), avoid);
+  // Content not loaded yet: don't fix an empty plan for the whole day.
+  if (!picks.length) return [];
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 6);
+  Object.keys(history).forEach(k => { if (k < dateKey(cutoff)) delete history[k]; });
+  history[today] = picks;
+  savePlan({ date: today, picks, swapped: [], history });
+  return picks;
+}
+
+/** A pick as a task: what it's called and where it goes. Null if it's gone from the app. */
+function planTask(id) {
+  const at = id.indexOf(':');
+  const kind = id.slice(0, at);
+  const ref = id.slice(at + 1);
+  const recent = (week) => !!(week && isRecentWeek(week, 1));
+  const task = (icon, name, detail, time) => ({ id, kind, ref, type: 'app', icon, name, detail, time });
+
+  if (kind === 'quiz') {
+    const q = quizzes[ref];
+    return q && task('🧠', `Quiz: ${q.title}`, `${q.qs.length} questions${recent(q.week) ? ' · from a recent lesson' : ''}`, '5 min');
+  }
+  if (kind === 'workbook') {
+    const [chKey, exId] = ref.split('|');
+    const ch = workbook[chKey];
+    const ex = ch && (ch.exercises || []).find(e => e.id === exId);
+    return ex && task('📘', `Workbook: ${ex.title}`, `Chapter ${ch.num} · ${ch.title}`, '5 min');
+  }
+  if (kind === 'drill') {
+    const c = drillCategories.find(c => c.key === ref);
+    return c && task('💬', `Daily 10: ${c.label}`, 'Say each sentence out loud before you reveal it', '5 min');
+  }
+  if (kind === 'roleplay') {
+    const rp = roleplays.find(r => r.title === ref);
+    return rp && task('🎭', `Role-play: ${rp.title}`, 'Your lines are hidden: say each one, then check it', '5 min');
+  }
+  if (kind === 'conj') {
+    const v = verbTables[ref];
+    return v && task('⚡', `Verb: ${ref}`, `${v.meaning} · type the forms`, '3 min');
+  }
+  if (kind === 'concept') {
+    const c = concepts[ref];
+    return c && task('💡', `Explainer: ${c.title}`, 'Read it, then drill the examples', '5 min');
+  }
+  if (kind === 'story') {
+    if (ref === 'new') return task('📚', 'A new story episode', "Written from this week's words. Play it, then read it aloud", '10 min');
+    const st = stories.find(x => x.slug === ref);
+    return st && task('📚', `Story: ${st.title}`, 'Play it, then read it aloud', '10 min');
+  }
+  if (kind === 'phone') return task('📞', 'Phone numbers', 'Say a few numbers in pairs, then listen to some', '3 min');
+  return null;
+}
+
+/** Everything on today's plan: the review, the picks, then anything outside the app. */
+function todaysTasks() {
+  const plan = weeklyPlan[new Date().getDay()];
+  const due = getDueItems().length;
+  const review = {
+    id: 'review', kind: 'review', type: 'key', icon: '🔁', name: "Today's Review",
+    detail: due ? `${due} due · spaced repetition` : 'Nothing due · learn a few new items instead',
+    time: '~5–10 min', action: 'review',
+  };
+  const picks = todaysPicks().map(planTask).filter(Boolean);
+  const outside = plan ? plan.tasks.filter(t => !t.action) : [];
+  return [review, ...picks, ...outside];
+}
+
+/** Open a pick at its exact exercise, and tick it. */
+function openPlanTask(id) {
+  const t = todaysTasks().find(x => x.id === id);
+  if (!t) return;
+  markTaskDone(t, true);
+  const { kind, ref } = t;
+  if (kind === 'review') {
+    if (getDueItems().length) startReview('review');
+    else startReview('new', loadSettings().newCardsPerDay || 5);
+  } else if (kind === 'quiz') startQuiz(ref);
+  else if (kind === 'workbook') {
+    const [chKey, exId] = ref.split('|');
+    openChapter(chKey);
+    startExercise(workbook[chKey].exercises.findIndex(e => e.id === exId));
+  } else if (kind === 'drill') { showView('drills'); pickDrillCat(ref); }
+  else if (kind === 'roleplay') openRoleplayScene(ref);
+  else if (kind === 'conj') startConj(ref);
+  else if (kind === 'concept') openConcept(ref, 'home');
+  else if (kind === 'story') {
+    const i = ref === 'new' ? -1 : stories.findIndex(x => x.slug === ref);
+    if (i >= 0) openStory(i); else showView('storyPicker');
+  } else if (kind === 'phone') showView('phone');
+}
+
+/** The role-play screen with one scene open and "Practise my lines" on. */
+function openRoleplayScene(title) {
+  showView('roleplay');
+  const index = roleplays.findIndex(r => r.title === title);
+  const scenes = document.querySelectorAll('#rpScenes .rp-scene');
+  scenes.forEach((scene, i) => scene.classList.toggle('open', i === index));
+  if (!document.getElementById('rpScenes').classList.contains('rp-practise')) rpTogglePractise();
+  if (scenes[index]) setTimeout(() => scenes[index].scrollIntoView({ block: 'start', behavior: 'smooth' }), 60);
+}
+
+/** Replace a pick with another, of a kind today's plan doesn't have yet if possible. */
+function swapPlanTask(id) {
+  const plan = loadPlan();
+  const at = (plan.picks || []).indexOf(id);
+  if (at < 0) return;
+  plan.swapped = [...(plan.swapped || []), id];
+  const taken = new Set([...plan.picks, ...plan.swapped]);
+  const kindsToday = new Set(plan.picks.filter(x => x !== id).map(x => x.split(':')[0]));
+  const avoid = new Set(Object.entries(plan.history || {}).filter(([d]) => d !== plan.date).flatMap(([, ids]) => ids));
+  const cands = planCandidates().filter(c => !taken.has(c.id) && c.kind !== 'phone');
+  cands.forEach(c => { c.total = c.score + Math.random() * 0.6 - (avoid.has(c.id) ? 3 : 0) + (kindsToday.has(c.kind) ? -2 : 0); });
+  const next = cands.sort((a, b) => b.total - a.total)[0];
+  if (!next) return;
+  plan.picks[at] = next.id;
+  plan.history = { ...(plan.history || {}), [plan.date]: plan.picks };
+  savePlan(plan);
+  renderTodayCard();
+}
+
+/** Tick a pick when it's done from the menus rather than from the plan. */
+function tickPlan(id, render = true) {
+  if (!(loadPlan().picks || []).includes(id)) return false;
+  const t = { id };
+  if (isTaskDone(t)) return false;
+  markTaskDone(t, true);
+  if (render && document.getElementById('home').classList.contains('active')) renderTodayCard();
+  return true;
+}
+
 /* ====================== TODAY PLAN TRACKING ======================
    Each task in today's plan gets a stable id (derived from name).
    Completion is stored per calendar day, so state auto-resets at midnight.
@@ -13622,9 +13911,9 @@ function saveTodayDone(ids) {
 }
 
 function taskId(task) {
-  // Stable id based on name only — names are stable across renders of the
-  // same day's plan
-  return task.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  // Today's picks carry their own id; the weekly rhythm's tasks go by name,
+  // which is stable across renders of the same day's plan.
+  return (task.id || task.name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 function isTaskDone(task) {
@@ -13645,12 +13934,9 @@ function markTaskDone(task, done) {
 /* When an internal view opens, auto-tick any today task whose action matches.
    Called from showView. */
 function autoTickTodayTask(viewId) {
-  const now = new Date();
-  const dayIdx = now.getDay();
-  const plan = weeklyPlan[dayIdx];
-  if (!plan) return;
   let changed = false;
-  plan.tasks.forEach(t => {
+  if (viewId === 'phone') changed = tickPlan('phone', false);
+  todaysTasks().forEach(t => {
     if (t.action === viewId && !isTaskDone(t)) {
       markTaskDone(t, true);
       changed = true;
@@ -13664,10 +13950,7 @@ function autoTickTodayTask(viewId) {
 }
 
 function toggleTodayTask(taskIdStr) {
-  const now = new Date();
-  const plan = weeklyPlan[now.getDay()];
-  if (!plan) return;
-  const task = plan.tasks.find(t => taskId(t) === taskIdStr);
+  const task = todaysTasks().find(t => taskId(t) === taskIdStr);
   if (!task) return;
   const wasDone = isTaskDone(task);
   markTaskDone(task, !wasDone);
@@ -13685,9 +13968,12 @@ function renderTodayCard() {
 
   const dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
 
-  // Count completed tasks
-  const totalTasks = plan.tasks.length;
-  const doneTasks = plan.tasks.filter(t => isTaskDone(t)).length;
+  // Today's exercises, then anything outside the app the weekly rhythm has today
+  const tasks = todaysTasks();
+  const exercises = tasks.filter(t => t.kind);
+  const outside = tasks.filter(t => !t.kind);
+  const totalTasks = tasks.length;
+  const doneTasks = tasks.filter(t => isTaskDone(t)).length;
   const allDone = totalTasks > 0 && doneTasks === totalTasks;
 
   const progressLine = allDone
@@ -13708,8 +13994,14 @@ function renderTodayCard() {
     <div class="today-intro">${escapeHtml(plan.subtitle)}</div>
     ${progressLine}
     <div class="today-tasks">
-      ${plan.tasks.map(t => renderTodayTask(t)).join('')}
+      ${exercises.map(t => renderTodayTask(t)).join('')}
     </div>
+    ${outside.length ? `
+    <div class="today-also">Also today</div>
+    <div class="today-tasks">
+      ${outside.map(t => renderTodayTask(t)).join('')}
+    </div>` : ''}
+    <div class="today-foot">Picked for today from your recent lessons and what needs work. Tap ↻ to swap one, or choose anything from the menu below.</div>
   `;
 
   // Tapping the today-head (not a task) opens the weekly plan
@@ -13721,6 +14013,15 @@ function renderTodayCard() {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openWeekly(); }
     });
   }
+
+  // Today's picks open their exact exercise; ↻ swaps one for another
+  el.querySelectorAll('[data-plan-id]').forEach(row => {
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('.today-check')) return;
+      if (e.target.closest('.today-swap')) { swapPlanTask(row.getAttribute('data-plan-id')); return; }
+      openPlanTask(row.getAttribute('data-plan-id'));
+    });
+  });
 
   // Wire up click handlers for task body (opens view if action defined)
   el.querySelectorAll('[data-today-action]').forEach(btn => {
@@ -13900,10 +14201,12 @@ function renderTodayTask(t) {
   const done = isTaskDone(t);
   const doneClass = done ? 'done' : '';
   const id = taskId(t);
-  const hasAction = !!t.action;
-  const actionAttrs = hasAction
-    ? `data-today-action="${escapeHtml(t.action)}"${t.cat ? ` data-cat="${escapeHtml(t.cat)}"` : ''}`
-    : '';
+  const hasAction = !!(t.kind || t.action);
+  const actionAttrs = t.kind
+    ? `data-plan-id="${escapeHtml(t.id)}"`
+    : hasAction
+      ? `data-today-action="${escapeHtml(t.action)}"${t.cat ? ` data-cat="${escapeHtml(t.cat)}"` : ''}`
+      : '';
   const clickableClass = hasAction ? 'clickable' : '';
   const externalHint = t.external && !done
     ? `<span class="today-task-hint">tap ✓ when done</span>`
@@ -13919,6 +14222,7 @@ function renderTodayTask(t) {
         <div class="today-task-sub">${escapeHtml(t.detail)} ${externalHint}</div>
       </div>
       <div class="today-task-time">${escapeHtml(t.time)}</div>
+      ${t.kind && t.kind !== 'review' && !done ? '<button class="today-swap" aria-label="Swap for another exercise" title="Swap for another exercise">↻</button>' : ''}
     </div>
   `;
 }
@@ -13960,7 +14264,7 @@ function renderWeeklyPlan() {
         </button>
         <div class="wp-day-body">
           <div class="wp-tasks">
-            ${plan.tasks.map(t => {
+            ${(isToday ? todaysTasks() : plan.tasks).map(t => {
               const dotCls = t.type === 'key' ? 'key' : (t.external ? 'external' : '');
               return `
                 <div class="wp-task">
@@ -14230,6 +14534,7 @@ function renderWorkbookChapter() {
 function startExercise(exIdx) {
   const ch = workbook[wbState.currentChapter];
   if (!ch) return;
+  if (ch.exercises[exIdx]) tickPlan(`workbook:${wbState.currentChapter}|${ch.exercises[exIdx].id}`);
   wbState.currentExercise = exIdx;
   wbState.qIndex = 0;
   wbState.results = [];
@@ -14463,6 +14768,7 @@ let cptState = {
 };
 
 function openConcept(id, returnView) {
+  tickPlan(`concept:${id}`);
   cptState.currentId = id;
   cptState.returnView = returnView || 'concepts';
   showView('conceptDetail');
@@ -14691,6 +14997,7 @@ function renderStoryPicker() {
 
 function openStory(idx) {
   const s = stories[idx];
+  tickPlan(`story:${s.slug}`);
   document.getElementById('stTitle').textContent = s.title;
   document.getElementById('stSub').textContent = `${s.level} · ${s.blurb}`;
 
@@ -14929,6 +15236,7 @@ async function generateStory() {
     }
     stories.unshift(story);
     storyDraft = null;
+    tickPlan('story:new');
     if (document.getElementById('storyPicker').classList.contains('active')) openStory(0);
   } catch (err) {
     draft.busy = false;

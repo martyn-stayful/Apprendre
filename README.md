@@ -236,6 +236,43 @@ The screen has two practice modes:
 
 ---
 
+## Today's plan
+
+The home screen opens with **Today's plan**. Every day it has Today's Review and a
+few specific exercises the app picks for you. Each pick is a different kind:
+
+- a quiz
+- a workbook exercise
+- a Daily 10 set
+- a role-play scene
+- a verb
+- an explainer
+- a new story episode
+
+Tapping a pick opens that exact exercise. A role-play opens on its scene with
+**Practise my lines** on.
+
+How the picks are chosen:
+
+- **Recent lessons first:** anything from this week's or last week's lessons, or
+  that you haven't got right yet, comes first.
+- **The week's rhythm:**
+  - the day before a conversation leans on speaking: Daily 10, role-plays, verbs
+  - the day after a lesson leans on consolidating it: a quiz, the workbook, an
+    explainer
+  - light days lean on reading and stories
+  - lesson, conversation and big-session days get fewer picks
+- **No repeats:** nothing from the last few days comes up again.
+- **How many:** about one pick per five minutes of your daily goal (two to five).
+
+The plan stays the same all day and on every device (`fr_today_plan`). **↻**
+swaps a pick for one of a different kind. Doing a pick from the menus ticks it
+off too. Things outside the app that the weekly rhythm has today, like the tutor
+lesson or Duolingo, are listed under "Also today". Everything in the menus is
+still there to choose from.
+
+---
+
 ## Stories written for you
 
 The top of the **Stories** screen writes a new short story whenever you ask.

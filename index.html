@@ -536,6 +536,7 @@
     width: 200px;
     height: 200px;
     background: radial-gradient(circle, rgba(212, 162, 76, 0.18), transparent 70%);
+    pointer-events: none;   /* it sits over the example sentence, which can be tapped */
   }
 
   .fc-category {
@@ -5151,63 +5152,89 @@
   }
 
   /* Tooltip / translation popover */
-  .st-tip {
+  /* ========== TAP TO TRANSLATE ========== */
+  ::highlight(tap-word) { background-color: rgba(212, 162, 76, 0.45); }
+
+  .tap-pop {
     position: absolute;
-    z-index: 20;
+    z-index: 60;
+    width: min(300px, calc(100vw - 24px));
     background: var(--ink);
     color: var(--paper);
-    border-radius: 10px;
-    padding: 10px 14px;
+    border-radius: 12px;
+    padding: 12px 14px;
     font-family: 'Lato', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.4;
-    letter-spacing: 0.01em;
-    max-width: 260px;
-    box-shadow: 0 10px 30px var(--shadow-deep);
-    pointer-events: none;
+    font-size: 14px;
+    line-height: 1.45;
+    box-shadow: 0 12px 34px var(--shadow-deep);
     opacity: 0;
     transform: translateY(4px);
-    transition: opacity 0.18s, transform 0.18s;
+    transition: opacity 0.16s, transform 0.16s;
   }
-
-  .st-tip.show { opacity: 1; transform: translateY(0); }
-
-  .st-tip::after {
+  .tap-pop.show { opacity: 1; transform: translateY(0); }
+  .tap-pop::after {
     content: '';
     position: absolute;
     bottom: -6px;
-    left: 20px;
-    width: 0;
-    height: 0;
+    left: calc(var(--arrow-x, 50%) - 6px);
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
     border-top: 6px solid var(--ink);
   }
+  .tap-pop.below::after { bottom: auto; top: -6px; border-top: none; border-bottom: 6px solid var(--ink); }
 
-  .st-tip.below::after {
-    bottom: auto;
-    top: -6px;
-    border-top: none;
-    border-bottom: 6px solid var(--ink);
-  }
-
-  .st-tip .tip-en {
-    color: var(--gold);
-    font-weight: 700;
-    display: block;
-    margin-bottom: 2px;
+  .tap-head { display: flex; align-items: center; gap: 8px; }
+  .tap-word {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-family: 'Fraunces', serif;
-    font-size: 15px;
+    font-size: 17px;
+    font-weight: 600;
   }
-
-  .st-tip .tip-note {
-    color: rgba(254, 252, 247, 0.8);
-    font-size: 11px;
-    font-style: italic;
+  .tap-icon {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(254, 252, 247, 0.12);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .tap-meaning {
     margin-top: 4px;
-    display: block;
+    color: var(--gold);
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
   }
+  .tap-meaning.waiting { color: rgba(254, 252, 247, 0.75); font-family: 'Lato', sans-serif; font-size: 13px; font-weight: 400; font-style: italic; }
+  .tap-gram { margin-top: 2px; font-size: 12px; color: rgba(254, 252, 247, 0.75); }
+  .tap-sentence {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(254, 252, 247, 0.15);
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(254, 252, 247, 0.92);
+  }
+  .tap-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .tap-actions:empty { display: none; }
+  .tap-btn {
+    padding: 5px 11px;
+    border: 1px solid rgba(254, 252, 247, 0.3);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--paper);
+    font: 700 12px 'Lato', sans-serif;
+    cursor: pointer;
+  }
+  .tap-btn:disabled { opacity: 0.6; cursor: default; }
+  .tap-icon:focus-visible, .tap-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .tap-pop { transition: none; } }
 
   .st-translation {
     margin-top: 18px;
@@ -6895,7 +6922,7 @@
 
     <div class="phrase-of-day">
       <div class="eyebrow">Phrase du jour</div>
-      <div class="phrase-fr" id="podFr">Ça a l'air bon !</div>
+      <div class="phrase-fr" id="podFr" lang="fr">Ça a l'air bon !</div>
       <div class="phrase-en" id="podEn">That looks / sounds good!</div>
       <button class="phrase-speak" onclick="speak(document.getElementById('podFr').textContent)" aria-label="Listen">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
@@ -7092,7 +7119,7 @@
           <div class="fc-face back">
             <div class="fc-category" id="fcCatBack">—</div>
             <div class="fc-word" id="fcBack">—</div>
-            <div class="fc-example" id="fcExample"></div>
+            <div class="fc-example" id="fcExample" lang="fr"></div>
             <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcBack').textContent)" aria-label="Listen">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
             </button>
@@ -7132,7 +7159,7 @@
     <div class="quiz-wrap">
       <div class="quiz-question">
         <div class="quiz-prompt-row">
-          <div class="quiz-prompt" id="qPrompt">—</div>
+          <div class="quiz-prompt" id="qPrompt" lang="fr">—</div>
           <button class="phrase-speak quiz-speak" onclick="speakQuizPrompt()" aria-label="Listen">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
           </button>
@@ -8326,6 +8353,7 @@ const PRACTICE_VIEWS = new Set([
 ]);
 
 function showView(id) {
+  closeTapPop();
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'instant' });
@@ -8749,7 +8777,7 @@ function renderReviewQuiz(item) {
   ` : '';
 
   return `
-    <div class="rv-quiz-prompt">${promptHtml}
+    <div class="rv-quiz-prompt"${frAttrs(q.en)}>${promptHtml}
       <button class="phrase-speak" style="margin-left:6px; width:28px; height:28px; vertical-align:-3px" onclick="speak('${escapeJs(q.prompt.replace(/___/g, q.opts[q.a]))}')" aria-label="Listen">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
       </button>
@@ -8883,6 +8911,7 @@ function renderReviewWorkbook(item) {
   const c = item.card;
   const isMultiple = c.exerciseType === 'multiple';
   const promptHtml = escapeHtml(c.prompt).replace(/___/g, '<span class="blank"></span>');
+  const promptLang = frenchPromptAttrs(c.prompt);
 
   // Pre-answer state: show prompt + input/options
   if (!rvState.wbAnswered) {
@@ -8893,7 +8922,7 @@ function renderReviewWorkbook(item) {
       return `
         <div class="rv-wb">
           <div class="rv-wb-context">${escapeHtml(c.exerciseTitle)}</div>
-          <div class="wbx-question">${promptHtml}</div>
+          <div class="wbx-question"${promptLang}>${promptHtml}</div>
           <div class="wbx-options">${optsHtml}</div>
         </div>
       `;
@@ -8901,7 +8930,7 @@ function renderReviewWorkbook(item) {
     return `
       <div class="rv-wb">
         <div class="rv-wb-context">${escapeHtml(c.exerciseTitle)}</div>
-        <div class="wbx-question">${promptHtml}</div>
+        <div class="wbx-question"${promptLang}>${promptHtml}</div>
         <input type="text" class="wbx-input" id="rvWbInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type your answer…"
           value="${rvState.wbGiven ? escapeHtml(rvState.wbGiven) : ''}">
         ${c.hint ? `<div class="wbx-hint">${escapeHtml(c.hint)}</div>` : ''}
@@ -8951,7 +8980,7 @@ function renderReviewWorkbook(item) {
   return `
     <div class="rv-wb">
       <div class="rv-wb-context">${escapeHtml(c.exerciseTitle)}</div>
-      <div class="wbx-question">${promptHtml}</div>
+      <div class="wbx-question"${promptLang}>${promptHtml}</div>
       ${optsOrInputHtml}
       <div class="wbx-verdict ${verdictCls}">
         <div class="wbx-verdict-title">${verdictTitle}</div>
@@ -9232,7 +9261,7 @@ function startDeck(key) {
         <div class="fc-face back">
           <div class="fc-category" id="fcCatBack">—</div>
           <div class="fc-word" id="fcBack">—</div>
-          <div class="fc-example" id="fcExample"></div>
+          <div class="fc-example" id="fcExample" lang="fr"></div>
           <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcBack').textContent)" aria-label="Listen">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
           </button>
@@ -9460,7 +9489,7 @@ function startQuiz(key) {
   document.querySelector('#quizView .quiz-wrap').innerHTML = `
     <div class="quiz-question">
       <div class="quiz-prompt-row">
-        <div class="quiz-prompt" id="qPrompt"></div>
+        <div class="quiz-prompt" id="qPrompt" lang="fr"></div>
         <button class="phrase-speak quiz-speak" onclick="speakQuizPrompt()" aria-label="Listen">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
         </button>
@@ -9489,6 +9518,7 @@ function renderQuestion() {
   document.getElementById('qIdx').textContent = quizState.i + 1;
   document.getElementById('qPrompt').innerHTML = q.prompt.replace(/___/g, '<span class="blank">______</span>');
   document.getElementById('qTrans').textContent = q.en;
+  document.getElementById('qPrompt').dataset.trEn = q.en || '';
   const optsEl = document.getElementById('qOptions');
   optsEl.innerHTML = '';
   q.opts.forEach((opt, idx) => {
@@ -9803,7 +9833,7 @@ function renderRoleplay() {
           <div class="rp-line ${line.who === 'you' ? 'you-line' : ''}">
             <div class="rp-speaker ${line.who}">${line.who === 'you' ? 'Y' : ''}</div>
             <div class="rp-bubble"${line.who === 'you' ? ' onclick="rpRevealLine(this)"' : ''}>
-              <div class="rp-fr">${escapeHtml(line.fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(line.fr)}\`)" aria-label="Listen">🔊</button></div>
+              <div class="rp-fr"${frAttrs(line.en)}>${escapeHtml(line.fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(line.fr)}\`)" aria-label="Listen">🔊</button></div>
               <div class="rp-en">${escapeHtml(line.en)}</div>
             </div>
           </div>
@@ -9874,14 +9904,11 @@ function renderGrammar() {
     wrap.appendChild(topic);
   });
 
-  // Make every <em> inside grammar bodies tappable to hear the phrase —
-  // these are the French examples embedded in the notes.
+  // Every <em> inside a note is French: tapping it reads it aloud and
+  // translates the word (see openTapPop).
   wrap.querySelectorAll('.gr-body em').forEach(el => {
     el.classList.add('gr-speak');
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-      speak(el.textContent);
-    });
+    el.lang = 'fr';
   });
 }
 
@@ -10019,7 +10046,7 @@ function renderDrills() {
         <div class="dr-your-turn">
           ${isRevealed ? '' : `<button class="dr-reveal" onclick="revealDrill(${i})">Reveal</button>`}
           <div class="dr-answer${isRevealed ? ' show' : ''}">
-            <div class="dr-fr">${escapeHtml(d.fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(d.fr)}\`)" aria-label="Listen">🔊</button></div>
+            <div class="dr-fr"${frAttrs(drillEnglish(d.en))}>${escapeHtml(d.fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(d.fr)}\`)" aria-label="Listen">🔊</button></div>
             <div class="dr-note">${d.note}</div>
             ${pronounceButtonHtml(d.fr, 'dr-' + i)}
             ${verdict ? `
@@ -10243,7 +10270,7 @@ function phonePairsHtml(groups, wrongIdx) {
 function phoneSpokenHtml(groups, id) {
   const fr = phoneInFrench(groups);
   return `
-    <div class="dr-fr">${escapeHtml(fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(fr)}\`)" aria-label="Listen">🔊</button></div>
+    <div class="dr-fr"${frAttrs(groups.join(' '))}>${escapeHtml(fr)}<button class="rp-speak" onclick="speak(\`${escapeJs(fr)}\`)" aria-label="Listen">🔊</button></div>
     ${pronounceButtonHtml(fr, id)}
   `;
 }
@@ -10400,7 +10427,6 @@ function renderPhonePractice() {
 
 /* ====================== STORIES ====================== */
 
-let storyTipEl = null;
 
 /* ====================== MASTERY TRACKING ====================== */
 /* Each item (a flashcard, quiz question, or conjugation prompt) gets a record:
@@ -14053,7 +14079,7 @@ function renderWorkbookChapter() {
     <div class="wbc-vocab">
       ${ch.vocab.map(v => `
         <div class="wbc-vocab-row">
-          <div class="wbc-vocab-fr">${escapeHtml(v.fr)}</div>
+          <div class="wbc-vocab-fr"${frAttrs(v.en)}>${escapeHtml(v.fr)}</div>
           <div class="wbc-vocab-en">${escapeHtml(v.en)}</div>
           <button class="wbc-vocab-speak" onclick="speak('${escapeAttr(v.fr)}')" aria-label="Listen">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
@@ -14088,6 +14114,7 @@ function renderWorkbookChapter() {
   `;
 
   wrap.innerHTML = ruleHtml + vocabHtml + exercisesHtml;
+  wrap.querySelectorAll('.wbc-rule em').forEach(el => { el.lang = 'fr'; });
 }
 
 // escapeAttr — needed for inline onclick strings containing apostrophes
@@ -14144,6 +14171,7 @@ function renderExerciseQuestion() {
 
   // Promot rendering — replace ___ with a visual blank placeholder
   const promptHtml = escapeHtml(q.prompt).replace(/___/g, '<span class="blank"></span>');
+  const promptLang = frenchPromptAttrs(q.prompt);
 
   let inputHtml;
   if (exType === 'multiple') {
@@ -14165,7 +14193,7 @@ function renderExerciseQuestion() {
 
   wrap.innerHTML = `
     ${instructionsHtml}
-    <div class="wbx-question">${promptHtml}</div>
+    <div class="wbx-question"${promptLang}>${promptHtml}</div>
     ${inputHtml}
   `;
 
@@ -14405,7 +14433,7 @@ function renderConceptDetail() {
       ${c.table.map(row => `
         <div class="cpt-table-row">
           <div class="cpt-table-en">${row.en}</div>
-          <div class="cpt-table-fr">${row.fr}</div>
+          <div class="cpt-table-fr"${frAttrs(stripTags(row.en))}>${row.fr}</div>
         </div>
       `).join('')}
     </div>
@@ -14417,7 +14445,7 @@ function renderConceptDetail() {
       ${c.examples.map(ex => `
         <div class="cpt-example-row">
           <div class="cpt-example-body">
-            <div class="cpt-example-fr">${escapeHtml(ex.fr)}</div>
+            <div class="cpt-example-fr"${frAttrs(ex.en)}>${escapeHtml(ex.fr)}</div>
             <div class="cpt-example-en">${escapeHtml(ex.en)}</div>
             ${ex.note ? `<div class="cpt-example-note">${escapeHtml(ex.note)}</div>` : ''}
           </div>
@@ -14479,6 +14507,8 @@ function renderConceptDetail() {
     ${relatedHtml}
     ${drillHtml}
   `;
+  // The explanations are English with the French in <em>.
+  wrap.querySelectorAll('.cpt-paragraphs em, .cpt-pitfall em').forEach(el => { el.lang = 'fr'; });
 }
 
 // Start a focused review session using only items tagged to this concept.
@@ -14570,7 +14600,7 @@ function openStory(idx) {
     <div class="st-intro">
       <div class="eyebrow">${s.level} · story</div>
       <h3>${escapeHtml(s.title)}</h3>
-      <p>Tap any <u>underlined</u> word or phrase to see its translation. Read each paragraph out loud before you look things up.</p>
+      <p>Tap any word to see what it means. <u>Underlined</u> words have notes from the lesson. Read each paragraph out loud before you look things up.</p>
     </div>
 
     <div class="st-controls">
@@ -14579,7 +14609,7 @@ function openStory(idx) {
       <button class="st-ctrl" id="stBtnTrans" onclick="toggleTranslation(this)">English version</button>
     </div>
 
-    <div class="st-body" id="stBody">${parsedBody}</div>
+    <div class="st-body" id="stBody" lang="fr">${parsedBody}</div>
 
     <div class="st-focus">
       <h4>Grammar focus</h4>
@@ -14592,55 +14622,7 @@ function openStory(idx) {
     </div>
   `;
 
-  // Attach click handlers to all highlighted words
-  wrap.querySelectorAll('.hl').forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showStoryTip(el);
-    });
-  });
-
-  // Click anywhere else to close tip
-  document.addEventListener('click', closeStoryTip);
-
   showView('storyView');
-}
-
-function showStoryTip(el) {
-  closeStoryTip();
-  const tip = document.createElement('div');
-  tip.className = 'st-tip';
-  const en = el.getAttribute('data-en');
-  const note = el.getAttribute('data-note');
-  tip.innerHTML = `<span class="tip-en">${escapeHtml(en)}</span>${note ? `<span class="tip-note">${escapeHtml(note)}</span>` : ''}`;
-  document.body.appendChild(tip);
-
-  // Position the tip above the word, or below if too close to top
-  const rect = el.getBoundingClientRect();
-  const tipRect = tip.getBoundingClientRect();
-  let left = rect.left + rect.width / 2 - tipRect.width / 2 + window.scrollX;
-  left = Math.max(12, Math.min(left, window.innerWidth - tipRect.width - 12));
-  let top = rect.top + window.scrollY - tipRect.height - 10;
-
-  if (top < window.scrollY + 10) {
-    // Not enough room above — place below
-    top = rect.bottom + window.scrollY + 10;
-    tip.classList.add('below');
-  }
-
-  tip.style.left = left + 'px';
-  tip.style.top = top + 'px';
-
-  requestAnimationFrame(() => tip.classList.add('show'));
-  storyTipEl = tip;
-  el.classList.add('revealed');
-}
-
-function closeStoryTip() {
-  if (storyTipEl && storyTipEl.parentNode) {
-    storyTipEl.parentNode.removeChild(storyTipEl);
-  }
-  storyTipEl = null;
 }
 
 function toggleShowAll(btn) {
@@ -14662,6 +14644,293 @@ function readStoryAloud() {
   // Get just the French text (the <span> innerText is already French)
   const text = body.innerText.replace(/\s+/g, ' ').trim();
   speak(text);
+}
+
+/* ====================== TAP TO TRANSLATE ======================
+   Any French marked lang="fr" can be tapped: the word under the finger gets
+   what it means in that sentence, and "Whole sentence" gives the sentence in
+   English. Lookups go through /api/translate, which caches them for everyone,
+   so each word in each sentence is only ever paid for once.
+*/
+
+let tapState = null;
+const tapLookups = new Map();
+let tapDict = null;
+
+/** Attributes for a French element in a template; `en` is the app's English for the whole of it, if it has one. */
+function frAttrs(en) {
+  return ` lang="fr"${en ? ` data-tr-en="${escapeHtml(en)}"` : ''}`;
+}
+
+// "Say: I'm tired." -> "I'm tired." The part before the colon is the instruction.
+function drillEnglish(en) {
+  const at = String(en || '').indexOf(': ');
+  return at > 0 && at < 60 ? en.slice(at + 2) : '';
+}
+
+// Gap-fills and "this → that" prompts are French. The rest are English
+// sentences to translate, and translating those would give the answer away.
+function frenchPromptAttrs(prompt) {
+  return /___|→/.test(prompt || '') ? frAttrs('') : '';
+}
+
+function stripTags(html) {
+  return String(html || '').replace(/<[^>]*>/g, '');
+}
+
+document.addEventListener('click', onTapTranslate, true);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTapPop(); });
+window.addEventListener('resize', () => closeTapPop());
+// The popup sits in page coordinates, so it can't follow a panel scrolling underneath it.
+document.addEventListener('scroll', (e) => { if (e.target !== document) closeTapPop(); }, true);
+
+function onTapTranslate(e) {
+  const target = e.target;
+  if (!(target instanceof Element) || target.closest('.tap-pop')) return;
+  const zone = target.closest('[lang="fr"]');
+  if (!zone || target.closest('button, a, input, textarea, select, label')) { closeTapPop(); return; }
+  const hit = tapWordAt(e.clientX, e.clientY, zone, target);
+  if (!hit) { closeTapPop(); return; }
+  // The tap is ours: don't also flip the card or open the line underneath.
+  e.stopPropagation();
+  e.preventDefault();
+  openTapPop(hit, zone);
+}
+
+function caretFromPoint(x, y) {
+  if (document.caretPositionFromPoint) {
+    const p = document.caretPositionFromPoint(x, y);
+    return p && { node: p.offsetNode, offset: p.offset };
+  }
+  if (document.caretRangeFromPoint) {
+    const r = document.caretRangeFromPoint(x, y);
+    return r && { node: r.startContainer, offset: r.startOffset };
+  }
+  return null;
+}
+
+/** The word under (x, y) inside `zone`, as a Range, with the sentence it sits in. */
+function tapWordAt(x, y, zone, target) {
+  // A word a lesson already glosses is taken whole, as written.
+  const gloss = target.closest('.hl');
+  let range;
+  if (gloss && zone.contains(gloss)) {
+    range = document.createRange();
+    range.selectNodeContents(gloss);
+  } else {
+    const caret = caretFromPoint(x, y);
+    if (!caret || caret.node.nodeType !== Node.TEXT_NODE || !zone.contains(caret.node)) return null;
+    const text = caret.node.data;
+    const inWord = (ch) => /[\p{L}\p{M}\p{N}'’-]/u.test(ch || '');
+    let start = caret.offset, end = caret.offset;
+    while (start > 0 && inWord(text[start - 1])) start--;
+    while (end < text.length && inWord(text[end])) end++;
+    while (start < end && /['’-]/.test(text[start])) start++;
+    while (end > start && /['’-]/.test(text[end - 1])) end--;
+    if (start >= end) return null;
+    range = document.createRange();
+    range.setStart(caret.node, start);
+    range.setEnd(caret.node, end);
+  }
+  const word = range.toString().replace(/\s+/g, ' ').trim();
+  if (!/\p{L}/u.test(word)) return null;
+  return { word, range, sentence: tapSentence(zone, range), gloss: gloss && zone.contains(gloss) ? gloss : null };
+}
+
+/** The sentence around `range`, from the zone's text (leaving out its buttons). */
+function tapSentence(zone, range) {
+  let text = '', at = -1;
+  const walker = document.createTreeWalker(zone, NodeFilter.SHOW_TEXT, {
+    acceptNode: (n) => n.parentElement.closest('button') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+  });
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    if (at < 0 && n === range.startContainer) at = text.length + range.startOffset;
+    else if (at < 0 && range.startContainer.nodeType !== Node.TEXT_NODE && range.startContainer.contains(n)) at = text.length;
+    text += n.data;
+  }
+  text = text.replace(/\s+/g, ' ');
+  for (const m of text.matchAll(/[^.!?…]+(?:[.!?…]+[»”"')\]]*)?/g)) {
+    if (at >= m.index && at < m.index + m[0].length) return m[0].trim();
+  }
+  return text.trim();
+}
+
+function tapNorm(s) {
+  return String(s || '').normalize('NFC').toLowerCase().replace(/[’‘]/g, "'")
+    .replace(/^(un|une|le|la|les|des|du|de la|l')\s*/, '')
+    .replace(/\(e\)|\(s\)/g, '').replace(/[.,!?;:…«»"]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+/** Words the app already knows from your decks, verbs and own cards — shown at once while the lookup runs. */
+function tapDictionary() {
+  if (tapDict) return tapDict;
+  tapDict = new Map();
+  const add = (fr, entry) => {
+    String(fr || '').split(/\s*[,/]\s*/).forEach(part => {
+      const k = tapNorm(part);
+      if (k && entry.meaning && !tapDict.has(k)) tapDict.set(k, entry);
+    });
+  };
+  loadCustom().flashcards.forEach(c => add(c.fr, { meaning: c.en, grammar: '' }));
+  Object.values(decks || {}).forEach(d => (d.cards || []).forEach(c => add(c.fr, { meaning: c.en, grammar: '' })));
+  Object.entries(verbTables || {}).forEach(([inf, v]) => {
+    add(inf, { meaning: v.meaning, grammar: '' });
+    Object.values(v.forms || {}).forEach(f => add(f, { meaning: v.meaning, grammar: `a form of ${inf}` }));
+  });
+  return tapDict;
+}
+
+function openTapPop(hit, zone) {
+  closeTapPop();
+  const pop = document.createElement('div');
+  pop.className = 'tap-pop';
+  pop.setAttribute('role', 'dialog');
+  pop.setAttribute('aria-label', `Translation of ${hit.word}`);
+  pop.addEventListener('click', onTapPopClick);
+  document.body.appendChild(pop);
+
+  const local = hit.gloss
+    ? { meaning: hit.gloss.getAttribute('data-en') || '', grammar: hit.gloss.getAttribute('data-note') || '' }
+    : tapDictionary().get(tapNorm(hit.word)) || null;
+  tapState = {
+    pop, hit, local,
+    known: zone.getAttribute('data-tr-en') || '',
+    result: null, loading: false, error: '', showSentence: false, saved: false,
+  };
+
+  if (window.CSS && CSS.highlights && window.Highlight) CSS.highlights.set('tap-word', new Highlight(hit.range));
+  if (hit.gloss) hit.gloss.classList.add('revealed');
+  if (zone.classList.contains('gr-speak')) speak(zone.textContent);
+
+  renderTapPop();
+  requestAnimationFrame(() => pop.classList.add('show'));
+  // A lesson's own gloss is the meaning; anything else gets looked up.
+  if (!hit.gloss) tapLookup();
+}
+
+async function tapLookup() {
+  const st = tapState;
+  if (!st || st.loading) return;
+  const { word, sentence } = st.hit;
+  const key = `${word.toLowerCase()}\n${sentence}`;
+  if (!tapLookups.has(key)) {
+    tapLookups.set(key, window.Api.post('/api/translate', { word, sentence, known: st.known })
+      .then(r => r.translation)
+      .catch(err => { tapLookups.delete(key); throw err; }));
+  }
+  st.loading = true;
+  renderTapPop();
+  try {
+    const result = await tapLookups.get(key);
+    if (tapState === st) st.result = result;
+  } catch (err) {
+    if (tapState !== st) return;
+    st.error = err.status === 429 ? err.message
+      : navigator.onLine === false ? "You're offline. Tap the word again once you're back online."
+      : "Couldn't translate that just now. Tap the word to try again.";
+    // The Translate screen's word lookup still works without the server.
+    if (!st.local) {
+      try {
+        const r = await fetchTranslation(word, 'fr-en');
+        if (tapState === st) st.local = { meaning: r.main, grammar: '' };
+      } catch (e) {}
+    }
+  }
+  if (tapState !== st) return;
+  st.loading = false;
+  renderTapPop();
+}
+
+function renderTapPop() {
+  const st = tapState;
+  if (!st) return;
+  const r = st.result;
+  const meaning = st.hit.gloss ? st.local.meaning : (r ? r.meaning : (st.local && st.local.meaning) || '');
+  const base = r && r.base && tapNorm(r.base) !== tapNorm(r.word) ? r.base : '';
+  const grammar = st.hit.gloss ? st.local.grammar
+    : r ? [base, r.grammar].filter(Boolean).join(' · ')
+    : (st.local && st.local.grammar) || '';
+  const sentenceEn = st.known || (r && r.sentence) || '';
+  const wholeLine = tapNorm(st.hit.word) === tapNorm(st.hit.sentence);
+
+  let meaningHtml = '';
+  if (meaning) meaningHtml = `<div class="tap-meaning">${escapeHtml(meaning)}</div>`;
+  else if (st.loading) meaningHtml = `<div class="tap-meaning waiting">Translating…</div>`;
+  else if (st.error) meaningHtml = `<div class="tap-meaning waiting">${escapeHtml(st.error)}</div>`;
+
+  let gramHtml = '';
+  if (grammar) gramHtml = `<div class="tap-gram">${escapeHtml(grammar)}</div>`;
+  else if (meaning && st.loading) gramHtml = `<div class="tap-gram">Checking it in this sentence…</div>`;
+
+  let sentenceHtml = '';
+  if (st.showSentence) {
+    const body = sentenceEn || (st.loading ? 'Translating…' : st.error);
+    sentenceHtml = `<div class="tap-sentence">${escapeHtml(body)}</div>`;
+  }
+
+  st.pop.innerHTML = `
+    <div class="tap-head">
+      <div class="tap-word" lang="fr">${escapeHtml(st.hit.word)}</div>
+      <button class="tap-icon" data-act="speak" aria-label="Listen">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+      </button>
+      <button class="tap-icon" data-act="close" aria-label="Close">✕</button>
+    </div>
+    ${meaningHtml}${gramHtml}${sentenceHtml}
+    <div class="tap-actions">${
+      (!wholeLine && !st.showSentence ? '<button class="tap-btn" data-act="sentence">Whole sentence</button>' : '') +
+      (meaning ? `<button class="tap-btn" data-act="save"${st.saved ? ' disabled' : ''}>${st.saved ? 'In My vocab ✓' : '+ My vocab'}</button>` : '')
+    }</div>`;
+  positionTapPop();
+}
+
+function positionTapPop() {
+  const st = tapState;
+  if (!st) return;
+  const rect = st.hit.range.getBoundingClientRect();
+  if (!rect.width && !rect.height) { closeTapPop(); return; }
+  const pop = st.pop;
+  const w = pop.offsetWidth, h = pop.offsetHeight;
+  const vw = document.documentElement.clientWidth;
+  const left = Math.max(12, Math.min(rect.left + rect.width / 2 - w / 2, vw - w - 12));
+  let top = rect.top - h - 10;
+  const below = top < 8;
+  if (below) top = rect.bottom + 10;
+  pop.classList.toggle('below', below);
+  pop.style.left = `${left + window.scrollX}px`;
+  pop.style.top = `${top + window.scrollY}px`;
+  pop.style.setProperty('--arrow-x', `${Math.max(14, Math.min(w - 14, rect.left + rect.width / 2 - left))}px`);
+}
+
+function onTapPopClick(e) {
+  const btn = e.target.closest('[data-act]');
+  const st = tapState;
+  if (!btn || !st) return;
+  const act = btn.dataset.act;
+  if (act === 'close') closeTapPop();
+  if (act === 'speak') speak(st.hit.word);
+  if (act === 'sentence') {
+    st.showSentence = true;
+    if (!st.known && !st.result) tapLookup();
+    renderTapPop();
+  }
+  if (act === 'save') {
+    const r = st.result;
+    const fr = (r && r.base) || st.hit.word;
+    const en = st.hit.gloss ? st.local.meaning : (r ? r.meaning : st.local.meaning);
+    const mine = loadCustom().flashcards;
+    if (!mine.some(c => tapNorm(c.fr) === tapNorm(fr))) addCustomFlashcard(fr, en, st.hit.sentence);
+    tapDict = null;
+    st.saved = true;
+    renderTapPop();
+  }
+}
+
+function closeTapPop() {
+  if (!tapState) return;
+  tapState.pop.remove();
+  if (window.CSS && CSS.highlights) CSS.highlights.delete('tap-word');
+  tapState = null;
 }
 
 /* ====================== SPEECH ====================== */
@@ -14761,6 +15030,7 @@ function initPhrase() {
   const idx = (d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate()) % phrases.length;
   document.getElementById('podFr').textContent = phrases[idx].fr;
   document.getElementById('podEn').textContent = phrases[idx].en;
+  document.getElementById('podFr').dataset.trEn = phrases[idx].en;
 
   // simple streak: stored in localStorage
   try {

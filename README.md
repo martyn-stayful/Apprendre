@@ -22,6 +22,7 @@ api/
   content.js        everything the app renders, for one learner
   uploads/          create · list · delete, and parse
   state.js          settings, streak, time tracking, workbook progress
+  translate.js      what a tapped word means in its sentence (cached)
   mastery.js        the spaced-repetition records
   _lib/
     claude.js       the prompt and the Claude call
@@ -231,6 +232,29 @@ The screen has two practice modes:
 
 - **Speaking:** say a random number, then reveal how it goes.
 - **Listening:** the app reads one out and you type the digits.
+
+---
+
+## Tap to translate
+
+Tap any French word in the app to see what it means. It works in stories,
+role-plays, Daily 10 answers, quizzes, workbook gap-fills, explainers, grammar
+notes and flashcard examples. The popup gives:
+
+- the meaning of the word in that sentence, its dictionary form, and a short
+  grammar note
+- **Whole sentence**, which shows the sentence in English
+- **+ My vocab**, which saves the word, with its sentence as the example, to
+  your own flashcards
+
+Words a lesson already glosses show the lesson's own note straight away. For
+anything else, `/api/translate` asks Claude, then stores the answer in the
+`translations` table, shared by every account. So each word in each sentence is
+only paid for once, and tapping it again is instant. A new lookup costs about
+half a US cent. Each learner gets 300 new lookups a day.
+
+English prompts in the workbook can't be tapped, because translating them would
+give the answer away.
 
 ---
 

@@ -7969,6 +7969,7 @@ const drillCategories = [
   { key: 'my', label: 'Mine' },
   { key: 'ask', label: 'Asking questions' },
   { key: 'chat', label: 'Catching up' },
+  { key: 'slang', label: 'Slang & registers' },
   { key: 'story', label: 'Telling stories' },
   { key: 'plans', label: 'Can · want · must' },
   { key: 'time', label: 'Time & numbers' },
@@ -8267,7 +8268,11 @@ const CONCEPT_MAP = {
   'mathilde-contracted-articles': { quizzes: ['mathilde_little_words'], workbookChapters: ['mathilde-ch20'] },
   // From your notebooks (db/packs/notebook-2026.js)
   'notebook-est-ce-que':         { decks: ['notebook_questions', 'notebook_lesson_phrases'], quizzes: ['notebook_est_ce_que'], workbookChapters: ['notebook-ch22'] },
-  'notebook-bon-bien':           { decks: ['notebook_good_better'], quizzes: ['notebook_good_better_quiz'], workbookChapters: ['notebook-ch23'] }
+  'notebook-bon-bien':           { decks: ['notebook_good_better'], quizzes: ['notebook_good_better_quiz'], workbookChapters: ['notebook-ch23'] },
+  // Lessons of 28 October (db/packs/mathilde-2026-10-28.js)
+  'oct28-registres':             { decks: ['oct28_registers'], verbs: ['bosser'], quizzes: ['oct28_registers_quiz'] },
+  'oct28-dates':                 { decks: ['oct28_getting_around'], verbs: ['chercher', 'louer', 'passer'], quizzes: ['oct28_dates_quiz'], workbookChapters: ['oct28-ch25'] },
+  'oct28-aller-faire':           { decks: ['oct28_weekend'], verbs: ['jouer', 'ranger'], quizzes: ['oct28_jouer_faire'], workbookChapters: ['oct28-ch26'] }
 };
 
 // Given an item, try to identify its concept id (returns null if unknown)
@@ -9940,6 +9945,7 @@ function renderDrills() {
     general: { h: 'Everyday essentials', p: 'Core phrases for daily life — time, numbers, apologies, small talk.' },
     ask: { h: 'Asking questions', p: 'Est-ce que, qu\'est-ce que, pourquoi est-ce que — and what to say when you don\'t understand.' },
     chat: { h: 'Catching up', p: 'Quoi de neuf, opinions, and missing people — the start of every lesson with Mathilde.' },
+    slang: { h: 'Slang & registers', p: 'Familier French for friends and the bar — bosser, mon boulot, dégage — and the courant version for everyone else.' },
     story: { h: 'Telling stories', p: 'What happened and what it was like: passé composé for events, imparfait for the scene.' },
     plans: { h: 'Can, want, must', p: 'Pouvoir, vouloir, devoir for planning your week — and j\'aurais dû for what you should have done.' },
     time: { h: 'Time & numbers', p: 'Mathilde\'s times, both the 24-hour and the everyday way, plus phone numbers read in pairs — save yours on the Phone Numbers screen and it joins this set.' },
@@ -11586,6 +11592,7 @@ const DRILL_CAT_LEVELS = {
   ask:         'A1.3',
   chat:        'A2.1',
   plans:       'A2.1',
+  slang:       'A2.1',
   story:       'A2.2',
   hotel:       'A2.2',
   my:          null  // user-assigned; picks up user's current level

@@ -194,6 +194,19 @@ the new material from photos of Lois and Martyn's own notebooks:
 It also includes a page of corrections for the mistakes in the notes, and
 workbook chapters 22–24.
 
+**Lessons of 28 October** (`db/packs/mathilde-2026-10-28.js`) is the third.
+It covers two lessons from the same afternoon:
+
+- French registers (*courant, familier, vulgaire*) and casual words such as
+  *bosser*, *mon boulot* and *dégager*, with a new **Slang & registers**
+  Daily 10 category
+- talking about the weekend with *aller* and *faire*, and *jouer à* / *faire de*
+- bus times, dates with *du… au…*, and hiring a bike
+- what to say when the card machine at the pub won't work
+
+It adds five role-plays, a story, explainers, a page of corrections, and
+workbook chapters 25–26.
+
 Each new pack's material goes ahead of the packs before it.
 
 To add a pack, write a module like those (the builders are in

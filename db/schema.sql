@@ -284,6 +284,17 @@ create table if not exists mastery (
   primary key (user_id, item_id)
 );
 
+-- Words tapped in the app and what they mean in their sentence. Shared by
+-- everyone, so the same word in the same sentence is only ever looked up once.
+-- user_id is whoever looked it up first, for the daily limit.
+create table if not exists translations (
+  key        text primary key,          -- sha256 of the word and its sentence
+  result     jsonb not null,
+  user_id    uuid references users(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+create index if not exists translations_user_day on translations (user_id, created_at);
+
 -- Everything else the app keeps per learner (settings, streak, time tracking,
 -- today's plan, workbook progress, translate history), stored under the same
 -- keys the client already uses.

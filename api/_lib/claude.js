@@ -12,7 +12,7 @@ const SHAPE = JSON.stringify(z.toJSONSchema(ParsedContent), null, 0);
 const MODEL = 'claude-opus-5';
 
 let _client = null;
-function client() {
+export function client() {
   if (!_client) {
     if (!process.env.ANTHROPIC_API_KEY) {
       throw new Error('ANTHROPIC_API_KEY is not set. Add it in the Vercel project settings.');
@@ -312,7 +312,7 @@ function openBrackets(text) {
 }
 
 /** Turn an SDK error into something worth reading on a phone. */
-function explain(err) {
+export function explain(err) {
   const status = err?.status;
   const detail = err?.error?.error?.message || err?.message || '';
 

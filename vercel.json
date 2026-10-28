@@ -36,6 +36,9 @@
     },
     "api/partners.js": {
       "maxDuration": 30
+    },
+    "api/translate.js": {
+      "maxDuration": 30
     }
   },
   "headers": [

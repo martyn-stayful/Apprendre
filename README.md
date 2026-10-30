@@ -306,9 +306,21 @@ You can tap any word in the story. Each sentence carries its own English, so
 **Whole sentence** shows straight away. **Play** reads the story a sentence at a
 time and highlights each one, and **Speed** changes how fast it reads.
 
-At the end, **How was the level?** sets the level of your next story. "Far too
-easy" or "Far too hard" moves it one step straight away; two "Easy" or two
-"Hard" answers in a row also move it. The level starts at A2.1.
+Every story, written for you or not, ends with a **Finished?** card. Rate how
+hard it felt (Far too easy, Easy, Just right, Hard, Far too hard) and the story
+is marked as read, with "✓ Read" and your rating in the list. **Mark as read
+without rating** is there too. Tap a different rating to change your mind.
+
+Your rating sets the level of your next new story, aiming from the level of the
+story you just read: Easy aims a step above it, Hard a step below, "Far too…"
+two steps, and Just right at the same level. Your level moves towards that by
+one step at a time (two for "Far too…"), and the card says where your next
+story will be. The level starts at A2.1, and the generator's level picker still
+lets you choose by hand.
+
+Your last five ratings also go to Claude with each new story, so it can pitch
+the vocabulary and sentence length to match. Stories you haven't read yet,
+especially a new episode from your partner, can turn up on the Today card.
 
 Stories are saved to your library, so a learning partner sees them too, marked
 "from your partner". The series carries on across both of you: each new episode

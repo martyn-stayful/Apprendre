@@ -14,7 +14,8 @@ const LEVELS = ['A1.1', 'A1.2', 'A1.3', 'A2.1', 'A2.2', 'A2.3', 'B1.1', 'B1.2', 
 const text = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
 /**
- * POST { level, genre, length, targets: [{ fr, en, kind }], grammar: [{ title, rule }], known: [fr] }
+ * POST { level, genre, length, targets: [{ fr, en, kind }], grammar: [{ title, rule }], known: [fr],
+ *        feedback: [{ title, level, rating }] }
  *
  * Writes the next episode from what the learner is studying, saves it to their
  * library (and so to any learning partner's), and returns it in the shape
@@ -35,6 +36,11 @@ export default route('POST', withAuth(async (req, res, user) => {
     .slice(0, 2);
   const known = (Array.isArray(input.known) ? input.known : [])
     .map((w) => text(w, 60)).filter(Boolean).slice(0, 200);
+  // How the learner found their last few stories, so this one lands at the right level.
+  const feedback = (Array.isArray(input.feedback) ? input.feedback : [])
+    .map((f) => ({ title: text(f?.title, 80), level: text(f?.level, 8), rating: text(f?.rating, 20) }))
+    .filter((f) => f.title && f.rating)
+    .slice(0, 5);
   if (targets.length < 3) return bad(res, 'Practise a few words first, so the story has something to use.');
 
   const sql = db();
@@ -55,7 +61,7 @@ export default route('POST', withAuth(async (req, res, user) => {
      order by created_at desc
      limit 3`;
 
-  const { story, usage } = await writeStory({ level, genre, length, targets, grammar, known, episodes });
+  const { story, usage } = await writeStory({ level, genre, length, targets, grammar, known, episodes, feedback });
   console.log(`Story written for ${user.id}: ${usage?.input_tokens} in, ${usage?.output_tokens} out`);
 
   const missing = new Set(missingTargets(plainText(story), targets).map((t) => t.fr));

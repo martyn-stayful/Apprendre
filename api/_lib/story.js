@@ -89,9 +89,13 @@ const LENGTHS = { short: 'about 150 words', long: 'about 300 words' };
  * [{ title, rule }], `known` is a list of French words, `episodes` is
  * [{ title, summary }] newest first.
  */
-export async function writeStory({ level, genre, length, targets, grammar, known, episodes }) {
+export async function writeStory({ level, genre, length, targets, grammar, known, episodes, feedback = [] }) {
   const brief = [
     `Level: ${level}`,
+    ...(feedback.length ? [
+      'How the learner rated their last stories, newest first (aim for "just right"):',
+      ...feedback.map((f) => `- ${f.title} (${f.level}): ${f.rating}`),
+    ] : []),
     `Genre: ${GENRES[genre] || GENRES.everyday}`,
     `Length: ${LENGTHS[length] || LENGTHS.long}`,
     '',

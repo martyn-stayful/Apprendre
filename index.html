@@ -5188,6 +5188,22 @@
   .st-rate-btn.on { background: var(--pine); border-color: var(--pine); color: var(--paper); }
   .st-rate-btn:disabled { cursor: default; }
   .st-rate-msg { font-size: 13px; color: var(--ink-soft); }
+  .st-done-actions { display: flex; flex-direction: column; gap: 10px; }
+  .st-done-link {
+    align-self: flex-start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--slate);
+    font: 700 12px 'Lato', sans-serif;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .st-done-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .sp-item.read { opacity: 0.72; }
+  .sp-item.read .sp-level { background: linear-gradient(135deg, var(--moss) 0%, var(--pine) 100%); }
+  .sp-tag.sp-read { color: var(--pine); background: rgba(42, 74, 60, 0.1); }
 
   /* ========== STORY GENERATOR ========== */
   .sg-card {
@@ -7615,7 +7631,7 @@
   // (translation cache, for instance) stays local.
   var SYNC_KEYS = [
     'fr_settings', 'fr_streak', 'fr_last', 'fr_time', 'fr_workbook',
-    'fr_custom', 'fr_today_done', 'fr_today_plan', 'fr_reminder', 'fr_welcomed',
+    'fr_custom', 'fr_today_done', 'fr_today_plan', 'fr_story_reads', 'fr_reminder', 'fr_welcomed',
     'fr_translate_history', 'fr_last_backup', 'fr_phone'
   ];
   var SYNC = {};
@@ -13715,6 +13731,10 @@ function planCandidates() {
     add('concept', id, conceptCounts[id] ? 1.2 : recent(c.week) ? 0.9 : 0.3));
 
   add('story', 'new', 0.9);
+  const reads = loadStoryReads();
+  (stories || []).forEach(st => {
+    if (!reads[st.slug]) add('story', st.slug, st.meta ? (st.shared ? 1.1 : 0.7) : 0.4);
+  });
   add('phone', 'numbers', 0.4);
   return out;
 }
@@ -14976,15 +14996,18 @@ function startConceptDrill(conceptId) {
 function renderStoryPicker() {
   const list = document.getElementById('spList');
   list.innerHTML = storyGeneratorHtml();
+  const reads = loadStoryReads();
   stories.forEach((s, idx) => {
     const btn = document.createElement('button');
-    btn.className = 'sp-item';
+    const read = reads[s.slug];
+    btn.className = `sp-item${read ? ' read' : ''}`;
     btn.innerHTML = `
       <div class="sp-level">${s.level}</div>
       <div class="sp-body">
         <div class="sp-title">${escapeHtml(s.title)}</div>
         <div class="sp-meta">${escapeHtml(s.blurb)}</div>
         <div class="sp-tags">
+          ${read ? `<span class="sp-tag sp-read">✓ Read${read.rating !== null && read.rating !== undefined ? ` · ${escapeHtml(ratingLabel(read.rating))}` : ''}</span>` : ''}
           ${s.tags.map(t => `<span class="sp-tag">${escapeHtml(t)}</span>`).join('')}
           ${s.shared ? '<span class="sp-tag">from your partner</span>' : ''}
         </div>
@@ -15037,16 +15060,7 @@ function openStory(idx) {
       <ul>${s.focus.map(f => `<li>${f}</li>`).join('')}</ul>
     </div>
 
-    ${s.meta ? `
-    <div class="st-rate">
-      <h4>How was the level?</h4>
-      <div class="st-rate-row">
-        ${[['Far too easy', 2], ['Easy', 1], ['Just right', 0], ['Hard', -1], ['Far too hard', -2]]
-          .map(([label, d]) => `<button class="st-rate-btn" onclick="rateStory(this, ${d})">${label}</button>`).join('')}
-      </div>
-      <div class="st-rate-msg" id="stRateMsg">Your answer sets the level of the next story (now ${storyLevel()}).</div>
-      <button class="sg-go" onclick="showView('storyPicker')">Write the next episode</button>
-    </div>` : ''}
+    <div class="st-rate" id="stDone">${storyDoneHtml(s)}</div>
 
     <div class="st-translation" id="stTrans">
       <h4>Full English translation</h4>
@@ -15054,6 +15068,7 @@ function openStory(idx) {
     </div>
   `;
 
+  storyDoneState = { slug: s.slug, before: null };
   showView('storyView');
   const topbar = document.querySelector('.topbar');
   if (topbar) document.documentElement.style.setProperty('--topbar-h', `${topbar.offsetHeight}px`);
@@ -15226,6 +15241,7 @@ async function generateStory() {
       targets: draft.recipe.targets.map(({ fr, en, kind }) => ({ fr, en, kind })),
       grammar: draft.recipe.grammar,
       known: draft.recipe.known,
+      feedback: recentStoryFeedback(),
     });
     // Count the saved words this story used: after five stories they're left to spaced repetition.
     const used = new Set((story.meta.targets || []).filter(t => t.used && t.kind === 'saved').map(t => tapNorm(t.fr)));
@@ -15245,23 +15261,109 @@ async function generateStory() {
   }
 }
 
-function rateStory(btn, delta) {
-  const s = loadSettings();
-  const before = storyLevel();
-  // "Far too" moves the level at once; "easy" or "hard" twice in a row does.
-  let nudge = delta === 0 ? 0 : (s.storyNudge || 0) + delta / 2;
-  let i = STORY_LEVEL_SCALE.indexOf(before);
-  if (nudge >= 1 && i < STORY_LEVEL_SCALE.length - 1) { i++; nudge = 0; }
-  if (nudge <= -1 && i > 0) { i--; nudge = 0; }
-  s.storyLevel = STORY_LEVEL_SCALE[i];
-  s.storyNudge = Math.max(-1, Math.min(1, nudge));
-  saveSettings(s);
+// ---- Reading record: which stories are read, and how hard each one felt ----
+// { slug: { at: 'YYYY-MM-DD', rating: -2..2 or null, level } }, synced as fr_story_reads.
 
-  btn.parentElement.querySelectorAll('button').forEach(b => { b.disabled = true; b.classList.toggle('on', b === btn); });
-  const after = s.storyLevel;
-  document.getElementById('stRateMsg').textContent = after !== before
-    ? `Your next story will be ${after}, ${levelIdx(after) > levelIdx(before) ? 'up' : 'down'} from ${before}.`
-    : `Your next story stays at ${after}.${s.storyNudge ? ' One more like that and it moves.' : ''}`;
+const STORY_READS_KEY = 'fr_story_reads';
+const STORY_RATINGS = [['Far too easy', 2], ['Easy', 1], ['Just right', 0], ['Hard', -1], ['Far too hard', -2]];
+let storyDoneState = null;
+
+function loadStoryReads() {
+  try { return JSON.parse(Store.getItem(STORY_READS_KEY) || '{}'); } catch (e) { return {}; }
+}
+
+function saveStoryReads(reads) {
+  try { Store.setItem(STORY_READS_KEY, JSON.stringify(reads)); } catch (e) {}
+}
+
+function ratingLabel(rating) {
+  const found = STORY_RATINGS.find(([, d]) => d === rating);
+  return found ? found[0] : '';
+}
+
+/** Where a story sits on the story scale. Older stories say "A2", which counts as the middle of A2. */
+function storyScaleIndex(level, fallback) {
+  const exact = STORY_LEVEL_SCALE.indexOf(level);
+  if (exact >= 0) return exact;
+  const band = STORY_LEVEL_SCALE.indexOf(`${level}.2`);
+  return band >= 0 ? band : fallback;
+}
+
+/**
+ * The level for the next story, given how this one felt. The rating says where
+ * your level is relative to this story's: "just right" means about here, "easy"
+ * a step above, "far too easy" two above, and so on. The level then moves toward
+ * that, a step at a time, or two for the "far too" answers.
+ */
+function levelAfterRating(current, storyLevelCode, rating) {
+  const cur = storyScaleIndex(current, 3);
+  const at = storyScaleIndex(storyLevelCode, cur);
+  const target = Math.max(0, Math.min(STORY_LEVEL_SCALE.length - 1, at + rating));
+  const step = Math.abs(rating) === 2 ? 2 : 1;
+  const next = target > cur ? Math.min(target, cur + step) : target < cur ? Math.max(target, cur - step) : cur;
+  return STORY_LEVEL_SCALE[next];
+}
+
+/** The card at the end of a story: mark it read and say how hard it was. */
+function storyDoneHtml(s) {
+  const read = loadStoryReads()[s.slug];
+  const rated = read && read.rating !== null && read.rating !== undefined;
+  const status = !read
+    ? `How hard was it? Your answer marks it read and sets the level of your next new story (now ${storyLevel()}).`
+    : `✓ Read ${read.at === dateKey() ? 'today' : `on ${new Date(read.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`}${rated ? `, and you found it ${ratingLabel(read.rating).toLowerCase()}` : ''}. Your next new story will be ${storyLevel()}.`;
+  return `
+    <h4>${read ? 'Read' : 'Finished?'}</h4>
+    <div class="st-rate-row">
+      ${STORY_RATINGS.map(([label, d]) =>
+        `<button class="st-rate-btn${rated && read.rating === d ? ' on' : ''}" onclick="markStoryRead(${d})">${label}</button>`).join('')}
+    </div>
+    <div class="st-rate-msg" id="stRateMsg">${escapeHtml(status)}</div>
+    <div class="st-done-actions">
+      ${read ? '' : '<button class="st-done-link" onclick="markStoryRead(null)">Mark as read without rating</button>'}
+      <button class="sg-go" onclick="showView('storyPicker')">${s.meta ? 'Write the next episode' : 'Back to stories'}</button>
+    </div>`;
+}
+
+/**
+ * Mark the open story read, with a rating (-2..2) or none. Changing your mind
+ * while the story is still open replaces the earlier answer rather than
+ * counting both.
+ */
+function markStoryRead(rating) {
+  const st = storyDoneState;
+  const s = st && stories.find(x => x.slug === st.slug);
+  if (!s) return;
+  const reads = loadStoryReads();
+  const settings = loadSettings();
+  if (st.before === null) st.before = storyLevel();
+  const before = st.before;
+  if (rating !== null) settings.storyLevel = levelAfterRating(before, s.level, rating);
+  else if (reads[s.slug] && reads[s.slug].rating !== null && reads[s.slug].rating !== undefined) settings.storyLevel = before;
+  saveSettings(settings);
+
+  reads[s.slug] = { at: dateKey(), rating, level: s.level };
+  saveStoryReads(reads);
+  tickPlan(`story:${s.slug}`);
+
+  document.getElementById('stDone').innerHTML = storyDoneHtml(s);
+  const after = storyLevel();
+  if (rating !== null && after !== before) {
+    document.getElementById('stRateMsg').textContent =
+      `✓ Marked as read. Your next new story will be ${after}, ${levelIdx(after) > levelIdx(before) ? 'up' : 'down'} from ${before}.`;
+  }
+}
+
+/** The last few ratings, for the story writer to aim by. */
+function recentStoryFeedback() {
+  const reads = loadStoryReads();
+  return Object.entries(reads)
+    .filter(([, r]) => r.rating !== null && r.rating !== undefined)
+    .sort((a, b) => (a[1].at < b[1].at ? 1 : -1))
+    .slice(0, 5)
+    .map(([slug, r]) => {
+      const s = stories.find(x => x.slug === slug);
+      return { title: s ? s.title : slug, level: r.level || '', rating: ratingLabel(r.rating) };
+    });
 }
 
 function playStory(btn) {

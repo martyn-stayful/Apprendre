@@ -1,10 +1,13 @@
 import { db } from '../_lib/db.js';
 import { route, body, ok, bad } from '../_lib/http.js';
 import { withAuth } from '../_lib/auth.js';
-import { deleteBlobs } from '../_lib/files.js';
+import { deleteBlobs, PARSE_STALE_MINUTES } from '../_lib/files.js';
+
+const STALLED = 'Reading this took longer than the 5 minutes the server allows, so it ' +
+  'stopped. Try again, or split it into fewer pages.';
 
 /**
- * GET    — the learner's uploads, newest first.
+ * GET    — the learner's uploads, newest first, or one upload (?id=...).
  * POST   — start an upload. Pasted text arrives here whole; photos and PDFs are
  *          added afterwards, a page per request, via /api/uploads/file.
  * DELETE — remove an upload and everything built from it (?id=...).
@@ -13,14 +16,25 @@ export default route(['GET', 'POST', 'DELETE'], withAuth(async (req, res, user) 
   const sql = db();
 
   if (req.method === 'GET') {
+    // ?id= is one upload, which the app polls while Claude reads it.
+    const id = req.query?.id || null;
+    // A read cut off at the function's time limit has no chance to record that
+    // it failed, so a stale 'parsing' is reported as failed. It can be retried.
     const rows = await sql`
-      select id, kind, input_type, title, status, error, summary, stats,
-             created_at, parsed_at,
+      with listed as (
+        select *, status = 'parsing'
+                  and parsing_started_at < now() - make_interval(mins => ${PARSE_STALE_MINUTES}) as stalled
+          from sources
+         where user_id = ${user.id}::uuid and (${id}::uuid is null or id = ${id}::uuid)
+      )
+      select id, kind, input_type, title, summary, stats, created_at, parsed_at,
+             case when stalled then 'failed' else status end as status,
+             case when stalled then ${STALLED} else error end as error,
              jsonb_array_length(files) as pages
-        from sources
-       where user_id = ${user.id}::uuid
+        from listed
        order by created_at desc
        limit 100`;
+    if (id) return rows.length ? ok(res, { upload: rows[0] }) : bad(res, 'No such upload', 404);
     return ok(res, { uploads: rows });
   }
 

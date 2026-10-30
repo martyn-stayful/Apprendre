@@ -1,16 +1,19 @@
+import { waitUntil } from '@vercel/functions';
 import { db } from '../_lib/db.js';
-import { route, body, ok, bad } from '../_lib/http.js';
+import { route, body, json, bad } from '../_lib/http.js';
 import { withAuth } from '../_lib/auth.js';
 import { parseMaterial } from '../_lib/claude.js';
 import { importContent } from '../_lib/import.js';
-
-// Longer than the function's own 300s budget, so a parse that is genuinely
-// still running is never treated as abandoned.
-const STALE_AFTER_MINUTES = 6;
+import { PARSE_STALE_MINUTES } from '../_lib/files.js';
 
 /**
- * Read an upload with Claude and turn it into exercises.
- * Long-running: vercel.json gives this route 300s.
+ * Start reading an upload with Claude and turning it into exercises.
+ *
+ * Reading takes a few minutes, longer than a phone reliably holds a request
+ * open: a locked screen or a switch to another app drops it ("Load failed").
+ * So this answers 202 straight away and carries on in the background, and the
+ * app polls GET /api/uploads?id= until the status is 'ready' or 'failed'.
+ * vercel.json gives this route 300s, which the background work shares.
  */
 export default route('POST', withAuth(async (req, res, user) => {
   const sql = db();
@@ -30,7 +33,7 @@ export default route('POST', withAuth(async (req, res, user) => {
   if (source.status === 'parsing') {
     const startedAt = source.parsing_started_at ? new Date(source.parsing_started_at) : null;
     const minutes = startedAt ? (Date.now() - startedAt.getTime()) / 60000 : Infinity;
-    if (minutes < STALE_AFTER_MINUTES) {
+    if (minutes < PARSE_STALE_MINUTES) {
       return bad(res, 'That upload is being read right now — give it a moment.', 409);
     }
     console.log(`Retrying source ${source.id}; previous attempt stalled ${Math.round(minutes)}m ago`);
@@ -40,6 +43,12 @@ export default route('POST', withAuth(async (req, res, user) => {
     update sources set status = 'parsing', error = null, parsing_started_at = now()
      where id = ${source.id}::uuid`;
 
+  waitUntil(readUpload(sql, user.id, source));
+  return json(res, 202, { status: 'parsing' });
+}));
+
+/** Read the material, save the exercises, and record how it went on the row. */
+async function readUpload(sql, userId, source) {
   try {
     const files = source.input_type === 'text' ? [] : await loadPages(source);
 
@@ -55,7 +64,7 @@ export default route('POST', withAuth(async (req, res, user) => {
       note: source.stats?.note || '',
     });
 
-    const stats = await importContent(user.id, source.id, content);
+    const stats = await importContent(userId, source.id, content);
 
     if (!Object.values(stats).some(Boolean)) {
       throw new Error(
@@ -81,16 +90,18 @@ export default route('POST', withAuth(async (req, res, user) => {
                (select jsonb_agg(page - 'data') from jsonb_array_elements(files) as page),
                '[]'::jsonb)
        where id = ${source.id}::uuid`;
-
-    return ok(res, { status: 'ready', title: content.title, summary, stats, truncated: Boolean(truncated) });
   } catch (err) {
     console.error('Parse failed for source', source.id, err);
     const message = String(err?.message || 'Something went wrong reading that material').slice(0, 1000);
-    await sql`
-      update sources set status = 'failed', error = ${message} where id = ${source.id}::uuid`;
-    return bad(res, message, 422);
+    try {
+      await sql`
+        update sources set status = 'failed', error = ${message} where id = ${source.id}::uuid`;
+    } catch (saveErr) {
+      // The row stays 'parsing'; GET /api/uploads reports it failed once it goes stale.
+      console.error('Could not record the failure for source', source.id, saveErr);
+    }
   }
-}));
+}
 
 /**
  * Every page as base64, in order. Pages live either in Blob storage or, when

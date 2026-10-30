@@ -135,7 +135,8 @@ Three ways in, on the **Upload Material** screen:
 - **Photo** — opens the camera on a phone. Photos are shrunk to 1800px in the
   browser before they're sent, which keeps each upload small and the reading
   cost down.
-- **PDF or image** — up to 4MB per file.
+- **PDF or image** — up to 3MB per file. Files travel as base64, a third
+  bigger, and a request body tops out at 4.5MB.
 - **Paste text** — a vocabulary list, lesson notes, anything your tutor sent.
 
 **A worksheet can be several pages.** Add up to 10, in order. They go up one
@@ -152,6 +153,15 @@ tables, gap-fill quizzes, production drills, grammar explainers, role-plays,
 short stories, workbook chapters — and returns a summary of what it made. Empty
 categories stay empty: a vocabulary list won't produce a story just to fill a
 field.
+
+Reading takes a few minutes, longer than a phone reliably holds a request open:
+locking the screen or switching apps drops it, and Safari reports "Load failed".
+So `/api/uploads/parse` answers straight away and carries on in the background
+(Vercel's `waitUntil`, within the route's 300 seconds), and the app checks
+`/api/uploads?id=` every few seconds until the upload is ready or failed. You
+can lock the phone or use the rest of the app meanwhile. The uploads list keeps
+checking anything still being read, and loads its exercises when it lands. A
+read still unfinished after six minutes ran out of time, and shows as failed.
 
 Uploads that fail can be retried from the same screen without re-uploading.
 

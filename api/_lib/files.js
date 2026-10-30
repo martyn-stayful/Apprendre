@@ -1,5 +1,11 @@
-export const MAX_FILE_BYTES = 4 * 1024 * 1024;   // per page, under the request-body cap
+// Per page. Pages travel as base64, which is a third bigger, and the request
+// body caps at 4.5MB, so 3MB is the most that reliably gets through.
+export const MAX_FILE_BYTES = 3 * 1024 * 1024;
 export const MAX_FILES = 10;
+
+// Longer than the parse function's own 300s budget, so a read that is genuinely
+// still running is never treated as abandoned.
+export const PARSE_STALE_MINUTES = 6;
 
 export const MIME = {
   image: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],

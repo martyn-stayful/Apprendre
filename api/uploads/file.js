@@ -23,7 +23,7 @@ export default route('POST', withAuth(async (req, res, user) => {
 
   const bytes = base64Bytes(dataBase64);
   if (bytes > MAX_FILE_BYTES) {
-    return bad(res, `${fileName || 'That file'} is ${(bytes / 1024 / 1024).toFixed(1)}MB — the limit is 4MB per page`, 413);
+    return bad(res, `${fileName || 'That file'} is ${(bytes / 1024 / 1024).toFixed(1)}MB — the limit is ${MAX_FILE_BYTES / 1024 / 1024}MB per page`, 413);
   }
 
   const [source] = await sql`

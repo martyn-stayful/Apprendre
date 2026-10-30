@@ -6863,6 +6863,8 @@
   .up-status.working { border-color: rgba(212, 162, 76, 0.45); background: rgba(212, 162, 76, 0.09); }
   .up-status.done    { border-color: rgba(42, 74, 60, 0.3); background: rgba(42, 74, 60, 0.07); }
   .up-status.error   { border-color: rgba(198, 75, 59, 0.35); background: rgba(198, 75, 59, 0.07); }
+  .up-status.working p { margin: 6px 0 0; }
+  .up-clock { font-variant-numeric: tabular-nums; opacity: 0.7; margin-left: 4px; }
 
   .up-done-title {
     font-family: 'Fraunces', serif;
@@ -16325,7 +16327,7 @@ window.bootApp = bootApp;
           '<div class="up-drop-title">' + (isPhoto ? 'Take photos' : 'Choose files') + '</div>' +
           '<div class="up-drop-sub">' + (isPhoto
             ? 'One per page. Flat, well lit, whole page in frame.'
-            : 'PDF, JPEG, PNG or WebP — up to 4MB each.') + '</div>' +
+            : 'PDF, JPEG, PNG or WebP — up to 3MB each.') + '</div>' +
         '</label>' + picker;
     }
 
@@ -16404,8 +16406,9 @@ window.bootApp = bootApp;
       var file = chosen[i];
       try {
         if (file.type === 'application/pdf') {
-          if (file.size > 4 * 1024 * 1024) {
-            throw new Error(file.name + ' is ' + formatBytes(file.size) + ' — 4MB is the limit per file.');
+          // Sent as base64, a third bigger, and a request tops out at 4.5MB.
+          if (file.size > 3 * 1024 * 1024) {
+            throw new Error(file.name + ' is ' + formatBytes(file.size) + ' — 3MB is the limit per file.');
           }
           upState.pages.push({
             base64: await toBase64(file),
@@ -16540,15 +16543,10 @@ window.bootApp = bootApp;
       }
 
       button.textContent = 'Reading…';
-      setStatus(
-        '<span class="up-spinner"></span> Claude is reading ' +
+      var reading = 'Claude is reading ' +
         (upState.pages.length > 1 ? 'all ' + upState.pages.length + ' pages together' : 'it') +
-        ' and building exercises. This usually takes half a minute or so — ' +
-        'you can leave this screen open.',
-        'working'
-      );
-
-      var result = await window.Api.post('/api/uploads/parse', { id: id });
+        ' and building exercises.';
+      var result = await readUpload(id, function (elapsed) { showReading(reading, elapsed); });
 
       setStatus(
         '<div class="up-done-title">' + esc(result.title || 'Done') + '</div>' +
@@ -16568,7 +16566,7 @@ window.bootApp = bootApp;
       await loadUploads();
     } catch (err) {
       setStatus(
-        '<div class="up-done-title">That didn\u2019t work</div><p>' + esc(err.message) + '</p>',
+        '<div class="up-done-title">That didn\u2019t work</div><p>' + esc(uploadError(err)) + '</p>',
         'error'
       );
       await loadUploads();
@@ -16580,6 +16578,94 @@ window.bootApp = bootApp;
   }
 
   function isPdf(page) { return page.mimeType === 'application/pdf'; }
+
+  /* ---------------------------------------------------- reading ------ */
+
+  var POLL_MS = 3000;
+  // The server reports a read that ran out of time as failed after six
+  // minutes, so this only comes into play when the phone has no connection.
+  var GIVE_UP_MS = 8 * 60 * 1000;
+
+  /**
+   * Ask the server to read an upload, then check until it has. The reading
+   * carries on on the server, so a dropped connection (a locked screen, a
+   * switch to another app) loses nothing: the next check picks it up.
+   * Resolves with the finished upload; throws with the reason it failed.
+   */
+  async function readUpload(id, onTick) {
+    var since = Date.now();
+    onTick(0);
+    await askToRead(id);
+    for (;;) {
+      await new Promise(function (resolve) { setTimeout(resolve, POLL_MS); });
+      onTick(Date.now() - since);
+      var upload = null;
+      try {
+        upload = (await window.Api.get('/api/uploads?id=' + encodeURIComponent(id))).upload;
+      } catch (err) {
+        if (err.status) throw err;  // a real answer, e.g. the upload was removed
+      }
+      if (upload && upload.status === 'ready') return upload;
+      if (upload && upload.status === 'failed') {
+        throw new Error(upload.error || 'Something went wrong reading that material.');
+      }
+      // The first request never reached the server, so ask again.
+      if (upload && upload.status === 'pending') await askToRead(id);
+      if (Date.now() - since > GIVE_UP_MS) {
+        throw new Error('Still no answer from the server. It may finish on its own: ' +
+          'check the list below in a few minutes.');
+      }
+    }
+  }
+
+  /** fetch throws a TypeError ("Load failed" in Safari) when the connection drops. */
+  function uploadError(err) {
+    return err instanceof TypeError
+      ? 'The connection dropped while sending it (' + err.message + '). Check your signal and try again.'
+      : err.message;
+  }
+
+  async function askToRead(id) {
+    try {
+      await window.Api.post('/api/uploads/parse', { id: id });
+    } catch (err) {
+      // 409: it is already being read. No status: the request got no answer.
+      // Either way the next check says where it stands.
+      if (err.status && err.status !== 409) throw err;
+    }
+  }
+
+  /** The waiting message, then just its clock, so the spinner keeps turning. */
+  function showReading(what, elapsed) {
+    var clock = document.querySelector('#upStatus .up-clock');
+    if (clock && elapsed) {
+      var secs = Math.floor(elapsed / 1000);
+      clock.textContent = Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0');
+      return;
+    }
+    setStatus('<span class="up-spinner"></span> ' + what + ' <span class="up-clock"></span>' +
+      '<p>This can take a few minutes. You can lock your phone or use the rest of ' +
+      'the app: it carries on, and the exercises appear when it\u2019s done.</p>', 'working');
+  }
+
+  // Uploads seen being read on the last look at the list.
+  var watching = {};
+  var watchTimer = null;
+
+  /**
+   * While something in the list is being read (started before the app was
+   * closed, say), look again every few seconds, and pull in its exercises
+   * when it lands.
+   */
+  function watchReading() {
+    clearTimeout(watchTimer);
+    var landed = upState.uploads.some(function (u) { return watching[u.id] && u.status === 'ready'; });
+    watching = {};
+    upState.uploads.forEach(function (u) { if (u.status === 'parsing') watching[u.id] = true; });
+    if (landed) window.refreshContent();
+    // A read this screen started is checked by readUpload instead.
+    if (Object.keys(watching).length && !upState.busy) watchTimer = setTimeout(loadUploads, 5000);
+  }
 
   window.submitUpload = submitUpload;
 
@@ -16629,6 +16715,7 @@ window.bootApp = bootApp;
     }
 
     list.innerHTML = upState.uploads.map(uploadRow).join('');
+    watchReading();
   }
 
   function uploadRow(u) {
@@ -16673,9 +16760,10 @@ window.bootApp = bootApp;
   }
 
   async function retryUpload(id) {
-    setStatus('<span class="up-spinner"></span> Reading it now…', 'working');
+    if (upState.busy) return;
+    upState.busy = true;
     try {
-      var result = await window.Api.post('/api/uploads/parse', { id: id });
+      var result = await readUpload(id, function (elapsed) { showReading('Reading it now…', elapsed); });
       setStatus(
         '<div class="up-done-title">' + esc(result.title || 'Done') + '</div>' +
         '<p>' + esc(result.summary || '') + '</p>' +
@@ -16684,7 +16772,9 @@ window.bootApp = bootApp;
       );
       await window.refreshContent();
     } catch (err) {
-      setStatus('<div class="up-done-title">Still no luck</div><p>' + esc(err.message) + '</p>', 'error');
+      setStatus('<div class="up-done-title">Still no luck</div><p>' + esc(uploadError(err)) + '</p>', 'error');
+    } finally {
+      upState.busy = false;
     }
     await loadUploads();
   }

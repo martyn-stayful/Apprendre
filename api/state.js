@@ -8,25 +8,32 @@ const ALLOWED = new Set([
   'fr_settings', 'fr_streak', 'fr_last', 'fr_time', 'fr_workbook',
   'fr_custom', 'fr_today_done', 'fr_reminder', 'fr_welcomed',
   'fr_translate_history', 'fr_last_backup', 'fr_phone', 'fr_today_plan', 'fr_story_reads',
-  'fr_mistakes', 'fr_sticking',
+  'fr_mistakes', 'fr_sticking', 'fr_activity',
 ]);
 
 const MAX_VALUE_BYTES = 512 * 1024;
 
-// Practice time is { 'YYYY-MM-DD': seconds }, and the streak is counted from
-// it. Each device sends its whole copy, so a phone that had the app open for
-// days would wipe out a day practised on the laptop. Merge instead: the most
-// time recorded for each day wins, and days past what the app keeps drop off.
-const TIME_KEEP_DAYS = 400;
+// Practice time ({ 'YYYY-MM-DD': seconds }, which the streak is counted from)
+// and daily answer counts ({ 'YYYY-MM-DD': { a, r, up } }) are kept by day.
+// Each device sends its whole copy, so a phone that had the app open for days
+// would wipe out a day practised on the laptop. Merge instead: the most
+// recorded for each day wins, and days past what the app keeps drop off.
+const DAY_KEEP_DAYS = 400;
 
-function mergeTime(saved, incoming) {
-  const cutoff = new Date(Date.now() - TIME_KEEP_DAYS * 86400000).toISOString().slice(0, 10);
+const larger = (a, b) => Math.max(Number.isFinite(a) ? a : 0, Number.isFinite(b) ? b : 0);
+const BY_DAY = {
+  fr_time: larger,
+  fr_activity: (a, b) => ({ a: larger(a?.a, b?.a), r: larger(a?.r, b?.r), up: larger(a?.up, b?.up) }),
+};
+
+function mergeByDay(saved, incoming, combine) {
+  const cutoff = new Date(Date.now() - DAY_KEEP_DAYS * 86400000).toISOString().slice(0, 10);
   const out = {};
   for (const source of [saved, incoming]) {
     if (!source || typeof source !== 'object') continue;
-    for (const [day, seconds] of Object.entries(source)) {
-      if (day < cutoff || !Number.isFinite(seconds)) continue;
-      out[day] = Math.max(out[day] || 0, seconds);
+    for (const [day, value] of Object.entries(source)) {
+      if (day < cutoff || value == null) continue;
+      out[day] = day in out ? combine(out[day], value) : combine(undefined, value);
     }
   }
   return out;
@@ -51,10 +58,10 @@ export default route(['GET', 'PUT'], withAuth(async (req, res, user) => {
 
   for (const [key, given] of pairs) {
     let value = given;
-    if (key === 'fr_time') {
+    if (BY_DAY[key]) {
       const [row] = await sql`
-        select value from user_state where user_id = ${user.id}::uuid and key = 'fr_time'`;
-      value = mergeTime(row?.value, given);
+        select value from user_state where user_id = ${user.id}::uuid and key = ${key}`;
+      value = mergeByDay(row?.value, given, BY_DAY[key]);
     }
     const encoded = JSON.stringify(value ?? null);
     if (encoded.length > MAX_VALUE_BYTES) {

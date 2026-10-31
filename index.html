@@ -3383,6 +3383,36 @@
     transition: width 0.5s ease;
   }
 
+  .pr-skill-bar-fill { position: absolute; left: 0; top: 0; }
+  .pr-skill-bar-fill.started { background: rgba(107, 130, 102, 0.3); }
+
+  /* ---- Progress: the week, the climb, milestones ---- */
+  .pr-section-pct.small { font-family: 'Lato', sans-serif; font-size: 12.5px; font-weight: 700; color: var(--slate); }
+  .pg-headline { position: relative; font-family: 'Fraunces', serif; font-size: 16px; line-height: 1.4; color: var(--paper); margin: -4px 0 16px; }
+  .pg-week { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 12px; font-size: 13px; color: var(--ink-soft); }
+  .pg-week strong { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 500; color: var(--ink); margin-right: 2px; }
+  .pg-note { font-size: 12.5px; line-height: 1.55; color: var(--slate); margin-top: 12px; }
+  .pg-climb { display: flex; height: 8px; margin-top: 12px; border-radius: 4px; overflow: hidden; background: rgba(26, 35, 50, 0.07); }
+  .pg-climb.big { height: 14px; border-radius: 7px; }
+  .pg-climb.row { flex-shrink: 0; width: 70px; height: 5px; margin-top: 0; border-radius: 3px; }
+  .pg-seg { height: 100%; }
+  .pg-seg.mastered, .pg-dot.mastered { background: var(--gold); }
+  .pg-seg.solid, .pg-dot.solid { background: var(--pine); }
+  .pg-seg.learning, .pg-dot.learning { background: rgba(107, 130, 102, 0.45); }
+  .pg-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin-top: 12px; font-size: 13px; color: var(--ink-soft); }
+  .pg-legend strong { color: var(--ink); }
+  .pg-dot { display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 50%; background: rgba(26, 35, 50, 0.12); }
+  .pg-forecast { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(212, 162, 76, 0.12); font-size: 13.5px; line-height: 1.5; color: var(--ink); }
+  .pg-split { margin-top: 10px; font-size: 11.5px; color: var(--slate); }
+  .pg-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .pg-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 20px; background: rgba(212, 162, 76, 0.14); color: var(--ink); font-size: 12.5px; font-weight: 700; }
+  .pg-next-title { margin: 16px 0 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
+  .pg-next + .pg-next { margin-top: 12px; }
+  .pg-next-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; font-size: 13.5px; color: var(--ink); }
+  .pg-next-num { font-size: 12px; font-weight: 700; color: var(--slate); white-space: nowrap; }
+  .pg-bar { height: 6px; border-radius: 3px; background: rgba(26, 35, 50, 0.07); overflow: hidden; }
+  .pg-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold), var(--ember)); }
+
   .pr-skill-level {
     font-family: 'Fraunces', serif;
     font-size: 15px;
@@ -7680,7 +7710,7 @@
       <button class="back-btn" onclick="showView('home')">←</button>
       <div>
         <div class="view-title">Progress</div>
-        <div class="view-sub">What's mastered, what needs work</div>
+        <div class="view-sub">How far you've come, and what's next</div>
       </div>
     </div>
     <div class="pr-wrap" id="prWrap"></div>
@@ -7875,7 +7905,7 @@
   // (translation cache, for instance) stays local.
   var SYNC_KEYS = [
     'fr_settings', 'fr_streak', 'fr_last', 'fr_time', 'fr_workbook',
-    'fr_custom', 'fr_today_done', 'fr_today_plan', 'fr_story_reads', 'fr_mistakes', 'fr_sticking',
+    'fr_custom', 'fr_today_done', 'fr_today_plan', 'fr_story_reads', 'fr_mistakes', 'fr_sticking', 'fr_activity',
     'fr_reminder', 'fr_welcomed',
     'fr_translate_history', 'fr_last_backup', 'fr_phone'
   ];
@@ -11528,6 +11558,7 @@ function recordAnswer(id, wasCorrect, given) {
     recent: []  // last 10 outcomes, each 'R' or 'W'
   };
 
+  const levelBefore = rec.level;
   rec.seen++;
   rec.lastSeen = today;
   if (wasCorrect) rec.right++; else rec.wrong++;
@@ -11556,6 +11587,7 @@ function recordAnswer(id, wasCorrect, given) {
 
   all[id] = rec;
   saveMastery(all);
+  logActivity(wasCorrect, rec.level > levelBefore);
   return rec;
 }
 
@@ -13664,54 +13696,230 @@ function resetSettings() {
   renderSettings();
 }
 
-/* ====================== PROGRESS DASHBOARD ====================== */
+/* ====================== PROGRESS DASHBOARD ======================
+   Mastery takes five right answers spread over about a month, so a page that
+   only counted mastered items showed nothing for the first weeks, however
+   much practice went in. This leads with what you've done (time, days,
+   answers), shows every item's climb from learning to mastered, keeps
+   milestones with the next ones in reach, and says when the first items can
+   be mastered. */
+
+const ACTIVITY_KEY = 'fr_activity';
+
+function loadActivity() {
+  try { return JSON.parse(Store.getItem(ACTIVITY_KEY) || '{}') || {}; } catch (e) { return {}; }
+}
+
+/** Count today's answers, right answers, and items that went up a level. */
+function logActivity(right, levelledUp) {
+  const all = loadActivity();
+  const day = all[dateKey()] || (all[dateKey()] = { a: 0, r: 0, up: 0 });
+  day.a++;
+  if (right) day.r++;
+  if (levelledUp) day.up++;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 400);
+  Object.keys(all).forEach(k => { if (new Date(k) < cutoff) delete all[k]; });
+  try { Store.setItem(ACTIVITY_KEY, JSON.stringify(all)); } catch (e) {}
+}
+
+/** The date key `n` days after a date key. */
+function addDaysToKey(key, n) {
+  const [y, m, d] = key.split('-').map(Number);
+  return dateKey(new Date(y, m - 1, d + n));
+}
+
+function shortDate(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+
+function formatDuration(sec) {
+  const min = Math.round(sec / 60);
+  if (min < 60) return `${min} min`;
+  const h = Math.floor(min / 60), m = min % 60;
+  return m ? `${h}h ${m}m` : `${h}h`;
+}
+
+/** Practice time, days, goal hits and streaks, from the practice-time log. */
+function practiceStats() {
+  const time = loadTime();
+  const enough = Math.min(STREAK_MIN_SECONDS, getGoalMinutes() * 60);
+  const goal = getGoalMinutes() * 60;
+  const days = Object.keys(time).filter(k => time[k] > 0).sort();
+  let totalSec = 0, practised = 0, goalDays = 0, best = 0, run = 0, prev = null;
+  days.forEach(k => {
+    totalSec += time[k];
+    if (time[k] >= goal) goalDays++;
+    if (time[k] < enough) return;
+    practised++;
+    run = prev && addDaysToKey(prev, 1) === k ? run + 1 : 1;
+    prev = k;
+    best = Math.max(best, run);
+  });
+  // Days ago, inclusive: 0 is today.
+  const range = (from, to) => {
+    let sec = 0, n = 0, goals = 0;
+    for (let i = from; i <= to; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const s = time[dateKey(d)] || 0;
+      sec += s;
+      if (s >= enough) n++;
+      if (s >= goal) goals++;
+    }
+    return { sec, days: n, goals };
+  };
+  const todayCounts = (time[dateKey()] || 0) >= enough;
+  const streak = currentStreak() - (todayCounts ? 0 : 1);
+  return {
+    totalSec, practised, goalDays, since: days[0] || null, streak, todayCounts,
+    best: Math.max(best, streak), thisWeek: range(0, 6), lastWeek: range(7, 13),
+  };
+}
+
+/** Items by how far they've climbed: new, learning (levels 0–2), solid (3–4), mastered (5). */
+function climbOf(items) {
+  const out = { total: 0, fresh: 0, learning: 0, solid: 0, mastered: 0 };
+  items.forEach(it => {
+    out.total++;
+    const l = it.rec ? it.rec.level : -1;
+    if (l < 0) out.fresh++;
+    else if (l >= 5) out.mastered++;
+    else if (l >= 3) out.solid++;
+    else out.learning++;
+  });
+  return out;
+}
+
+/**
+ * When items could next be mastered, if they're answered right each time they
+ * come up: from level L, the gaps before each level above it still have to pass.
+ */
+function masteryForecast(items) {
+  const today = dateKey();
+  const dates = [];
+  items.forEach(it => {
+    const r = it.rec;
+    if (!r || r.level < 1 || r.level >= 5 || !r.lastCorrectDate) return;
+    const wait = LEVEL_MIN_GAP_DAYS.slice(r.level + 1).reduce((a, b) => a + b, 0);
+    const at = addDaysToKey(r.lastCorrectDate, wait);
+    dates.push(at < today ? today : at);
+  });
+  if (!dates.length) return null;
+  dates.sort();
+  const first = dates[0];
+  const week = addDaysToKey(first, 7);
+  return { first, count: dates.filter(d => d === first).length, withinWeek: dates.filter(d => d <= week).length };
+}
+
+const MILESTONES = [
+  { icon: '⏱', tiers: [1, 5, 10, 25, 50, 100], of: s => s.practice.totalSec / 3600,
+    label: n => `${n} hour${n === 1 ? '' : 's'} practised`, unit: 'hours' },
+  { icon: '🔥', tiers: [3, 7, 14, 30, 60, 100], of: s => s.practice.best, label: n => `${n}-day streak`, unit: 'days' },
+  { icon: '🌱', tiers: [25, 50, 100, 250, 500, 1000], of: s => s.known, label: n => `${n} things got right`, unit: '' },
+  { icon: '🧱', tiers: [10, 25, 50, 100, 250, 500], of: s => s.climb.solid + s.climb.mastered, label: n => `${n} solid`, unit: '' },
+  { icon: '⭐', tiers: [1, 10, 50, 100, 250, 500], of: s => s.climb.mastered,
+    label: n => n === 1 ? 'First thing mastered' : `${n} mastered`, unit: '' },
+  { icon: '✍️', tiers: [100, 500, 1000, 2500, 5000, 10000], of: s => s.answers,
+    label: n => `${n.toLocaleString('en-GB')} answers`, unit: '' },
+  { icon: '📚', tiers: [1, 5, 10, 25, 50], of: s => s.storiesRead,
+    label: n => n === 1 ? 'First story read' : `${n} stories read`, unit: '' },
+  { icon: '🎯', tiers: [1, 3, 10, 25], of: s => s.sorted,
+    label: n => n === 1 ? 'First sticking point sorted' : `${n} sticking points sorted`, unit: '' },
+];
+
+function milestonesHtml(stats) {
+  const earned = [], next = [];
+  MILESTONES.forEach(m => {
+    const v = m.of(stats);
+    const reached = m.tiers.filter(t => v >= t);
+    if (reached.length) earned.push({ icon: m.icon, label: m.label(reached[reached.length - 1]) });
+    const goal = m.tiers.find(t => v < t);
+    if (goal) next.push({ icon: m.icon, label: m.label(goal), v, goal, frac: v / goal });
+  });
+  next.sort((a, b) => b.frac - a.frac);
+  const fmt = (v) => v % 1 ? v.toFixed(1) : String(Math.floor(v));
+  return `
+    <div class="pr-section">
+      <div class="pr-section-head"><div class="pr-section-title">Milestones</div>
+        <div class="pr-section-pct small">${earned.length ? `${earned.length} earned` : ''}</div></div>
+      ${earned.length ? `<div class="pg-badges">${earned.map(b => `<span class="pg-badge"><span>${b.icon}</span>${escapeHtml(b.label)}</span>`).join('')}</div>` : ''}
+      <div class="pg-next-title">Next up</div>
+      ${next.slice(0, 4).map(n => `
+        <div class="pg-next">
+          <div class="pg-next-head"><span>${n.icon} ${escapeHtml(n.label)}</span><span class="pg-next-num">${fmt(n.v)} / ${n.goal}</span></div>
+          <div class="pg-bar"><div class="pg-bar-fill" style="width:${Math.max(3, Math.round(n.frac * 100))}%"></div></div>
+        </div>`).join('')}
+    </div>`;
+}
+
+/** A bar split into mastered, solid and learning, out of everything there is. */
+function climbBarHtml(c, cls = '') {
+  const w = (n) => c.total ? (n / c.total * 100).toFixed(2) + '%' : '0%';
+  return `<div class="pg-climb ${cls}">
+    <div class="pg-seg mastered" style="width:${w(c.mastered)}"></div>
+    <div class="pg-seg solid" style="width:${w(c.solid)}"></div>
+    <div class="pg-seg learning" style="width:${w(c.learning)}"></div>
+  </div>`;
+}
+
+/** One line of encouragement that's true. */
+function progressHeadline(p) {
+  const tw = p.thisWeek, lw = p.lastWeek;
+  if (!p.totalSec) return 'Your first session starts the clock. Everything you practise shows up here.';
+  if (p.streak >= 2 && p.todayCounts) return `Day ${p.streak} of your streak, and today's already done.`;
+  if (p.streak >= 1 && !p.todayCounts) return `${p.streak} day${p.streak === 1 ? '' : 's'} in a row. Five minutes today makes it ${p.streak + 1}.`;
+  if (lw.sec && tw.sec > lw.sec) return `${formatDuration(tw.sec - lw.sec)} more than the week before. Keep it rolling.`;
+  if (tw.sec) return `${formatDuration(tw.sec)} this week. Every session moves something up a level.`;
+  return 'Pick up where you left off: five minutes today restarts the streak.';
+}
 
 function renderProgress() {
   const wrap = document.getElementById('prWrap');
   if (!wrap) return;
 
-  // ---- Overall totals ----
-  const allIds = [
-    ...allFlashcardIds(),
-    ...flashcardIdsForDeck('__mine__'),
-    ...allQuizIds(),
-    ...allConjIds()
-  ];
-  const overall = summariseIds(allIds);
-  const pct = overall.total ? Math.round(overall.mastered / overall.total * 100) : 0;
+  const practice = practiceStats();
+  const items = allTrackableItems();
+  const climb = climbOf(items);
+  const records = Object.values(loadMastery());
+  const answers = records.reduce((n, r) => n + (r.seen || 0), 0);
+  const right = records.reduce((n, r) => n + (r.right || 0), 0);
+  const known = records.filter(r => r.right > 0).length;
+  const reads = loadStoryReads();
+  const open = new Set(stickingItems().map(it => it.id));
+  const stats = {
+    practice, climb, answers, known,
+    storiesRead: Object.keys(reads).length,
+    sorted: stickingLessons().filter(l => lessonState(l, open) === 'sorted').length,
+  };
+  const forecast = masteryForecast(items);
 
-  if (overall.total === 0) {
-    wrap.innerHTML = `${renderLevelSummary()}<div class="pr-empty">Nothing to track yet — do a quiz, a conjugation drill, or rate a flashcard and your progress will start showing up here.</div>`;
-    return;
+  // This week's answers, counted from the day the app started keeping them.
+  const activity = loadActivity();
+  const week = { a: 0, r: 0, up: 0 };
+  for (let i = 0; i < 7; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const a = activity[dateKey(d)];
+    if (a) { week.a += a.a; week.r += a.r; week.up += a.up; }
   }
+  const tw = practice.thisWeek, lw = practice.lastWeek;
+  const compare = !lw.sec ? (tw.sec ? 'Nothing logged the week before, so this is your baseline.' : '')
+    : tw.sec >= lw.sec ? `${formatDuration(tw.sec - lw.sec)} more than the week before (${formatDuration(lw.sec)}).`
+    : `${formatDuration(lw.sec - tw.sec)} to go to match the week before (${formatDuration(lw.sec)}).`;
 
-  // ---- Per-section breakdown ----
-  // Build arrays of { name, summary, action } for three sections
+  // Per-section climbs
+  const bySource = {};
+  items.forEach(it => { (bySource[`${it.type}:${it.sourceKey}`] ||= []).push(it); });
   const flashSections = [];
   if (loadCustom().flashcards.length > 0) {
-    flashSections.push({
-      name: 'My vocab',
-      s: summariseIds(flashcardIdsForDeck('__mine__')),
-      highlight: true
-    });
+    flashSections.push({ name: 'My vocab', c: climbOf(bySource['flashcard:__mine__'] || []), highlight: true });
   }
-  Object.entries(decks).forEach(([key, deck]) => {
-    flashSections.push({
-      name: deck.name,
-      s: summariseIds(flashcardIdsForDeck(key))
-    });
-  });
-
-  const quizSections = Object.entries(quizzes).map(([key, q]) => ({
-    name: q.title,
-    s: summariseIds(quizIdsFor(key))
-  }));
-
-  const conjSections = Object.entries(verbTables).map(([verb, v]) => ({
-    name: verb,
-    italic: true,
-    s: summariseIds(conjIdsForVerb(verb))
-  }));
+  Object.entries(decks).forEach(([key, deck]) =>
+    flashSections.push({ name: deck.name, c: climbOf(bySource[`flashcard:${key}`] || []) }));
+  const quizSections = Object.entries(quizzes).map(([key, q]) => ({ name: q.title, c: climbOf(bySource[`quiz:${key}`] || []) }));
+  const conjSections = Object.entries(verbTables).map(([verb]) => ({ name: verb, italic: true, c: climbOf(bySource[`conj:${verb}`] || []) }));
 
   // ---- Stale items ----
   const mastery = loadMastery();
@@ -13719,38 +13927,59 @@ function renderProgress() {
   const stale = [];
   Object.entries(mastery).forEach(([id, rec]) => {
     if (rec.lastSeen && daysBetween(today, rec.lastSeen) >= 30 && rec.level >= 2) {
-      // Extract a human label from the id
       const label = id.split('::').slice(1).join('::');
       stale.push({ id, label, level: rec.level, days: daysBetween(today, rec.lastSeen) });
     }
   });
 
-  wrap.innerHTML = `
-    ${renderLevelSummary()}
+  const pct = (n) => climb.total ? Math.round(n / climb.total * 100) : 0;
 
+  wrap.innerHTML = `
     <div class="pr-summary">
-      <div class="eyebrow">Overall mastery</div>
-      <div class="pr-big-pct">${pct}<span class="small">%</span></div>
-      <div class="pr-caption">${overall.mastered} of ${overall.total} items mastered across all content.</div>
+      <div class="eyebrow">Your French so far</div>
+      <div class="pr-big-pct">${practice.totalSec ? formatDuration(practice.totalSec).replace(/(\d+)(h|m| min)/g, '$1<span class="small">$2</span>') : '0<span class="small"> min</span>'}</div>
+      <div class="pr-caption">${practice.totalSec
+        ? `practised over ${practice.practised} day${practice.practised === 1 ? '' : 's'}${practice.since ? ` since ${shortDate(practice.since)}` : ''}${practice.goalDays ? `, hitting your goal on ${practice.goalDays}` : ''}.`
+        : 'Practice time counts from your first session.'}</div>
+      <div class="pg-headline">${escapeHtml(progressHeadline(practice))}</div>
       <div class="pr-counts">
-        <div class="pr-count mastered">
-          <div class="pr-count-num">${overall.mastered}</div>
-          <div class="pr-count-label">Mastered</div>
-        </div>
-        <div class="pr-count">
-          <div class="pr-count-num">${overall.learning}</div>
-          <div class="pr-count-label">Learning</div>
-        </div>
-        <div class="pr-count">
-          <div class="pr-count-num">${overall.notStarted}</div>
-          <div class="pr-count-label">New</div>
-        </div>
-        <div class="pr-count">
-          <div class="pr-count-num">${overall.stale}</div>
-          <div class="pr-count-label">Stale</div>
-        </div>
+        <div class="pr-count mastered"><div class="pr-count-num">${practice.streak}</div><div class="pr-count-label">Streak</div></div>
+        <div class="pr-count"><div class="pr-count-num">${practice.best}</div><div class="pr-count-label">Best run</div></div>
+        <div class="pr-count"><div class="pr-count-num">${answers.toLocaleString('en-GB')}</div><div class="pr-count-label">Answers</div></div>
+        <div class="pr-count"><div class="pr-count-num">${answers ? Math.round(right / answers * 100) : 0}%</div><div class="pr-count-label">Right</div></div>
       </div>
     </div>
+
+    <div class="pr-section">
+      <div class="pr-section-head"><div class="pr-section-title">Last 7 days</div>
+        <div class="pr-section-pct">${formatDuration(tw.sec)}</div></div>
+      <div class="pg-week">
+        <div><strong>${tw.days}</strong> day${tw.days === 1 ? '' : 's'} practised</div>
+        <div><strong>${tw.goals}</strong> goal${tw.goals === 1 ? '' : 's'} hit</div>
+        ${week.a ? `<div><strong>${week.a}</strong> answers, ${Math.round(week.r / week.a * 100)}% right</div>
+          <div><strong>${week.up}</strong> moved up a level</div>` : ''}
+      </div>
+      ${compare ? `<div class="pg-note">${escapeHtml(compare)}</div>` : ''}
+    </div>
+
+    <div class="pr-section">
+      <div class="pr-section-head"><div class="pr-section-title">The climb</div>
+        <div class="pr-section-pct small">${climb.total - climb.fresh} of ${climb.total} started</div></div>
+      ${climbBarHtml(climb, 'big')}
+      <div class="pg-legend">
+        <div><span class="pg-dot mastered"></span><strong>${climb.mastered}</strong> mastered</div>
+        <div><span class="pg-dot solid"></span><strong>${climb.solid}</strong> solid</div>
+        <div><span class="pg-dot learning"></span><strong>${climb.learning}</strong> learning</div>
+        <div><span class="pg-dot"></span><strong>${climb.fresh}</strong> still new</div>
+      </div>
+      <div class="pg-note">Learning: you've practised it. Solid: right on three separate days. Mastered: right five times over about a month, with the gaps getting longer each time, so it's in long-term memory.</div>
+      ${forecast ? `<div class="pg-forecast">${climb.mastered ? 'Next mastered' : 'Your first mastered'} item${forecast.count === 1 ? '' : 's'} could land on <strong>${shortDate(forecast.first)}</strong>${forecast.withinWeek > forecast.count ? `, and ${forecast.withinWeek} within a week of that` : ''}, if you get ${forecast.count === 1 ? 'it' : 'them'} right when ${forecast.count === 1 ? 'it comes' : 'they come'} up in Today's Review.</div>` : ''}
+      <div class="pg-split">${pct(climb.solid + climb.mastered)}% solid or better · ${pct(climb.total - climb.fresh)}% started</div>
+    </div>
+
+    ${milestonesHtml(stats)}
+
+    ${renderLevelSummary()}
 
     ${renderProgressSection('Flashcards', flashSections)}
     ${renderProgressSection('Grammar quizzes', quizSections)}
@@ -13873,6 +14102,8 @@ function renderLevelSummary() {
     // Otherwise show the lowest touched or A1.1
     const workingOn = current ? (nextLevelCode(current) || current) : 'A1.1';
     const pct = Math.round(levelProgress(sk, workingOn) * 100);
+    const at = progress[workingOn];
+    const startedPct = at && at.total ? Math.round((at.mastered + at.learning) / at.total * 100) : 0;
 
     // Count totals for this skill
     let total = 0, mastered = 0;
@@ -13882,6 +14113,7 @@ function renderLevelSummary() {
       <div class="pr-skill-row" onclick="this.classList.toggle('expanded')">
         <div class="pr-skill-name"><span class="emoji">${info.icon}</span>${info.label}</div>
         <div class="pr-skill-bar">
+          <div class="pr-skill-bar-fill started" style="width:${startedPct}%"></div>
           <div class="pr-skill-bar-fill" style="width:${pct}%"></div>
         </div>
         <div class="pr-skill-level ${current ? '' : 'empty'}">${current || 'new'}</div>
@@ -13919,7 +14151,7 @@ function renderLevelSummary() {
         <strong>How mastery works:</strong> items go through 5 levels. Each correct answer moves an item up one level, but only if enough days have passed since the last correct (1 day from L1, 3 from L2, 7 from L3, 14 from L4). An item only counts as mastered at level 5. This way mastery reflects real long-term memory, not single-session performance.
       </div>
       <div style="font-size:11.5px; color:var(--slate); line-height:1.5; margin-bottom:12px; font-style:italic">
-        Tap any skill to see the full level ladder. The bar shows progress toward your next sub-level.
+        Tap any skill to see the full level ladder. The bar shows your next sub-level: the light part is what you've started, the dark part what you've mastered.
       </div>
       ${skillRows}
     </div>
@@ -13959,22 +14191,24 @@ function renderSkillDetail(skill, progress, current, workingOn, total, mastered)
   `;
 }
 
+// Each row's bar shows mastered, solid and learning; the count is how many
+// you've started.
 function renderProgressSection(title, sections) {
-  // Aggregate for the top-level bar of this section
-  const tot = sections.reduce((a, s) => a + s.s.total, 0);
-  const mst = sections.reduce((a, s) => a + s.s.mastered, 0);
-  const pct = tot ? Math.round(mst / tot * 100) : 0;
+  if (!sections.length) return '';
+  const all = { total: 0, fresh: 0, learning: 0, solid: 0, mastered: 0 };
+  sections.forEach(s => Object.keys(all).forEach(k => { all[k] += s.c[k]; }));
+  const started = all.total - all.fresh;
+  // Started ones first, so what you've been working on is at the top.
+  const ordered = [...sections].sort((a, b) =>
+    (b.c.total - b.c.fresh) / (b.c.total || 1) - (a.c.total - a.c.fresh) / (a.c.total || 1));
 
-  const rows = sections.map(s => {
-    const p = s.s.total ? Math.round(s.s.mastered / s.s.total * 100) : 0;
-    const full = p >= 100;
+  const rows = ordered.map(s => {
+    const done = s.c.total && s.c.mastered === s.c.total;
     return `
       <div class="pr-row">
         <div class="pr-row-name"${s.italic ? ' style="font-style:italic"' : ''}${s.highlight ? ' style="color:var(--ember);font-weight:700"' : ''}>${escapeHtml(s.name)}</div>
-        <div class="pr-row-bar">
-          <div class="pr-row-bar-fill ${full ? 'full' : ''}" style="width:${p}%"></div>
-        </div>
-        <div class="pr-row-count ${full ? 'full' : ''}">${s.s.mastered}/${s.s.total}</div>
+        ${climbBarHtml(s.c, 'row')}
+        <div class="pr-row-count ${done ? 'full' : ''}">${s.c.total - s.c.fresh}/${s.c.total}</div>
       </div>
     `;
   }).join('');
@@ -13983,11 +14217,9 @@ function renderProgressSection(title, sections) {
     <div class="pr-section">
       <div class="pr-section-head">
         <div class="pr-section-title">${escapeHtml(title)}</div>
-        <div class="pr-section-pct">${pct}%</div>
+        <div class="pr-section-pct small">${started} of ${all.total} started</div>
       </div>
-      <div class="pr-section-bar">
-        <div class="pr-section-bar-fill ${pct >= 100 ? 'full' : ''}" style="width:${pct}%"></div>
-      </div>
+      ${climbBarHtml(all)}
       <div class="pr-items">${rows}</div>
     </div>
   `;

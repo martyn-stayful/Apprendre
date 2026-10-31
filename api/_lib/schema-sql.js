@@ -4,7 +4,7 @@
 
 // Bump this whenever the DDL below changes. A deployment whose database is on
 // an older version migrates itself on the next request — see ensureSchema().
-export const SCHEMA_VERSION = 7;
+export const SCHEMA_VERSION = 8;
 
 export const SCHEMA_SQL = `-- Apprendre schema (Neon / Postgres 15+)
 -- Content rows with user_id IS NULL are the shared built-in library that every
@@ -308,6 +308,35 @@ create table if not exists translations (
   created_at timestamptz not null default now()
 );
 create index if not exists translations_user_day on translations (user_id, created_at);
+
+-- Short lessons on the things a learner keeps getting wrong, written by Claude
+-- from their mistakes. A lesson is 'writing' while Claude works on it in the
+-- background; brief is what it is written from, so a failed one can be retried.
+create table if not exists sticking_lessons (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null references users(id) on delete cascade,
+  slug       text not null,
+  title      text not null,
+  focus      text not null default '',
+  status     text not null default 'writing' check (status in ('writing', 'ready', 'failed')),
+  item_ids   jsonb not null default '[]'::jsonb,
+  brief      jsonb not null default '{}'::jsonb,
+  lesson     jsonb,
+  error      text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (user_id, slug)
+);
+create index if not exists sticking_lessons_user_day on sticking_lessons (user_id, created_at);
+
+-- Why an answer was wrong, explained once and kept, like translations.
+create table if not exists explanations (
+  key        text primary key,          -- sha256 of the question, the answer and what was given
+  result     jsonb not null,
+  user_id    uuid references users(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+create index if not exists explanations_user_day on explanations (user_id, created_at);
 
 -- Everything else the app keeps per learner (settings, streak, time tracking,
 -- today's plan, workbook progress, translate history), stored under the same

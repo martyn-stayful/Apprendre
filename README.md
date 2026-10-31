@@ -24,6 +24,8 @@ api/
   state.js          settings, streak, time tracking, workbook progress
   translate.js      what a tapped word means in its sentence (cached)
   stories.js        writes the next story from what you're learning
+  sticking.js       lessons on what you keep getting wrong
+  why.js            why a wrong answer was wrong (cached)
   mastery.js        the spaced-repetition records
   _lib/
     claude.js       the prompt and the Claude call
@@ -338,6 +340,58 @@ is given the last three episodes' summaries, whoever wrote them.
 
 `/api/stories` uses Claude Opus 5.5, about 15 to 20 US cents a story. Each
 learner can write five stories a day.
+
+---
+
+## Sticking points
+
+For the things you keep getting wrong. Guessing again tomorrow doesn't fix
+them; knowing why the right answer is right, and having a way to remember it,
+does.
+
+**The app remembers what you answered.** Mastery only counted rights and
+wrongs. Now a wrong answer also goes in a mistakes log (`fr_mistakes`, synced)
+with what you picked or typed: the quiz option, the workbook answer, the verb
+form. Flashcards marked Again and Daily 10 sentences marked Missed go in too,
+without an answer.
+
+**Why?** Every wrong answer in a quiz, the workbook, the conjugation drill and
+the review session has a **Why not "…"?** button. Claude says why the right
+answer is right, why yours is wrong (or that it works too), and gives one trick
+for next time. Explanations are cached, like translations, so the same mistake
+is only explained once. If the question belongs to one of your lessons, the
+explanation links to it.
+
+**The Sticking Points screen** (under Learn) lists everything you've got wrong
+at least twice and haven't since put right (back to level 3 with no misses in
+your last five goes), worst first, with what you answered each time.
+**Write lessons for these** sends them to Claude, which works out what's being
+mixed up, from what you answered as well as the right answer. It then writes a
+short lesson for each confusion ("à, en or au?", "savoir or connaître?"), or one
+for a group of words that won't stick. Each lesson has:
+
+- what went wrong: each of your mistakes, explained
+- why an English speaker trips here
+- the rule, as simply as it can be put
+- ways to remember it: mnemonics, pictures, a question to ask yourself (memory
+  hooks for each word, in a words lesson)
+- the confusable things side by side, with audio
+- six practice questions. You pick the answer, then **why** it's right. A right
+  answer for the wrong reason counts as a guess, because that's the habit this
+  is meant to break.
+
+You can also ask for a lesson on anything: "depuis or pendant?", "y and en".
+New mistakes that belong with a lesson you already have are added to it.
+
+A lesson you haven't practised, or one due another go (two days on, with its
+questions still going wrong), goes on top of Today's plan. It's **Sorted** once
+a practice run is clean and its questions stop going wrong in your reviews.
+
+Sorting the mistakes is quick and happens while you wait. The lessons are
+written in the background (`waitUntil`, like uploads) and the screen checks
+until they're ready. `/api/sticking` and `/api/why` use the same Claude model as
+the stories. Each learner can have 12 lessons written a day, at most 5 at a time, and 100 new
+explanations a day.
 
 ---
 

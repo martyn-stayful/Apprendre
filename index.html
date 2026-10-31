@@ -1923,6 +1923,18 @@
   .fx-why-trick::before { content: '💡 '; }
   .fx-why-lesson { display: block; margin-top: 10px; background: none; border: none; padding: 0; color: var(--ember); font-family: inherit; font-size: 13px; font-weight: 700; text-align: left; cursor: pointer; }
   .fx-why-error .fx-why-btn { margin-left: 6px; }
+  .fx-why-btn.ghost { border-color: rgba(212, 162, 76, 0.5); color: #9a7224; }
+  .fx-why-btn:disabled { opacity: 0.6; cursor: default; }
+  .fx-explain { margin-top: 14px; text-align: left; }
+  .fx-explain-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fx-explain-body:not(:empty) { margin-top: 10px; }
+  .fx-chunks { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .fx-chunk { display: inline-flex; flex-direction: column; padding: 6px 9px; border-radius: 8px; background: var(--paper); border: 1px solid rgba(42, 74, 60, 0.12); }
+  .fx-chunk-fr { font-family: 'Fraunces', serif; font-size: 15px; color: var(--ink); }
+  .fx-chunk-en { font-size: 11.5px; color: var(--slate); }
+  #fcExplainSlot:not(:empty) { margin: -8px 0 18px; }
+  .fc-back-fr { font-family: 'Fraunces', serif; font-size: 15px; color: rgba(254, 252, 247, 0.75); margin-bottom: 6px; }
+  .fc-face.back [lang="fr"] { -webkit-user-select: text; user-select: text; }
 
   .cpt-intro {
     padding: 12px 24px 18px;
@@ -4040,8 +4052,9 @@
 
   .rv-card-source {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    gap: 10px;
     margin-bottom: 14px;
   }
   .rv-card-source-tag {
@@ -4060,10 +4073,12 @@
     margin-right: 6px;
     font-size: 9px;
   }
-  .rv-card-source-tag .type.flashcard { background: rgba(212, 162, 76, 0.15); color: var(--gold); }
-  .rv-card-source-tag .type.quiz { background: rgba(42, 74, 60, 0.08); color: var(--pine); }
-  .rv-card-source-tag .type.conj { background: rgba(198, 75, 59, 0.12); color: var(--ember); }
-  .rv-card-source-tag .type.workbook { background: rgba(107, 130, 102, 0.15); color: var(--moss); }
+  .rv-card-source-tag .type.t-flashcard { background: rgba(212, 162, 76, 0.15); color: var(--gold); }
+  .rv-card-source-tag .type.t-quiz { background: rgba(42, 74, 60, 0.08); color: var(--pine); }
+  .rv-card-source-tag .type.t-conj { background: rgba(198, 75, 59, 0.12); color: var(--ember); }
+  .rv-card-source-tag .type.t-workbook { background: rgba(107, 130, 102, 0.15); color: var(--moss); }
+  /* Speak buttons in a review card sit in the line, not in the card's corner. */
+  .rv-card .phrase-speak { position: static; display: inline-flex; vertical-align: middle; }
 
   .rv-wb { padding: 6px 0 0; }
   .rv-wb-context {
@@ -4077,9 +4092,11 @@
   }
 
   .rv-card-level {
+    flex-shrink: 0;
     font-size: 11px;
     color: var(--slate);
     letter-spacing: 0.04em;
+    white-space: nowrap;
   }
 
   .rv-progress {
@@ -7446,7 +7463,7 @@
   </section>
 
   <!-- ================ FLASHCARD VIEW ================ -->
-  <section class="view" id="flashView" data-no-translate>
+  <section class="view" id="flashView">
     <div class="view-header">
       <button class="back-btn" onclick="showView('decks')">←</button>
       <div>
@@ -7471,14 +7488,16 @@
           </div>
           <div class="fc-face back">
             <div class="fc-category" id="fcCatBack">—</div>
+            <div class="fc-back-fr" id="fcBackFr" lang="fr"></div>
             <div class="fc-word" id="fcBack">—</div>
-            <div class="fc-example" id="fcExample"></div>
-            <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcBack').textContent)" aria-label="Listen">
+            <div class="fc-example" id="fcExample" lang="fr"></div>
+            <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcFront').textContent)" aria-label="Listen">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
             </button>
           </div>
         </div>
       </div>
+      <div id="fcExplainSlot"></div>
       <div class="fc-actions">
         <button class="fc-action" data-rate="again" onclick="rateCard('again')">Again</button>
         <button class="fc-action" data-rate="good" onclick="rateCard('good')">Good</button>
@@ -8924,7 +8943,7 @@ function renderReviewCard() {
   const headerHtml = `
     <div class="rv-card-source">
       <div class="rv-card-source-tag">
-        <span class="type ${item.type}">${typeLabel}</span>
+        <span class="type t-${item.type}">${typeLabel}</span>
         ${escapeHtml(item.sourceName)}
       </div>
       <div class="rv-card-level">${levelDots(currentLevel)} · ${nextReviewLabel(rec)}</div>
@@ -8946,7 +8965,7 @@ function renderReviewCard() {
   wrap.innerHTML = `
     ${introHtml}
     ${progressHtml}
-    <div class="rv-card"${item.type === 'flashcard' ? ' data-no-translate' : ''}>
+    <div class="rv-card"${item.type === 'flashcard' && !rvState.flipped ? ' data-no-translate' : ''}>
       ${headerHtml}
       ${bodyHtml}
     </div>
@@ -9002,15 +9021,16 @@ function renderReviewFlashcard(item) {
     `;
   }
   return `
-    <div class="rv-fc">${escapeHtml(c.fr)}
+    <div class="rv-fc"${frAttrs(c.en)}>${escapeHtml(c.fr)}
       <button class="phrase-speak" style="margin-left:8px; width:32px; height:32px; vertical-align:-4px" onclick="${speakHandler(c.fr)}" aria-label="Listen">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
       </button>
     </div>
     <div class="rv-fc-answer">
       <div class="rv-fc-answer-en">${escapeHtml(c.en)}</div>
-      ${c.ex ? `<div class="rv-fc-answer-ex">${escapeHtml(c.ex)}</div>` : ''}
+      ${c.ex ? `<div class="rv-fc-answer-ex"${frAttrs('')}>${escapeHtml(c.ex)}</div>` : ''}
     </div>
+    ${explainHtml({ fr: c.fr, en: c.en, ex: c.ex, conceptId: conceptForItem(item), from: 'review' })}
     <div class="rv-rate">
       <button class="rv-rate-btn" data-rate="again" onclick="rateReviewCard('again')">Again <small>&lt; 1 min</small></button>
       <button class="rv-rate-btn" data-rate="good" onclick="rateReviewCard('good')">Good <small>on track</small></button>
@@ -9649,14 +9669,16 @@ function startDeck(key) {
         </div>
         <div class="fc-face back">
           <div class="fc-category" id="fcCatBack">—</div>
+          <div class="fc-back-fr" id="fcBackFr" lang="fr"></div>
           <div class="fc-word" id="fcBack">—</div>
-          <div class="fc-example" id="fcExample"></div>
-          <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcBack').textContent)" aria-label="Listen">
+          <div class="fc-example" id="fcExample" lang="fr"></div>
+          <button class="fc-speak" onclick="event.stopPropagation(); speak(document.getElementById('fcFront').textContent)" aria-label="Listen">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
           </button>
         </div>
       </div>
     </div>
+    <div id="fcExplainSlot"></div>
     <div class="fc-actions">
       <button class="fc-action" data-rate="again" onclick="rateCard('again')">Again</button>
       <button class="fc-action" data-rate="good" onclick="rateCard('good')">Good</button>
@@ -9673,6 +9695,12 @@ function renderCard() {
   document.getElementById('fcFront').textContent = card.fr;
   document.getElementById('fcBack').textContent = card.en;
   document.getElementById('fcExample').textContent = card.ex || '';
+  // Turned over, the French can be tapped for its words; it's only on the back
+  // so the front doesn't give the answer away.
+  const backFr = document.getElementById('fcBackFr');
+  backFr.textContent = card.fr;
+  backFr.dataset.trEn = card.en;
+  document.getElementById('fcExplainSlot').innerHTML = '';
   const category = fcState.deck === '__mine__' ? 'Your vocab' : decks[fcState.deck].category;
   const id = itemId('fc:' + fcState.deck, card.fr);
   const rec = getRecord(id);
@@ -9692,6 +9720,11 @@ function renderCard() {
 function flipCard() {
   fcState.flipped = !fcState.flipped;
   document.getElementById('fcCard').classList.toggle('flipped', fcState.flipped);
+  const card = fcState.cards[fcState.i];
+  document.getElementById('fcExplainSlot').innerHTML = fcState.flipped
+    ? explainHtml({ fr: card.fr, en: card.en, ex: card.ex,
+        conceptId: conceptForItem({ type: 'flashcard', sourceKey: fcState.deck }), from: 'flashView' })
+    : '';
 
   // On flip-to-back, show the pronunciation button if supported
   const slot = document.getElementById('fcPronounceSlot');
@@ -9738,9 +9771,11 @@ function rateCard(rating) {
     // Start the un-flip animation
     cardEl.classList.remove('flipped');
     fcState.flipped = false;
-    // Clear the pronunciation slot immediately so it doesn't linger either
+    // Clear the pronunciation and explanation slots immediately so they don't linger either
     const slot = document.getElementById('fcPronounceSlot');
     if (slot) slot.innerHTML = '';
+    const explain = document.getElementById('fcExplainSlot');
+    if (explain) explain.innerHTML = '';
     // Wait for the flip to complete before swapping text / showing end screen
     setTimeout(() => {
       if (fcState.i >= fcState.cards.length) {
@@ -10441,6 +10476,7 @@ function renderDrills() {
           <div class="dr-answer${isRevealed ? ' show' : ''}">
             <div class="dr-fr"${frAttrs(drillEnglish(d.en))}>${escapeHtml(d.fr)}<button class="rp-speak" onclick="${speakHandler(d.fr)}" aria-label="Listen">🔊</button></div>
             <div class="dr-note">${d.note}</div>
+            ${explainHtml({ fr: d.fr, en: drillEnglish(d.en) || d.en, from: 'drills' })}
             ${pronounceButtonHtml(d.fr, 'dr-' + i)}
             ${verdict ? `
               <div class="dr-verdict-badge verdict-${verdict}">
@@ -11354,6 +11390,61 @@ function whyHtml(ask, why) {
         ? `“${escapeHtml(ask.given)}” works too` : `Why not “${escapeHtml(ask.given)}”`}</span>${escapeHtml(why.wrong)}</div>` : ''}
       ${why.trick ? `<div class="fx-why-trick">${escapeHtml(why.trick)}</div>` : ''}
       ${lesson && lesson.status === 'ready' ? `<button class="fx-why-lesson" onclick="openSticking('${lesson.slug}')">One of your sticking points: ${escapeHtml(lesson.title)} →</button>` : ''}
+    </div>`;
+}
+
+/* ---- Explain this: how a piece of French works ---- */
+
+const explainAsks = {};
+let explainSeq = 0;
+
+/**
+ * For a card that's been turned over: a breakdown of the French from Claude,
+ * and the app's own explainer when one fits. `from` is the view to come back to.
+ */
+function explainHtml({ fr, en, ex, conceptId, from }) {
+  const key = 'e' + (++explainSeq);
+  explainAsks[key] = { fr, en: en || '', ex: ex || '', conceptId, from };
+  const concept = conceptId && concepts[conceptId];
+  return `
+    <div class="fx-explain" id="fxExplain-${key}">
+      <div class="fx-explain-btns">
+        <button class="fx-why-btn" onclick="showExplain('${key}')">Explain this</button>
+        ${concept ? `<button class="fx-why-btn ghost" onclick="openConcept('${conceptId}', '${from}')">Read: ${escapeHtml(concept.title)}</button>` : ''}
+      </div>
+      <div class="fx-explain-body"></div>
+    </div>`;
+}
+
+async function showExplain(key) {
+  const wrap = document.getElementById('fxExplain-' + key);
+  const ask = explainAsks[key];
+  if (!wrap || !ask) return;
+  const body = wrap.querySelector('.fx-explain-body');
+  const button = wrap.querySelector('.fx-why-btn');
+  button.disabled = true;
+  body.innerHTML = '<div class="fx-why-body"><span class="up-spinner"></span>Working it out…</div>';
+  try {
+    const list = Object.entries(concepts || {}).map(([id, c]) => ({ id, title: c.title }));
+    const { breakdown } = await window.Api.post('/api/explain', { fr: ask.fr, en: ask.en, ex: ask.ex, concepts: list });
+    button.style.display = 'none';
+    body.innerHTML = breakdownHtml(breakdown, ask);
+  } catch (err) {
+    button.disabled = false;
+    body.innerHTML = `<div class="fx-why-body fx-why-error">${escapeHtml(err.status ? err.message : 'The connection dropped. Try again.')}</div>`;
+  }
+}
+
+function breakdownHtml(b, ask) {
+  const next = b.concept && b.concept !== ask.conceptId && concepts[b.concept];
+  return `
+    <div class="fx-why-body">
+      ${b.words.length ? `<div class="fx-chunks">${b.words.map(w => `
+        <span class="fx-chunk"><span class="fx-chunk-fr" lang="fr">${escapeHtml(w.fr)}</span><span class="fx-chunk-en">${escapeHtml(w.en)}</span></span>`).join('')}
+      </div>` : ''}
+      ${b.points.map(p => `<div class="fx-why-row"><span class="fx-why-label">${escapeHtml(p.title)}</span>${escapeHtml(p.body)}</div>`).join('')}
+      ${b.tip ? `<div class="fx-why-trick">${escapeHtml(b.tip)}</div>` : ''}
+      ${next ? `<button class="fx-why-lesson" onclick="openConcept('${b.concept}', '${ask.from}')">Read more: ${escapeHtml(next.title)} →</button>` : ''}
     </div>`;
 }
 
@@ -16263,8 +16354,9 @@ function cycleStorySpeed(btn) {
    Any French marked lang="fr" can be tapped: the word under the finger gets
    what it means in that sentence, and "Whole sentence" gives the sentence in
    English. Anywhere else, highlighting text does the same, and English comes
-   back as French. Flashcards (anything marked data-no-translate) are left
-   alone, since the point there is to remember.
+   back as French. Flashcards are left alone (data-no-translate, and the front
+   of a deck card has no lang) until they're turned over, since the point
+   there is to remember.
 
    Lookups go through /api/translate, which caches them for everyone, so each
    word in each sentence is only ever paid for once.
@@ -16765,22 +16857,37 @@ function escapeHtml(s) {
 
 /* ====================== STREAK ====================== */
 
-function initStreak() {
-  // simple streak: stored in localStorage
-  try {
-    const today = new Date().toDateString();
-    const last = Store.getItem('fr_last');
-    let streak = parseInt(Store.getItem('fr_streak') || '0');
-    if (last !== today) {
-      const lastDate = last ? new Date(last) : null;
-      const oneDay = 1000 * 60 * 60 * 24;
-      if (lastDate && (new Date(today) - lastDate) / oneDay <= 1.5) streak++;
-      else streak = 1;
-      Store.setItem('fr_last', today);
-      Store.setItem('fr_streak', String(streak));
-    }
-    document.getElementById('streakLabel').innerHTML = `day <strong>${streak}</strong>`;
-  } catch (e) {}
+// A day counts towards the streak once it has this much practice, or the
+// daily goal if that's less: "5 minutes keeps the streak alive", as the tips say.
+const STREAK_MIN_SECONDS = 5 * 60;
+
+/**
+ * Today is day N of the streak, where N - 1 is how many days in a row before
+ * today had enough practice. It's worked out from the practice-time log each
+ * time it's shown. It used to be counted when the app started, so a phone that
+ * kept the app open overnight never counted the days in between, and the next
+ * fresh start reset it to 1.
+ */
+function currentStreak() {
+  const time = loadTime();
+  const enough = Math.min(STREAK_MIN_SECONDS, getGoalMinutes() * 60);
+  const day = new Date();
+  let streak = 1;
+  for (;;) {
+    day.setDate(day.getDate() - 1);
+    if ((time[dateKey(day)] || 0) < enough) return streak;
+    streak++;
+  }
+}
+
+function renderStreak() {
+  const streak = currentStreak();
+  // Kept up to date for the backup export, which carries the streak.
+  if (Store.getItem('fr_streak') !== String(streak)) {
+    Store.setItem('fr_streak', String(streak));
+    Store.setItem('fr_last', dateKey());
+  }
+  document.getElementById('streakLabel').innerHTML = `day <strong>${streak}</strong>`;
 }
 
 /* ====================== TIME TRACKING ======================
@@ -16913,9 +17020,9 @@ function addSeconds(seconds) {
   const all = loadTime();
   const key = dateKey();
   all[key] = (all[key] || 0) + seconds;
-  // Prune older than 30 days to keep storage clean
+  // Keep a little over a year: the streak is counted from this.
   const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - 30);
+  cutoff.setDate(cutoff.getDate() - 400);
   Object.keys(all).forEach(k => {
     if (new Date(k) < cutoff) delete all[k];
   });
@@ -16932,6 +17039,7 @@ function getTodaySeconds() {
 }
 
 function renderTracker() {
+  renderStreak();
   const todaySec = getTodaySeconds();
   const todayMin = Math.floor(todaySec / 60);
   const goalMinutes = getGoalMinutes();
@@ -17055,7 +17163,7 @@ document.addEventListener('visibilitychange', () => {
 // Called by the bootstrap script once the learner is signed in and their
 // content and progress have come back from the server.
 function bootApp() {
-  initStreak();
+  renderStreak();
   renderTracker();
   renderTodayCard();
   updateStickingBadge();

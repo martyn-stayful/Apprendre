@@ -3404,6 +3404,7 @@
   .pg-dot { display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 50%; background: rgba(26, 35, 50, 0.12); }
   .pg-forecast { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(212, 162, 76, 0.12); font-size: 13.5px; line-height: 1.5; color: var(--ink); }
   .pg-split { margin-top: 10px; font-size: 11.5px; color: var(--slate); }
+  .pg-basics { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(26, 35, 50, 0.12); font-size: 13px; color: var(--ink-soft); }
   .pg-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
   .pg-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 20px; background: rgba(212, 162, 76, 0.14); color: var(--ink); font-size: 12.5px; font-weight: 700; }
   .pg-next-title { margin: 16px 0 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
@@ -4231,6 +4232,18 @@
     transition: all 0.15s;
   }
   .rv-rate-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(26, 35, 50, 0.08); }
+  .rv-rate.two { grid-template-columns: repeat(2, 1fr); }
+  .rv-rate-btn.suggested { border-color: var(--pine); box-shadow: 0 0 0 2px rgba(42, 74, 60, 0.14); }
+  .rv-write-label { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
+  .rv-fc.rv-write-en { font-size: 24px; }
+  .rv-write-skip { display: block; margin: 12px auto 0; background: none; border: none; color: var(--slate); font-family: inherit; font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+  .rv-write-verdict { margin-top: 4px; text-align: center; font-size: 13px; font-weight: 700; }
+  .rv-write-verdict.right { color: var(--moss); }
+  .rv-write-verdict.close { color: #9a7224; }
+  .rv-write-verdict.wrong { color: var(--ember); }
+  .rv-write-given { margin: -8px 0 6px; text-align: center; font-size: 14px; color: var(--slate); }
+  .rv-write-given.close span { color: #9a7224; }
+  .rv-write-given.wrong span { color: var(--ember-deep); text-decoration: line-through; }
   .rv-rate-btn[data-rate="again"]:hover { border-color: var(--ember); color: var(--ember); }
   .rv-rate-btn[data-rate="good"]:hover { border-color: var(--moss); color: var(--moss); }
   .rv-rate-btn[data-rate="easy"]:hover { border-color: var(--gold); color: var(--gold); }
@@ -8864,6 +8877,10 @@ function startReview(mode, limit) {
       });
     // Cap it so the session isn't overwhelming
     if (items.length > 20) items = items.slice(0, 20);
+  } else if (mode === 'check') {
+    items = basicsToCheck().slice(0, limit || BASICS_PER_CHECK);
+  } else if (mode === 'write') {
+    items = writeableItems().slice(0, limit || WRITES_PER_SESSION);
   } else {
     items = getDueItems();
   }
@@ -8901,9 +8918,15 @@ function startReview(mode, limit) {
   } else if (mode === 'this-week') {
     if (title) title.textContent = "Recent lessons";
     if (sub) sub.textContent = `${items.length} items from your recent tutor material`;
+  } else if (mode === 'check') {
+    if (title) title.textContent = 'Basics check';
+    if (sub) sub.textContent = `${items.length} A1 basics to confirm`;
+  } else if (mode === 'write') {
+    if (title) title.textContent = 'Write it';
+    if (sub) sub.textContent = `${items.length} words you know, from memory`;
   } else {
     if (title) title.textContent = "Today's Review";
-    if (sub) sub.textContent = `${items.length} items ready`;
+    if (sub) sub.textContent = `${items.length} item${items.length === 1 ? '' : 's'} ready`;
   }
 
   showView('review');
@@ -8939,8 +8962,20 @@ function renderReviewCard() {
   const introHtml = rvState.i === 0 && rvState.mode === 'review' ? `
     <div class="rv-intro">
       <div class="eyebrow">Today's review · spaced repetition</div>
-      <h3>${rvState.items.length} items, chosen for you</h3>
-      <p>These are the items most likely to slip from memory. Answer honestly — correct answers push the next review further out; wrong answers bring it closer.</p>
+      <h3>${rvState.items.length} item${rvState.items.length === 1 ? '' : 's'}, chosen for you</h3>
+      <p>These are the items most likely to slip from memory. Answer honestly — correct answers push the next review further out; wrong answers bring it closer. Already know one cold? Rate it <strong>Easy</strong> and it jumps to a two-week refresher.</p>
+    </div>
+  ` : rvState.i === 0 && rvState.mode === 'check' ? `
+    <div class="rv-intro" style="background:linear-gradient(135deg,var(--pine) 0%,var(--pine-deep) 100%)">
+      <div class="eyebrow">Basics check · A1</div>
+      <h3>${rvState.items.length} basics: show you know them</h3>
+      <p>Anything you get right goes straight to a refresher in two weeks, and right again then, it's mastered. After that it only comes back every month or so. Anything you miss joins your normal practice.</p>
+    </div>
+  ` : rvState.i === 0 && rvState.mode === 'write' ? `
+    <div class="rv-intro" style="background:linear-gradient(135deg,var(--ink-soft) 0%,var(--ink) 100%)">
+      <div class="eyebrow">Write it · from memory</div>
+      <h3>${rvState.items.length} words you recognise</h3>
+      <p>You see the English; type the French. Recognising a word is half of knowing it. Producing it off the top of your head is the other half, and it's what you need in a conversation.</p>
     </div>
   ` : rvState.i === 0 && rvState.mode === 'new' ? `
     <div class="rv-intro">
@@ -9018,6 +9053,17 @@ function renderReviewCard() {
     }, 80);
   }
 
+  // Focus the written answer for a flashcard you're writing
+  const writeInput = document.getElementById('rvWriteInput');
+  if (writeInput) {
+    setTimeout(() => {
+      writeInput.focus();
+      writeInput.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); checkReviewWrite(); }
+      };
+    }, 80);
+  }
+
   // Focus the workbook typed input for typed exercise types
   if (item.type === 'workbook' && item.card.exerciseType !== 'multiple') {
     setTimeout(() => {
@@ -9038,8 +9084,32 @@ function renderReviewCard() {
 
 /* ---- Flashcard in review view ---- */
 
+/** Write the French rather than recognise it: in a Write session, and once a card is going well. */
+function writesThisCard(item) {
+  if (rvState.showInstead || rvState.mode === 'check') return false;
+  return rvState.mode === 'write' || !!(item.rec && item.rec.level >= WRITE_FROM_LEVEL);
+}
+
 function renderReviewFlashcard(item) {
   const c = item.card;
+  if (writesThisCard(item)) return renderReviewWrite(item);
+  if (rvState.mode === 'check' && rvState.flipped) {
+    return `
+      <div class="rv-fc"${frAttrs(c.en)}>${escapeHtml(c.fr)}
+        <button class="phrase-speak" style="margin-left:8px; width:32px; height:32px; vertical-align:-4px" onclick="${speakHandler(c.fr)}" aria-label="Listen">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+        </button>
+      </div>
+      <div class="rv-fc-answer">
+        <div class="rv-fc-answer-en">${escapeHtml(c.en)}</div>
+        ${c.ex ? `<div class="rv-fc-answer-ex"${frAttrs('')}>${escapeHtml(c.ex)}</div>` : ''}
+      </div>
+      <div class="rv-rate two">
+        <button class="rv-rate-btn" data-rate="again" onclick="rateReviewCard('again')">Didn't know it <small>practise it</small></button>
+        <button class="rv-rate-btn" data-rate="easy" onclick="rateReviewCard('good')">Knew it <small>refresh in 2 weeks</small></button>
+      </div>
+    `;
+  }
   if (!rvState.flipped) {
     return `
       <div class="rv-fc">${escapeHtml(c.fr)}
@@ -9071,6 +9141,67 @@ function renderReviewFlashcard(item) {
 
 function flipReviewCard() {
   rvState.flipped = true;
+  renderReviewCard();
+}
+
+const WRITE_VERDICTS = {
+  right: ['right', '✓ Right'],
+  accents: ['right', '✓ Right, apart from the accents'],
+  article: ['close', 'Nearly: keep the article, it carries the gender'],
+  close: ['close', 'Nearly: a letter or two out'],
+  wrong: ['wrong', 'Not this time'],
+};
+
+function renderReviewWrite(item) {
+  const c = item.card;
+  if (!rvState.flipped) {
+    return `
+      <div class="rv-write-label">Write it in French</div>
+      <div class="rv-fc rv-write-en">${escapeHtml(c.en)}</div>
+      <input type="text" class="rv-conj-input" id="rvWriteInput" lang="fr" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type the French…">
+      <button class="rv-reveal" style="margin-top:12px" onclick="checkReviewWrite()">Check</button>
+      <button class="rv-write-skip" onclick="showInsteadOfWriting()">Just show me the French</button>
+    `;
+  }
+  const g = rvState.writeGrade;
+  const [tone, headline] = WRITE_VERDICTS[g.verdict];
+  const suggest = tone === 'wrong' ? 'again' : 'good';
+  return `
+    <div class="rv-write-verdict ${tone}">${headline}</div>
+    <div class="rv-fc"${frAttrs(c.en)}>${escapeHtml(c.fr)}
+      <button class="phrase-speak" style="margin-left:8px; width:32px; height:32px; vertical-align:-4px" onclick="${speakHandler(c.fr)}" aria-label="Listen">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+      </button>
+    </div>
+    ${tone !== 'right' ? `<div class="rv-write-given ${tone}">You wrote: <span lang="fr">${escapeHtml(g.given)}</span></div>` : ''}
+    <div class="rv-fc-answer">
+      <div class="rv-fc-answer-en">${escapeHtml(c.en)}</div>
+      ${c.ex ? `<div class="rv-fc-answer-ex"${frAttrs('')}>${escapeHtml(c.ex)}</div>` : ''}
+    </div>
+    ${tone === 'wrong' ? whyButtonHtml({ id: item.id, kind: 'flashcard: write the French', prompt: c.en, answer: c.fr, note: c.ex || '', given: g.given }) : ''}
+    ${explainHtml({ fr: c.fr, en: c.en, ex: c.ex, conceptId: conceptForItem(item), from: 'review' })}
+    <div class="rv-rate">
+      ${['again', 'good', 'easy'].map(r => `<button class="rv-rate-btn${r === suggest ? ' suggested' : ''}" data-rate="${r}" onclick="rateReviewCard('${r}')">${
+        { again: 'Again <small>&lt; 1 min</small>', good: 'Good <small>on track</small>', easy: 'Easy <small>push out</small>' }[r]}</button>`).join('')}
+    </div>
+  `;
+}
+
+function checkReviewWrite() {
+  if (rvState.flipped) return;
+  const input = document.getElementById('rvWriteInput');
+  const given = input ? input.value.trim() : '';
+  if (!given) { if (input) input.focus(); return; }
+  const item = rvState.items[rvState.i];
+  rvState.writeGrade = { verdict: gradeWritten(given, item.card.fr), given };
+  rvState.flipped = true;
+  if (WRITE_VERDICTS[rvState.writeGrade.verdict][0] === 'right') playCorrectSound();
+  renderReviewCard();
+}
+
+/** On the move: recognise this one instead of writing it. */
+function showInsteadOfWriting() {
+  rvState.showInstead = true;
   renderReviewCard();
 }
 
@@ -9149,7 +9280,12 @@ function takeABreakContinue() {
 function rateReviewCard(rating) {
   const item = rvState.items[rvState.i];
   const wasCorrect = rating !== 'again';
-  const rec = recordAnswer(item.id, wasCorrect);
+  const written = rvState.writeGrade;
+  const wroteIt = written && ['right', 'accents', 'article'].includes(written.verdict);
+  // In a basics check, knowing it is the point; elsewhere Easy says so. A
+  // written answer has to have been right to count.
+  const known = wasCorrect && (rvState.mode === 'check' || rating === 'easy') && (!written || wroteIt);
+  const rec = recordAnswer(item.id, wasCorrect, written && !wroteIt ? written.given : '', known);
   rvState.sessionResults[item.id] = {
     before: rvState.sessionStart[item.id],
     after: rec.level,
@@ -9161,6 +9297,8 @@ function rateReviewCard(rating) {
 
   rvState.i++;
   rvState.flipped = false;
+  rvState.writeGrade = null;
+  rvState.showInstead = false;
 
   // "Again" handling — check if we've hit the 2-wrong threshold
   if (rating === 'again') {
@@ -9236,7 +9374,9 @@ function rateReviewQuiz(rating) {
   const item = rvState.items[rvState.i];
   const wasCorrect = rating !== 'again';
   const picked = rvState.currentQuizOpts && rvState.currentQuizOpts[rvState.quizPicked];
-  const rec = recordAnswer(item.id, wasCorrect, picked && !picked.isCorrect ? picked.text : '');
+  const pickedRight = !!(picked && picked.isCorrect);
+  const known = wasCorrect && pickedRight && (rvState.mode === 'check' || rating === 'easy');
+  const rec = recordAnswer(item.id, wasCorrect, picked && !picked.isCorrect ? picked.text : '', known);
   rvState.sessionResults[item.id] = {
     before: rvState.sessionStart[item.id],
     after: rec.level,
@@ -9315,7 +9455,8 @@ function checkReviewConj() {
 function rateReviewConj(rating) {
   const item = rvState.items[rvState.i];
   const wasCorrect = rating !== 'again';
-  const rec = recordAnswer(item.id, wasCorrect, rvState.conjCorrect ? '' : rvState.conjGiven);
+  const known = wasCorrect && rvState.conjCorrect && (rvState.mode === 'check' || rating === 'easy');
+  const rec = recordAnswer(item.id, wasCorrect, rvState.conjCorrect ? '' : rvState.conjGiven, known);
   rvState.sessionResults[item.id] = {
     before: rvState.sessionStart[item.id],
     after: rec.level,
@@ -9467,7 +9608,8 @@ function answerReviewWorkbookMultiple(btn) {
 function rateReviewWorkbook(rating) {
   const item = rvState.items[rvState.i];
   const wasCorrect = rating !== 'again';
-  const rec = recordAnswer(item.id, wasCorrect, rvState.wbCorrect ? '' : rvState.wbGiven);
+  const known = wasCorrect && rvState.wbCorrect && (rvState.mode === 'check' || rating === 'easy');
+  const rec = recordAnswer(item.id, wasCorrect, rvState.wbCorrect ? '' : rvState.wbGiven, known);
   rvState.sessionResults[item.id] = {
     before: rvState.sessionStart[item.id],
     after: rec.level,
@@ -9503,6 +9645,13 @@ function renderReviewEmpty(wrap) {
     <div class="rv-empty">
       <h3>Nothing due right now</h3>
       <p>Your review queue is empty — everything you've practised is still fresh. Come back tomorrow for the next batch.</p>
+      ${(() => {
+        const basics = basicsStatus().toCheck, writeable = writeableItems().length;
+        return basics || writeable >= 5 ? `<div class="rv-mode-switch">
+          ${basics ? `<button class="rv-mode-btn" onclick="startReview('check')">Basics check (${basics} to confirm)</button>` : ''}
+          ${writeable >= 5 ? `<button class="rv-mode-btn" onclick="startReview('write')">Write ${Math.min(writeable, WRITES_PER_SESSION)} from memory</button>` : ''}
+        </div>` : '';
+      })()}
       ${newAvail > 0 ? `
         <p>Or learn something new: ${newAvail} items haven't been introduced yet.</p>
         <div class="rv-mode-switch">
@@ -9539,16 +9688,25 @@ function renderReviewComplete(wrap) {
   const weekTotal = weekItems.length;
   const weekMastered = weekItems.filter(it => it.rec && it.rec.level >= 5).length;
 
+  const knownNow = results.filter(r => r.after >= KNOWN_LEVEL && r.before < KNOWN_LEVEL).length;
   const headline = rvState.mode === 'new'
     ? `${results.length} new items introduced`
     : rvState.mode === 'this-week'
       ? `This week's practice done`
-      : `Review session complete`;
+      : rvState.mode === 'check'
+        ? `Basics checked`
+        : rvState.mode === 'write'
+          ? `Written from memory`
+          : `Review session complete`;
 
   const subcopy = rvState.mode === 'new'
     ? `You'll see these again tomorrow. Come back each day and they'll gradually move further apart.`
     : rvState.mode === 'this-week'
       ? `You've worked through your recent lesson material.`
+      : rvState.mode === 'check'
+        ? `${knownNow} confirmed: they'll be back as a refresher in two weeks, written this time. ${results.length - knownNow ? `${results.length - knownNow} to practise: they're in your reviews from tomorrow.` : ''}`
+      : rvState.mode === 'write'
+        ? `Writing it from memory is the step after recognising it. The ones you couldn't write come back sooner.`
       : (levelledUp > held
           ? `${levelledUp} items moved forward. Spaced repetition working as designed.`
           : `Some items held at their current level — they'll be scheduled for another review soon.`);
@@ -9575,6 +9733,26 @@ function renderReviewComplete(wrap) {
       label: `Practise recent lessons`,
       sub: `${weekPracticeable.length} items from your recent material`,
       onclick: `startReview('this-week')`
+    });
+  }
+
+  // The basics, settled quickly, and writing what you recognise
+  const basics = basicsStatus();
+  if (basics.toCheck > 0) {
+    options.push({
+      primary: !options.length,
+      label: rvState.mode === 'check' ? 'Check more basics' : 'Basics check',
+      sub: `${basics.toCheck} A1 basics to confirm · right first time = refresher in 2 weeks`,
+      onclick: `startReview('check')`
+    });
+  }
+  const writeable = writeableItems().length;
+  if (writeable >= 5 && rvState.mode !== 'write') {
+    options.push({
+      primary: !options.length,
+      label: 'Write it from memory',
+      sub: `${writeable} words you recognise · now type them`,
+      onclick: `startReview('write')`
     });
   }
 
@@ -9779,7 +9957,8 @@ function rateCard(rating) {
     fcState.sessionStart[id] = existing ? existing.level : 0;
   }
 
-  const rec = recordAnswer(id, rating !== 'again');
+  // Easy on a card you've never missed means you already know it.
+  const rec = recordAnswer(id, rating !== 'again', '', rating === 'easy');
   fcState.sessionResults = fcState.sessionResults || {};
   fcState.sessionResults[id] = { fr: c.fr, en: c.en, before: fcState.sessionStart[id], after: rec.level, rating };
 
@@ -11546,7 +11725,9 @@ const LEVEL_MIN_GAP_DAYS = [0, 0, 1, 3, 7, 14];
 
 // `given` is what was answered, when the exercise knows it: a wrong one goes in
 // the mistakes log, which is how the app sees what gets mixed up with what.
-function recordAnswer(id, wasCorrect, given) {
+// `known` says the learner already knew it (rated Easy, or passed in a basics
+// check): if it has never been missed, it skips the short intervals.
+function recordAnswer(id, wasCorrect, given, known) {
   if (!wasCorrect) logMistake(id, given);
   const all = loadMastery();
   const today = dateKey();
@@ -11579,6 +11760,9 @@ function recordAnswer(id, wasCorrect, given) {
         rec.level++;
       }
     }
+    // Already known and never missed: straight to the two-week refresher. Right
+    // again then, and it's mastered.
+    if (known && !rec.wrong) rec.level = Math.max(rec.level, KNOWN_LEVEL);
     rec.lastCorrectDate = today;
   } else {
     // Wrong answer — drop one level (but not below 0) and set level 0 if fresh mistake
@@ -11823,24 +12007,131 @@ function getDueItems() {
     const bDropped = b.rec && b.rec.level === 0 && b.rec.seen > 0 ? 1 : 0;
     if (aDropped !== bDropped) return bDropped - aDropped;
 
+    // Then current material before refreshers of the basics
+    const aBasic = isBasicItem(a) ? 1 : 0;
+    const bBasic = isBasicItem(b) ? 1 : 0;
+    if (aBasic !== bBasic) return aBasic - bBasic;
+
     // Then by how overdue
     return overdueBy(b.rec) - overdueBy(a.rec);
   });
   return due;
 }
 
-// Items never practised (no record at all).
-// This-week items are prioritised so today's lesson gets introduced first.
+// Items never practised (no record at all). Recent lessons come first, then
+// everything past the basics, easiest level first, so new material keeps
+// edging up; A1 basics come last, since the basics check is the quick way
+// through those.
 function getNewItems(limit) {
   const items = allTrackableItems();
   const brand = items.filter(it => !it.rec);
   brand.sort((a, b) => {
     const aWeek = isCurrentWeekItem(a) ? 1 : 0;
     const bWeek = isCurrentWeekItem(b) ? 1 : 0;
-    return bWeek - aWeek;
+    if (aWeek !== bWeek) return bWeek - aWeek;
+    const aBasic = isBasicItem(a) ? 1 : 0;
+    const bBasic = isBasicItem(b) ? 1 : 0;
+    if (aBasic !== bBasic) return aBasic - bBasic;
+    return levelIdx(itemCefr(a)) - levelIdx(itemCefr(b));
   });
   if (limit && limit > 0) return brand.slice(0, limit);
   return brand;
+}
+
+/* ---- Basics, and writing it yourself ----
+   A1 is the basics. A basics check runs through the ones not yet settled:
+   right first time, and an item goes straight to a two-week refresher
+   (KNOWN_LEVEL); missed, and it joins normal practice. Once a flashcard is at
+   WRITE_FROM_LEVEL (right on two separate days), reviews ask you to write the
+   French from the English instead of recognising it, since producing it is
+   the next step. */
+
+const KNOWN_LEVEL = 4;
+const WRITE_FROM_LEVEL = 2;
+const BASICS_PER_CHECK = 20;
+const WRITES_PER_SESSION = 15;
+
+/** An item's CEFR sub-level, from its deck, quiz, verb or workbook chapter. */
+function itemCefr(it) {
+  const key = it.sourceKey || '';
+  if (it.type === 'quiz') return levelForQuiz(key);
+  if (it.type === 'conj') return levelForVerb(key);
+  if (it.type === 'workbook' || key.startsWith('wbvocab:')) {
+    const ch = workbook[key.replace(/^wbvocab:/, '')];
+    return (ch && ch.level) || 'A2.1';
+  }
+  // Your own cards are what you're learning now, whatever their level.
+  if (key === '__mine__') return (it.card && it.card.level) || 'A2.1';
+  const deck = decks[key];
+  return (DECK_LEVELS[key] && DECK_LEVELS[key].level) || (deck && deck.level) || 'A1.2';
+}
+
+function isBasicItem(it) {
+  return /^A1/.test(itemCefr(it));
+}
+
+/** Basics not yet settled and never missed: what a basics check runs through, easiest first. */
+function basicsToCheck() {
+  const out = allTrackableItems().filter(it => isBasicItem(it) &&
+    (!it.rec || (it.rec.level < KNOWN_LEVEL && !it.rec.wrong)));
+  const order = (it) => levelIdx(itemCefr(it)) * 10 + (it.rec ? it.rec.level + 1 : 0);
+  return out.map(it => ({ it, r: Math.random() }))
+    .sort((a, b) => order(a.it) - order(b.it) || a.r - b.r).map(x => x.it);
+}
+
+/** How the basics stand: settled (at the refresher stage or mastered), to check, and missed. */
+function basicsStatus() {
+  const basics = allTrackableItems().filter(isBasicItem);
+  const settled = basics.filter(it => it.rec && it.rec.level >= KNOWN_LEVEL).length;
+  const toCheck = basics.filter(it => !it.rec || (it.rec.level < KNOWN_LEVEL && !it.rec.wrong)).length;
+  return { total: basics.length, settled, toCheck, missed: basics.length - settled - toCheck };
+}
+
+/** Flashcards you've got right at least twice, the longest unseen first: ready to write. */
+function writeableItems() {
+  return allTrackableItems()
+    .filter(it => it.type === 'flashcard' && it.rec && it.rec.right >= 2)
+    .sort((a, b) => String(a.rec.lastSeen).localeCompare(String(b.rec.lastSeen)));
+}
+
+/** Every way the card's French can be written: "grand(e)" is grand or grande; "/" separates options. */
+function answerForms(answer) {
+  const out = new Set();
+  String(answer).split(/\s+\/\s+|\s*\/\s*(?=\S)/).forEach(opt => {
+    out.add(opt.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim());
+    out.add(opt.replace(/\(([^)]*)\)/g, '$1').replace(/\s+/g, ' ').trim());
+  });
+  return [...out].filter(Boolean);
+}
+
+/** Letters added, dropped, changed or swapped with a neighbour (a phone's usual typos). */
+function editDistance(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+  }
+  return d[a.length][b.length];
+}
+
+/**
+ * How a typed answer compares with the card's French: 'right', 'accents'
+ * (right apart from accents), 'article' (right but without its le/la/un),
+ * 'close' (a letter or two out), or 'wrong'.
+ */
+function gradeWritten(given, answer) {
+  const plain = (s) => String(s).toLowerCase().replace(/[’‘]/g, "'").replace(/[.,!?;:«»"]/g, ' ').replace(/\s+/g, ' ').trim();
+  const fold = (s) => plain(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const bare = (s) => fold(s).replace(/^(le |la |les |l'|un |une |des |du |de la |de l')/, '');
+  const forms = answerForms(answer);
+  if (forms.some(f => plain(f) === plain(given))) return 'right';
+  if (forms.some(f => fold(f) === fold(given))) return 'accents';
+  if (forms.some(f => bare(f) !== fold(f) && bare(f) === bare(given))) return 'article';
+  if (forms.some(f => editDistance(fold(f), fold(given)) <= Math.max(1, Math.floor(fold(f).length / 8)))) return 'close';
+  return 'wrong';
 }
 
 // Is this item from a recent lesson — current ISO week or the one before it?
@@ -13894,6 +14185,7 @@ function renderProgress() {
     sorted: stickingLessons().filter(l => lessonState(l, open) === 'sorted').length,
   };
   const forecast = masteryForecast(items);
+  const basics = basicsStatus();
 
   // This week's answers, counted from the day the app started keeping them.
   const activity = loadActivity();
@@ -13972,9 +14264,13 @@ function renderProgress() {
         <div><span class="pg-dot learning"></span><strong>${climb.learning}</strong> learning</div>
         <div><span class="pg-dot"></span><strong>${climb.fresh}</strong> still new</div>
       </div>
-      <div class="pg-note">Learning: you've practised it. Solid: right on three separate days. Mastered: right five times over about a month, with the gaps getting longer each time, so it's in long-term memory.</div>
+      <div class="pg-note">Learning: you've practised it. Solid: right on three separate days. Mastered: right five times over about a month, with the gaps getting longer each time, so it's in long-term memory. Basics you already knew get there faster: right first time, then right again at a two-week refresher.</div>
       ${forecast ? `<div class="pg-forecast">${climb.mastered ? 'Next mastered' : 'Your first mastered'} item${forecast.count === 1 ? '' : 's'} could land on <strong>${shortDate(forecast.first)}</strong>${forecast.withinWeek > forecast.count ? `, and ${forecast.withinWeek} within a week of that` : ''}, if you get ${forecast.count === 1 ? 'it' : 'them'} right when ${forecast.count === 1 ? 'it comes' : 'they come'} up in Today's Review.</div>` : ''}
       <div class="pg-split">${pct(climb.solid + climb.mastered)}% solid or better · ${pct(climb.total - climb.fresh)}% started</div>
+      ${basics.total ? `<div class="pg-basics">
+        <div><strong>A1 basics:</strong> ${basics.settled} of ${basics.total} settled${basics.missed ? `, ${basics.missed} being practised` : ''}.</div>
+        ${basics.toCheck ? `<button class="fx-why-btn" onclick="startReview('check')">Check ${Math.min(basics.toCheck, BASICS_PER_CHECK)} more</button>` : ''}
+      </div>` : ''}
     </div>
 
     ${milestonesHtml(stats)}
@@ -14794,14 +15090,14 @@ const PLAN_KEY = 'fr_today_plan';
 // Other kinds fill in after these when a day needs more picks.
 const ROLE_KINDS = {
   tutor:         ['drill', 'conj'],
-  consolidation: ['quiz', 'workbook', 'concept', 'drill'],
+  consolidation: ['quiz', 'workbook', 'write', 'concept', 'drill'],
   speakingPrep:  ['drill', 'roleplay', 'conj', 'phone'],
   conversation:  ['drill', 'roleplay'],
   heavyInput:    ['story'],
-  review:        ['quiz', 'workbook', 'conj', 'roleplay'],
-  light:         ['story', 'concept', 'roleplay', 'drill'],
+  review:        ['basics', 'write', 'quiz', 'workbook', 'conj', 'roleplay'],
+  light:         ['story', 'concept', 'roleplay', 'basics', 'drill'],
 };
-const PLAN_KINDS = ['quiz', 'workbook', 'drill', 'roleplay', 'conj', 'concept', 'story'];
+const PLAN_KINDS = ['quiz', 'workbook', 'drill', 'roleplay', 'conj', 'concept', 'story', 'basics', 'write'];
 // A sticking-point lesson ('fix') that needs doing comes on top of the day's picks.
 // Days with a lesson, a conversation or a big session get fewer picks.
 const ROLE_MAX_PICKS = { tutor: 2, conversation: 2, heavyInput: 1 };
@@ -14876,6 +15172,11 @@ function planCandidates() {
     if (!reads[st.slug]) add('story', st.slug, st.meta ? (st.shared ? 1.1 : 0.7) : 0.4);
   });
   add('phone', 'numbers', 0.4);
+
+  // Basics you already know, confirmed quickly; words you recognise, written.
+  const basics = basicsStatus().toCheck;
+  if (basics) add('basics', 'a1', basics >= 20 ? 1.1 : 0.6);
+  if (writeableItems().length >= 5) add('write', 'known', 0.9);
 
   // Sticking points: a lesson not yet practised, or due another go; failing
   // that, a nudge to get lessons written when enough has piled up.
@@ -14968,6 +15269,14 @@ function planTask(id) {
     return st && task('📚', `Story: ${st.title}`, 'Play it, then read it aloud', '10 min');
   }
   if (kind === 'phone') return task('📞', 'Phone numbers', 'Say a few numbers in pairs, then listen to some', '3 min');
+  if (kind === 'basics') {
+    const n = basicsStatus().toCheck;
+    return n ? task('✅', 'Basics check', `${n} A1 basics to confirm. Right first time, and they're refreshers from then on`, '5 min') : null;
+  }
+  if (kind === 'write') {
+    const n = writeableItems().length;
+    return n >= 5 ? task('✍️', 'Write it from memory', `${Math.min(n, WRITES_PER_SESSION)} words you recognise: now type the French`, '5 min') : null;
+  }
   if (kind === 'fix') {
     if (ref === 'new') {
       const n = looseStickingItems().length;
@@ -15015,6 +15324,8 @@ function openPlanTask(id) {
     const i = ref === 'new' ? -1 : stories.findIndex(x => x.slug === ref);
     if (i >= 0) openStory(i); else showView('storyPicker');
   } else if (kind === 'phone') showView('phone');
+  else if (kind === 'basics') startReview('check');
+  else if (kind === 'write') startReview('write');
   else if (kind === 'fix') {
     if (ref === 'new' || !stickingLessons().some(l => l.slug === ref)) showView('sticking');
     else openSticking(ref);

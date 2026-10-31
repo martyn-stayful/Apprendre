@@ -260,6 +260,7 @@ few specific exercises the app picks for you. Each pick is a different kind:
 - a verb
 - an explainer
 - a new story episode
+- a basics check, or writing words you know from memory (see below)
 
 Tapping a pick opens that exact exercise. A role-play opens on its scene with
 **Practise my lines** on.
@@ -282,6 +283,42 @@ swaps a pick for one of a different kind. Doing a pick from the menus ticks it
 off too. Things outside the app that the weekly rhythm has today, like the tutor
 lesson or Duolingo, are listed under "Also today". Everything in the menus is
 still there to choose from.
+
+---
+
+## The basics fast, the new stuff first
+
+Every item climbs the same ladder to mastery: five right answers, with gaps of
+at least 1, 3, 7 and 14 days between them. That's right for things you're
+learning, and too slow for things you already know. So:
+
+- **Basics check.** A1 is the basics. A basics check runs through 20 A1 items
+  you haven't settled yet, easiest first. Get one right and it skips the short
+  intervals, straight to level 4 and a refresher in two weeks. Get that right and
+  it's mastered, back only at 30 and then 90 days. Miss one and it joins normal
+  practice. Today's plan offers a basics check while any are left (first on
+  review days). The Progress screen shows how many are settled.
+- **Easy means you already know it.** Rating an item Easy (in a deck, in Today's
+  Review, or after answering a quiz, verb or workbook question right) does the
+  same, as long as you've never got it wrong. An item you've missed before only
+  goes up a level, as with Good.
+- **New material first.** **Learn new** introduces recent lessons first, then
+  everything past A1, easiest level first, so new material keeps edging up. A1
+  basics come last, since the basics check is the quick way through those.
+  Today's Review also puts current material ahead of refreshers of the basics.
+
+**Writing it from memory.** Recognising a word is half of knowing it; producing
+it is the other half. Once a flashcard is at level 2 (right on two separate
+days), Today's Review shows you the English and asks you to type the French,
+and so do the refreshers of basics you've checked. The check forgives
+accents ("right, apart from the accents") and handles `grand(e)`, `fou / folle`
+and `(se) lever`. A missing article, or a letter or two out (swapped letters
+count as one), is "nearly". The rating is still yours, with the one the app
+suggests outlined, and a wrong answer gets the Why? button and goes in the
+mistakes log. **Just show me the French** switches back to recognising it, for
+when you're on the move. **Write it from memory** is also a session of its own:
+15 flashcards you've got right at least twice, the longest unseen first, offered
+at the end of a review and on Today's plan.
 
 ---
 

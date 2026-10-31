@@ -8,6 +8,7 @@ const ALLOWED = new Set([
   'fr_settings', 'fr_streak', 'fr_last', 'fr_time', 'fr_workbook',
   'fr_custom', 'fr_today_done', 'fr_reminder', 'fr_welcomed',
   'fr_translate_history', 'fr_last_backup', 'fr_phone', 'fr_today_plan', 'fr_story_reads',
+  'fr_mistakes', 'fr_sticking',
 ]);
 
 const MAX_VALUE_BYTES = 512 * 1024;

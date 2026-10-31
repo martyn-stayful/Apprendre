@@ -1731,6 +1731,199 @@
   .mode-card[data-tone="concepts" i] .icon { background: rgba(212, 162, 76, 0.16); color: var(--gold); }
   .mode-card[data-tone="upload" i] .icon { background: rgba(198, 75, 59, 0.14); color: var(--ember); }
 
+  /* ---- Sticking points ---- */
+  .mode-card[data-tone="sticking" i] .icon { background: rgba(198, 75, 59, 0.12); color: var(--ember); }
+  .fx-wrap { padding: 0 24px 40px; }
+  .fx-intro { padding: 12px 0 4px; }
+  .fx-list { display: flex; flex-direction: column; gap: 10px; }
+  .fx-card {
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px var(--shadow);
+    cursor: pointer;
+  }
+  .fx-card.fx-writing, .fx-card.fx-failed { cursor: default; }
+  .fx-card.fx-sorted { opacity: 0.72; }
+  .fx-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .fx-card-title { font-family: 'Fraunces', serif; font-size: 16.5px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+  .fx-card-focus { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; margin-top: 4px; }
+  .fx-card-meta { font-size: 12px; color: var(--slate); margin-top: 8px; }
+  .fx-card-error { font-size: 13px; color: var(--ember-deep); margin-top: 8px; line-height: 1.5; }
+  .fx-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .fx-tag {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 4px 8px;
+    border-radius: 20px;
+    background: rgba(122, 138, 154, 0.14);
+    color: var(--slate);
+  }
+  .fx-tag-new, .fx-tag-due { background: rgba(198, 75, 59, 0.12); color: var(--ember); }
+  .fx-tag-sorted { background: rgba(42, 74, 60, 0.12); color: var(--pine); }
+  .fx-tag-failed { background: rgba(198, 75, 59, 0.12); color: var(--ember-deep); }
+  .fx-tag .up-spinner, .fx-build .up-spinner, .fx-why-body .up-spinner { width: 10px; height: 10px; margin-right: 2px; }
+  .fx-build .up-spinner { border-color: rgba(254, 252, 247, 0.35); border-top-color: var(--paper); }
+  .fx-empty {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    background: var(--paper);
+    border: 1px dashed rgba(26, 35, 50, 0.15);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-top: 8px;
+  }
+  .fx-loose { background: var(--paper); border: 1px solid rgba(26, 35, 50, 0.08); border-radius: 14px; overflow: hidden; }
+  .fx-miss { padding: 11px 16px; border-bottom: 1px solid rgba(26, 35, 50, 0.06); }
+  .fx-miss:last-child { border-bottom: none; }
+  .fx-miss-q, .fx-mistake-q { font-size: 14px; color: var(--ink); line-height: 1.45; }
+  .fx-miss-a, .fx-mistake-a { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; font-size: 12.5px; }
+  .fx-you { color: var(--ember-deep); }
+  .fx-right { color: var(--pine); font-weight: 700; }
+  .fx-miss-n { color: var(--slate); }
+  .fx-more { padding: 10px 16px; font-size: 12.5px; color: var(--slate); font-style: italic; }
+  .fx-build {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 12px;
+    background: var(--pine);
+    color: var(--paper);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .fx-build:disabled { opacity: 0.65; cursor: default; }
+  .fx-card-actions .fx-build { width: auto; flex: 1; margin-top: 0; }
+  .fx-small {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--pine);
+    background: var(--pine);
+    color: var(--paper);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .fx-small.ghost { background: transparent; color: var(--pine); border-color: rgba(42, 74, 60, 0.35); }
+  .fx-ask { background: var(--paper); border: 1px solid rgba(26, 35, 50, 0.08); border-radius: 14px; padding: 14px 16px; }
+  .fx-ask label { display: block; font-size: 13.5px; color: var(--ink-soft); margin-bottom: 8px; }
+  .fx-ask-row { display: flex; gap: 8px; }
+  .fx-ask-row input {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 12px;
+    border: 1px solid rgba(26, 35, 50, 0.15);
+    border-radius: 10px;
+    background: var(--snow);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 16px;
+  }
+  .fx-ask-btn {
+    padding: 0 16px;
+    border: none;
+    border-radius: 10px;
+    background: var(--pine);
+    color: var(--paper);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .fx-ask-btn:disabled { opacity: 0.6; cursor: default; }
+  .fx-error {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(198, 75, 59, 0.07);
+    border: 1px solid rgba(198, 75, 59, 0.3);
+    color: var(--ember-deep);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .cpt-header-card.fx-header { background: linear-gradient(135deg, var(--pine) 0%, var(--pine-deep) 100%); }
+  .fx-mistakes, .fx-tricks { display: flex; flex-direction: column; gap: 10px; }
+  .fx-mistake {
+    background: var(--paper);
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-left: 3px solid var(--ember);
+    border-radius: 0 12px 12px 0;
+    padding: 12px 14px;
+  }
+  .fx-mistake-a { margin: 6px 0; font-size: 13px; }
+  .fx-mistake-why { font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
+  .fx-rule { margin: 0; padding-left: 20px; }
+  .fx-rule li { font-size: 14.5px; line-height: 1.6; color: var(--ink); margin-bottom: 6px; }
+  .fx-trick { background: rgba(212, 162, 76, 0.1); border-left: 3px solid var(--gold); border-radius: 0 12px 12px 0; padding: 12px 14px; }
+  .fx-trick-name { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+  .fx-trick-how { font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
+  .fx-start, .fx-done, .fx-q { background: var(--paper); border: 1px solid rgba(26, 35, 50, 0.08); border-radius: 14px; padding: 16px; }
+  .fx-start p, .fx-done p { margin: 0 0 10px; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+  .fx-start .fx-last { font-size: 13px; color: var(--slate); }
+  .fx-q-count { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); margin-bottom: 10px; }
+  .fx-q-fr { font-family: 'Fraunces', serif; font-size: 19px; line-height: 1.4; color: var(--ink); }
+  .fx-gap { color: var(--slate); }
+  .fx-gap.filled { color: var(--pine); font-weight: 600; border-bottom: 2px solid var(--pine); }
+  .fx-q-en { font-size: 13px; color: var(--slate); font-style: italic; margin: 6px 0 14px; }
+  .fx-opts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .fx-reasons { display: flex; flex-direction: column; gap: 8px; }
+  .fx-q-why { font-size: 13.5px; color: var(--ink-soft); margin: 16px 0 8px; }
+  .quiz-option.fx-reason { font-family: 'Lato', sans-serif; font-size: 14px; font-weight: 400; line-height: 1.4; text-align: left; padding: 12px 14px; }
+  .fx-q .quiz-feedback { margin-top: 14px; }
+  .fx-q .quiz-next { margin-top: 12px; }
+  .fx-done-score { font-family: 'Fraunces', serif; font-size: 18px; color: var(--ink); margin-bottom: 8px; }
+  .fx-remove { display: block; margin: 28px auto 0; background: none; border: none; color: var(--slate); font-family: inherit; font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+
+  .fx-why { margin-top: 10px; text-align: left; }
+  .fx-why-btn {
+    background: none;
+    border: 1px solid rgba(42, 74, 60, 0.35);
+    color: var(--pine);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-family: 'Lato', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .fx-why-body {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(42, 74, 60, 0.06);
+    font-family: 'Lato', sans-serif;
+    font-size: 13.5px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .fx-why-row + .fx-why-row { margin-top: 8px; }
+  .fx-why-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pine); margin-bottom: 2px; }
+  .fx-why-trick { margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(42, 74, 60, 0.12); }
+  .fx-why-trick::before { content: '💡 '; }
+  .fx-why-lesson { display: block; margin-top: 10px; background: none; border: none; padding: 0; color: var(--ember); font-family: inherit; font-size: 13px; font-weight: 700; text-align: left; cursor: pointer; }
+  .fx-why-error .fx-why-btn { margin-left: 6px; }
+
   .cpt-intro {
     padding: 12px 24px 18px;
     font-size: 13.5px;
@@ -7153,6 +7346,14 @@
     <div class="section-title minor">Learn</div>
 
     <div class="modes">
+      <button class="mode-card" data-tone="sticking" onclick="showView('sticking')">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        </div>
+        <div class="mode-title">Sticking Points</div>
+        <div class="mode-sub" id="fxModeSub">Why you keep getting it wrong</div>
+      </button>
+
       <button class="mode-card" data-tone="workbook" onclick="showView('workbook')">
         <div class="icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg>
@@ -7564,6 +7765,28 @@
     <div class="cpt-wrap" id="cptWrap"></div>
   </section>
 
+  <section class="view" id="sticking">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title">Sticking Points</div>
+        <div class="view-sub">What you keep getting wrong, and why</div>
+      </div>
+    </div>
+    <div class="fx-wrap" id="fxWrap"></div>
+  </section>
+
+  <section class="view" id="stickingLesson">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('sticking')">←</button>
+      <div>
+        <div class="view-title" id="fxTitle">Sticking point</div>
+        <div class="view-sub">Why, how to remember it, then practice</div>
+      </div>
+    </div>
+    <div class="cpt-wrap" id="fxLesson"></div>
+  </section>
+
 </div>
 
 
@@ -7633,7 +7856,8 @@
   // (translation cache, for instance) stays local.
   var SYNC_KEYS = [
     'fr_settings', 'fr_streak', 'fr_last', 'fr_time', 'fr_workbook',
-    'fr_custom', 'fr_today_done', 'fr_today_plan', 'fr_story_reads', 'fr_reminder', 'fr_welcomed',
+    'fr_custom', 'fr_today_done', 'fr_today_plan', 'fr_story_reads', 'fr_mistakes', 'fr_sticking',
+    'fr_reminder', 'fr_welcomed',
     'fr_translate_history', 'fr_last_backup', 'fr_phone'
   ];
   var SYNC = {};
@@ -7877,6 +8101,7 @@
     window.stories = c.stories || [];
     window.roleplays = c.roleplays || [];
     window.grammar = c.grammar || [];
+    window.fixLessons = c.sticking || [];
   }
 
   /** Pull content again after an upload, and repaint whatever is on screen. */
@@ -8502,7 +8727,8 @@ const PRACTICE_VIEWS = new Set([
   'review',       // spaced repetition session — primary practice loop
   'grammar',      // reading grammar notes — counts like reading a story
   'translate',    // looking up vocab while actively learning
-  'workbookExercise'  // working through structured workbook exercises
+  'workbookExercise',  // working through structured workbook exercises
+  'stickingLesson'    // a lesson on something you keep getting wrong
 ]);
 
 function showView(id) {
@@ -8529,7 +8755,9 @@ function showView(id) {
   if (id === 'workbookChapter') renderWorkbookChapter();
   if (id === 'concepts') renderConceptList();
   if (id === 'conceptDetail') renderConceptDetail();
-  if (id === 'home') renderTodayCard();
+  if (id === 'sticking') renderSticking();
+  if (id === 'stickingLesson') renderStickingLesson();
+  if (id === 'home') { renderTodayCard(); updateStickingBadge(); }
 
   // Auto-tick matching today task if one exists for this view
   if (id !== 'home' && typeof autoTickTodayTask === 'function') {
@@ -8921,6 +9149,8 @@ function renderReviewQuiz(item) {
     return `<button class="${cls}" onclick="answerReviewQuiz(${i})" ${rvState.quizAnswered ? 'disabled' : ''}>${escapeHtml(o.text)}</button>`;
   }).join('');
 
+  const picked = rvState.quizAnswered && rvState.currentQuizOpts[rvState.quizPicked];
+  const missed = picked && !picked.isCorrect ? picked : null;
   const rateHtml = rvState.quizAnswered ? `
     <div class="rv-rate" style="margin-top:20px">
       <button class="rv-rate-btn" data-rate="again" onclick="rateReviewQuiz('again')">Again</button>
@@ -8937,6 +9167,7 @@ function renderReviewQuiz(item) {
     </div>
     <div class="rv-quiz-trans">${escapeHtml(q.en)}</div>
     <div class="rv-quiz-opts">${optsHtml}</div>
+    ${missed ? whyButtonHtml({ id: item.id, kind: 'quiz', prompt: q.prompt, en: q.en, options: q.opts, answer: q.opts[q.a], note: q.note, given: missed.text }) : ''}
     ${rateHtml}
   `;
 }
@@ -8954,7 +9185,8 @@ function answerReviewQuiz(optIdx) {
 function rateReviewQuiz(rating) {
   const item = rvState.items[rvState.i];
   const wasCorrect = rating !== 'again';
-  const rec = recordAnswer(item.id, wasCorrect);
+  const picked = rvState.currentQuizOpts && rvState.currentQuizOpts[rvState.quizPicked];
+  const rec = recordAnswer(item.id, wasCorrect, picked && !picked.isCorrect ? picked.text : '');
   rvState.sessionResults[item.id] = {
     before: rvState.sessionStart[item.id],
     after: rec.level,
@@ -9002,6 +9234,7 @@ function renderReviewConj(item) {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
           </button>
         </div>
+        ${rvState.conjCorrect ? '' : whyButtonHtml({ id: item.id, kind: 'conjugation', prompt: `${c.verb} (${c.meaning}): ${c.pr} ___`, answer: c.fm, given: rvState.conjGiven || '' })}
         <div class="rv-rate" style="margin-top:16px">
           <button class="rv-rate-btn" data-rate="again" onclick="rateReviewConj('again')">Again</button>
           <button class="rv-rate-btn" data-rate="good" onclick="rateReviewConj('good')">Good</button>
@@ -9032,7 +9265,7 @@ function checkReviewConj() {
 function rateReviewConj(rating) {
   const item = rvState.items[rvState.i];
   const wasCorrect = rating !== 'again';
-  const rec = recordAnswer(item.id, wasCorrect);
+  const rec = recordAnswer(item.id, wasCorrect, rvState.conjCorrect ? '' : rvState.conjGiven);
   rvState.sessionResults[item.id] = {
     before: rvState.sessionStart[item.id],
     after: rec.level,
@@ -9113,6 +9346,10 @@ function renderReviewWorkbook(item) {
   if (c.notes) {
     verdictBody += `<div class="wbx-verdict-note">${c.notes}</div>`;
   }
+  if (!correct) {
+    verdictBody += whyButtonHtml({ id: item.id, kind: 'workbook', prompt: c.prompt, options: c.options || [],
+      answer: c.answer, note: c.notes || '', given: rvState.wbGiven || '' });
+  }
 
   // For multiple-choice: render the options with correct/wrong marking
   let optsOrInputHtml = '';
@@ -9180,7 +9417,7 @@ function answerReviewWorkbookMultiple(btn) {
 function rateReviewWorkbook(rating) {
   const item = rvState.items[rvState.i];
   const wasCorrect = rating !== 'again';
-  const rec = recordAnswer(item.id, wasCorrect);
+  const rec = recordAnswer(item.id, wasCorrect, rvState.wbCorrect ? '' : rvState.wbGiven);
   rvState.sessionResults[item.id] = {
     before: rvState.sessionStart[item.id],
     after: rec.level,
@@ -9708,11 +9945,12 @@ function answerQuiz(idx) {
 
   // Record mastery
   const id = itemId('qz:' + quizState.key, q.prompt);
-  const rec = recordAnswer(id, correct);
+  const rec = recordAnswer(id, correct, q.opts[idx]);
 
   fb.className = 'quiz-feedback show ' + (correct ? 'correct' : 'wrong');
   const masteryTag = `<span style="display:inline-block;margin-left:8px;font-size:11px;opacity:0.75;letter-spacing:0.04em">${levelDots(rec.level)} ${escapeHtml(levelLabel(rec.level))}</span>`;
-  fb.innerHTML = (correct ? '<strong>Correct !</strong> ' : `<strong>Not quite.</strong> The answer is <em>${q.opts[q.a]}</em>. `) + q.note + masteryTag;
+  fb.innerHTML = (correct ? '<strong>Correct !</strong> ' : `<strong>Not quite.</strong> The answer is <em>${q.opts[q.a]}</em>. `) + q.note + masteryTag +
+    (correct ? '' : whyButtonHtml({ id, kind: 'quiz', prompt: q.prompt, en: q.en, options: q.opts, answer: q.opts[q.a], note: q.note, given: q.opts[idx] }));
   document.getElementById('qNext').classList.add('show');
   document.getElementById('qNext').textContent = quizState.i === quizState.qs.length - 1 ? 'See results →' : 'Next →';
 }
@@ -9877,7 +10115,7 @@ function checkConj() {
 
   // Record mastery
   const id = itemId('conj:' + cur.verb, cur.pr);
-  const rec = recordAnswer(id, correct);
+  const rec = recordAnswer(id, correct, given);
 
   inp.className = 'conj-input ' + (correct ? 'correct' : 'wrong');
   const masteryTag = ` <span style="font-size:11px;color:var(--slate);letter-spacing:0.04em">${levelDots(rec.level)}</span>`;
@@ -9887,7 +10125,8 @@ function checkConj() {
     playCorrectSound();
     document.getElementById('conjAns').innerHTML = `<strong>${cur.fm}</strong> — parfait !${masteryTag}${speakBtn}`;
   } else {
-    document.getElementById('conjAns').innerHTML = `Correct answer: <strong>${cur.fm}</strong>${masteryTag}${speakBtn}`;
+    document.getElementById('conjAns').innerHTML = `Correct answer: <strong>${cur.fm}</strong>${masteryTag}${speakBtn}` +
+      whyButtonHtml({ id, kind: 'conjugation', prompt: `${cur.verb} (${verbTables[cur.verb].meaning}): ${cur.pr} ___`, answer: cur.fm, given });
     // show full table so you see the pattern
     const fullBody = document.getElementById('conjFullBody');
     fullBody.innerHTML = '';
@@ -10236,9 +10475,22 @@ function revealDrill(i) {
 function setDrillVerdict(i, verdict) {
   drillSession.verdicts[i] = verdict;
   drillSession.revealed[i] = true;
+  // Daily 10 isn't tracked for mastery, so the mistakes log is its only memory:
+  // a miss goes in, and getting it lets it go.
+  const d = drillSession.items[i];
+  if (d && verdict === 'missed') logMistake(drillMistakeId(d), '');
+  if (d && verdict === 'got') {
+    const id = drillMistakeId(d);
+    const log = loadMistakes();
+    if (log.some(m => m.id === id)) saveMistakes(log.filter(m => m.id !== id));
+  }
   // Correct sound on "got it"
   if (verdict === 'got') playCorrectSound();
   renderDrills();
+}
+
+function drillMistakeId(d) {
+  return itemId('drill', d.fr);
 }
 
 // Undo / change verdict
@@ -10583,6 +10835,542 @@ function renderPhonePractice() {
 /* ====================== STORIES ====================== */
 
 
+/* ====================== STICKING POINTS ======================
+   The things you keep getting wrong. Anything missed twice and not since put
+   right is a sticking point. Claude sorts them by what's being mixed up (it
+   sees what you answered, from the mistakes log, as well as the right answer)
+   and writes a short lesson for each: why, a way to remember it, and practice
+   where you pick the reason as well as the answer, so a lucky guess shows. */
+
+const STICKING_KEY = 'fr_sticking';
+let fxState = { slug: null, practice: null, building: false, error: '', notice: '', timer: null };
+
+function loadStickingProgress() {
+  try { return JSON.parse(Store.getItem(STICKING_KEY) || '{}') || {}; } catch (e) { return {}; }
+}
+
+function saveStickingProgress(progress) {
+  try { Store.setItem(STICKING_KEY, JSON.stringify(progress)); } catch (e) {}
+}
+
+function stickingLessons() {
+  return window.fixLessons || [];
+}
+
+function lessonForItem(id) {
+  return stickingLessons().find(l => (l.item_ids || []).includes(id));
+}
+
+/** An item as the server wants it: the question, its answer, and what you answered. */
+function stickingPayload(it, given) {
+  const c = it.card;
+  const rec = it.rec || {};
+  const base = { id: it.id, source: it.sourceName, wrong: rec.wrong || 0, right: rec.right || 0, given };
+  if (it.type === 'quiz') {
+    return { ...base, kind: 'quiz', prompt: c.prompt, en: c.en, options: c.opts, answer: c.opts[c.a], note: stripTags(c.note || '') };
+  }
+  if (it.type === 'conj') return { ...base, kind: 'conjugation', prompt: `${c.verb} (${c.meaning}): ${c.pr} ___`, answer: c.fm };
+  if (it.type === 'workbook') {
+    return { ...base, kind: 'workbook', prompt: c.prompt, options: c.options || [], answer: c.answer, note: stripTags(c.notes || '') };
+  }
+  return { ...base, kind: 'flashcard', prompt: `What does "${c.fr}" mean?`, answer: c.en, note: c.ex || '' };
+}
+
+/** A Daily 10 sentence as a question. Most already read "Say: …". */
+function drillPayload(d) {
+  const prompt = /^(say|ask|tell)\b/i.test(d.en) ? d.en : `Say in French: ${d.en}`;
+  return { id: drillMistakeId(d), kind: 'Daily 10', source: 'Daily 10', prompt, en: d.en, answer: d.fr, note: stripTags(d.note || '') };
+}
+
+/** Everything you keep getting wrong: missed twice or more, and not since put right. Worst first. */
+function stickingItems() {
+  const given = {}, last = {}, drillMisses = {};
+  loadMistakes().forEach(m => {
+    const seen = given[m.id] || (given[m.id] = []);
+    if (m.given && !seen.includes(m.given)) seen.push(m.given);
+    last[m.id] = m.at;
+    if (m.id.startsWith('drill::')) drillMisses[m.id] = (drillMisses[m.id] || 0) + 1;
+  });
+  const out = [];
+  allTrackableItems().forEach(it => {
+    const rec = it.rec;
+    if (!rec || rec.wrong < 2) return;
+    // Put right: back up to level 3 with no misses in the last five goes.
+    const misses = (rec.recent || []).slice(-5).filter(r => r === 'W').length;
+    if (rec.level >= 3 && !misses) return;
+    out.push({ ...stickingPayload(it, (given[it.id] || []).slice(-5)), last: last[it.id] || rec.lastSeen || '' });
+  });
+  (dailyDrills || []).forEach(d => {
+    const id = drillMistakeId(d);
+    if ((drillMisses[id] || 0) < 2) return;
+    out.push({ ...drillPayload(d), given: [], wrong: drillMisses[id], right: 0, last: last[id] });
+  });
+  const weight = (it) => it.wrong - it.right / 2;
+  return out.sort((a, b) => weight(b) - weight(a) || String(b.last).localeCompare(String(a.last)));
+}
+
+/** Sticking points no lesson covers yet. */
+function looseStickingItems(items = stickingItems()) {
+  const covered = new Set(stickingLessons().flatMap(l => l.item_ids || []));
+  return items.filter(it => !covered.has(it.id));
+}
+
+/**
+ * Where a lesson stands: 'writing' or 'failed' while it isn't ready; then 'new'
+ * until practised, 'practised', 'due' when it's been two days and something in
+ * it is still going wrong, and 'sorted' once a clean run has stuck.
+ */
+function lessonState(l, open) {
+  if (l.status !== 'ready') return l.status;
+  const p = loadStickingProgress()[l.slug];
+  if (!p) return 'new';
+  const stillMissing = (l.item_ids || []).some(id => open.has(id));
+  if (p.clean && !stillMissing) return 'sorted';
+  return daysBetween(dateKey(), p.at) >= 2 ? 'due' : 'practised';
+}
+
+/** What a question looked like in the app, for showing it back. */
+function questionText(it) {
+  return String(it.prompt || '').replace(/___/g, '…');
+}
+
+function renderSticking() {
+  const wrap = document.getElementById('fxWrap');
+  const items = stickingItems();
+  const open = new Set(items.map(it => it.id));
+  const loose = looseStickingItems(items);
+  const order = { writing: 0, due: 1, new: 2, failed: 3, practised: 4, sorted: 5 };
+  const shown = stickingLessons().map(l => ({ l, state: lessonState(l, open) }))
+    .sort((a, b) => order[a.state] - order[b.state]);
+  const active = shown.filter(x => x.state !== 'sorted');
+  const sorted = shown.filter(x => x.state === 'sorted');
+
+  wrap.innerHTML = `
+    <div class="cpt-intro fx-intro"><p>Anything you get wrong twice lands here. Claude looks at what you answered as well as the right answer, works out what you're mixing up, and writes a short lesson on it: why, a way to remember it, and practice where you pick the reason as well as the answer, so a lucky guess shows up as one.</p></div>
+    ${active.length ? `<div class="cpt-section-title">Your lessons</div>
+      <div class="fx-list">${active.map(x => lessonCardHtml(x.l, x.state, open)).join('')}</div>` : ''}
+    ${looseHtml(loose, shown.length)}
+    <div class="cpt-section-title">Ask for a lesson</div>
+    <div class="fx-ask">
+      <label for="fxAsk">Something else you keep mixing up?</label>
+      <div class="fx-ask-row">
+        <input id="fxAsk" maxlength="200" autocomplete="off" placeholder="e.g. depuis or pendant? y and en?">
+        <button class="fx-ask-btn" onclick="askSticking()" ${fxState.building ? 'disabled' : ''}>Write it</button>
+      </div>
+    </div>
+    ${fxState.error ? `<div class="fx-error">${escapeHtml(fxState.error)}</div>` : ''}
+    ${fxState.notice ? `<div class="fx-empty">${escapeHtml(fxState.notice)}</div>` : ''}
+    ${sorted.length ? `<div class="cpt-section-title">Sorted</div>
+      <div class="fx-list">${sorted.map(x => lessonCardHtml(x.l, x.state, open)).join('')}</div>` : ''}
+  `;
+  const input = document.getElementById('fxAsk');
+  input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); askSticking(); } };
+  watchStickingWriting();
+}
+
+function lessonCardHtml(l, state, open) {
+  const p = loadStickingProgress()[l.slug];
+  const label = {
+    writing: '<span class="up-spinner"></span>Writing…', failed: 'Didn’t work', new: 'New',
+    due: 'Practise again', practised: 'Practised', sorted: '✓ Sorted',
+  }[state];
+  const missing = (l.item_ids || []).filter(id => open.has(id)).length;
+  const lastGo = p ? `Last go: ${p.right}/${p.total} right, ${p.why} for the right reason. ` : '';
+  const meta = state === 'writing' ? 'Claude is writing this one. It takes a minute or two.'
+    : lastGo + (missing ? `${missing} question${missing === 1 ? '' : 's'} you're still getting wrong`
+      : (l.item_ids || []).length ? 'None of its questions are going wrong now' : '');
+  const failed = state === 'failed' ? `
+    <div class="fx-card-error">${escapeHtml(l.error || 'Something went wrong writing it.')}</div>
+    <div class="fx-card-actions">
+      <button class="fx-small" onclick="retrySticking('${l.slug}')">Try again</button>
+      <button class="fx-small ghost" onclick="removeSticking('${l.slug}')">Remove</button>
+    </div>` : '';
+  const opens = state !== 'writing' && state !== 'failed';
+  return `
+    <div class="fx-card fx-${state}"${opens ? ` role="button" tabindex="0" onclick="openSticking('${l.slug}')"` : ''}>
+      <div class="fx-card-head">
+        <div class="fx-card-title">${escapeHtml(l.title)}</div>
+        <span class="fx-tag fx-tag-${state}">${label}</span>
+      </div>
+      ${l.focus ? `<div class="fx-card-focus">${escapeHtml(l.focus)}</div>` : ''}
+      ${meta ? `<div class="fx-card-meta">${meta}</div>` : ''}
+      ${failed}
+    </div>`;
+}
+
+function looseHtml(loose, lessonCount) {
+  if (!loose.length) {
+    return lessonCount ? '' : `<div class="fx-empty">Nothing here yet. Anything you get wrong twice in a quiz, the flashcards, the workbook, verbs or Daily 10 turns up here, ready for a lesson. You can ask for one on anything below.</div>`;
+  }
+  const shown = loose.slice(0, 8);
+  return `
+    <div class="cpt-section-title">${lessonCount ? 'Not in a lesson yet' : 'What you keep getting wrong'} · ${loose.length}</div>
+    <div class="fx-loose">
+      ${shown.map(it => `
+        <div class="fx-miss">
+          <div class="fx-miss-q">${escapeHtml(questionText(it))}</div>
+          <div class="fx-miss-a">
+            ${it.given.length ? `<span class="fx-you">You: ${it.given.map(escapeHtml).join(', ')}</span>` : ''}
+            <span class="fx-right">Right: ${escapeHtml(it.answer)}</span>
+            <span class="fx-miss-n">missed ${it.wrong}×</span>
+          </div>
+        </div>`).join('')}
+      ${loose.length > shown.length ? `<div class="fx-more">and ${loose.length - shown.length} more</div>` : ''}
+    </div>
+    <button class="fx-build" onclick="buildSticking()" ${fxState.building ? 'disabled' : ''}>
+      ${fxState.building ? '<span class="up-spinner"></span>Working out what you’re mixing up…'
+        : `Write lessons for ${loose.length === 1 ? 'this' : 'these'}`}
+    </button>`;
+}
+
+/** Ask the server to sort the loose sticking points (and anything asked for) into lessons. */
+async function buildSticking(ask = '') {
+  if (fxState.building) return;
+  fxState.building = true;
+  fxState.error = '';
+  fxState.notice = '';
+  renderStickingIfOpen();
+  try {
+    const items = looseStickingItems().slice(0, 30);
+    const { lessons, added } = await window.Api.post('/api/sticking', { items, ask });
+    window.fixLessons = lessons;
+    if (ask) { const input = document.getElementById('fxAsk'); if (input) input.value = ''; }
+    if (ask && !added) fxState.notice = 'One of your lessons already covers that.';
+  } catch (err) {
+    // No status: the connection dropped, but the server carries on. Look again shortly.
+    if (err.status) fxState.error = err.message;
+    else setTimeout(refreshSticking, 5000);
+  }
+  fxState.building = false;
+  renderStickingIfOpen();
+}
+
+function askSticking() {
+  const input = document.getElementById('fxAsk');
+  const ask = input ? input.value.trim() : '';
+  if (!ask) { if (input) input.focus(); return; }
+  buildSticking(ask);
+}
+
+async function retrySticking(slug) {
+  try {
+    const { lessons } = await window.Api.post('/api/sticking', { retry: slug });
+    window.fixLessons = lessons;
+  } catch (err) {
+    fxState.error = err.message;
+  }
+  renderStickingIfOpen();
+}
+
+async function removeSticking(slug) {
+  const l = stickingLessons().find(x => x.slug === slug);
+  if (!l || !confirm(`Remove "${l.title}"? Its questions go back to the list.`)) return;
+  try {
+    await window.Api.del('/api/sticking?slug=' + encodeURIComponent(slug));
+    window.fixLessons = stickingLessons().filter(x => x.slug !== slug);
+    const progress = loadStickingProgress();
+    delete progress[slug];
+    saveStickingProgress(progress);
+  } catch (err) {
+    fxState.error = err.message;
+  }
+  showView('sticking');
+}
+
+async function refreshSticking() {
+  try {
+    const { lessons } = await window.Api.get('/api/sticking');
+    window.fixLessons = lessons;
+  } catch (err) { /* try again on the next look */ }
+  renderStickingIfOpen();
+}
+
+function renderStickingIfOpen() {
+  if (document.getElementById('sticking').classList.contains('active')) renderSticking();
+  else if (document.getElementById('stickingLesson').classList.contains('active') && !fxState.practice) renderStickingLesson();
+}
+
+/** While Claude writes a lesson, look again every few seconds. */
+function watchStickingWriting() {
+  clearTimeout(fxState.timer);
+  if (stickingLessons().some(l => l.status === 'writing')) fxState.timer = setTimeout(refreshSticking, 5000);
+}
+
+function openSticking(slug) {
+  fxState.slug = slug;
+  fxState.practice = null;
+  showView('stickingLesson');
+}
+
+function renderStickingLesson() {
+  const l = stickingLessons().find(x => x.slug === fxState.slug);
+  if (!l || l.status !== 'ready' || !l.lesson) { showView('sticking'); return; }
+  const x = l.lesson;
+  const words = x.kind === 'words';
+  document.getElementById('fxTitle').textContent = x.title;
+  document.getElementById('fxLesson').innerHTML = `
+    <div class="cpt-header-card fx-header">
+      <div class="cpt-header-eyebrow">${words ? 'Words that won’t stick' : 'Sticking point'}</div>
+      <h2 class="cpt-header-title">${escapeHtml(x.title)}</h2>
+      <div class="cpt-header-sub">${escapeHtml(x.summary)}</div>
+    </div>
+
+    ${x.mistakes.length ? `<div class="cpt-section-title">What went wrong</div>
+      <div class="fx-mistakes">${x.mistakes.map(m => `
+        <div class="fx-mistake">
+          ${questionForId(m.item_id) ? `<div class="fx-mistake-q">${escapeHtml(questionForId(m.item_id))}</div>` : ''}
+          <div class="fx-mistake-a">
+            ${m.you && m.you !== '—' ? `<span class="fx-you">You: ${escapeHtml(m.you)}</span>` : ''}
+            <span class="fx-right">Right: ${escapeHtml(m.right)}</span>
+          </div>
+          <div class="fx-mistake-why">${escapeHtml(m.why)}</div>
+        </div>`).join('')}</div>` : ''}
+
+    <div class="cpt-section-title">Why it trips you up</div>
+    <div class="cpt-paragraphs"><p>${escapeHtml(x.why_confusing)}</p></div>
+
+    <div class="cpt-section-title">${words ? 'What helps' : 'The rule'}</div>
+    <ul class="fx-rule">${x.rule.map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
+
+    <div class="cpt-section-title">${words ? 'Memory hooks' : 'How to remember it'}</div>
+    <div class="fx-tricks">${x.tricks.map(t => `
+      <div class="fx-trick">
+        <div class="fx-trick-name">${escapeHtml(t.name)}</div>
+        <div class="fx-trick-how">${escapeHtml(t.how)}</div>
+      </div>`).join('')}</div>
+
+    <div class="cpt-section-title">Side by side</div>
+    <div class="cpt-examples">${x.examples.map(ex => `
+      <div class="cpt-example-row">
+        <div class="cpt-example-body">
+          <div class="cpt-example-fr"${frAttrs(ex.en)}>${escapeHtml(ex.fr)}</div>
+          <div class="cpt-example-en">${escapeHtml(ex.en)}</div>
+          ${ex.note ? `<div class="cpt-example-note">${escapeHtml(ex.note)}</div>` : ''}
+        </div>
+        <button class="cpt-example-speak" onclick="${speakHandler(ex.fr)}" aria-label="Listen">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+        </button>
+      </div>`).join('')}</div>
+
+    <div class="cpt-section-title">Check you've got it</div>
+    <div id="fxPractice">${practiceHtml(l)}</div>
+
+    <button class="fx-remove" onclick="removeSticking('${l.slug}')">Remove this lesson</button>
+  `;
+}
+
+/** The app's own wording of a question, by item id. */
+function questionForId(id) {
+  if (!id) return '';
+  if (id.startsWith('drill::')) {
+    const d = (dailyDrills || []).find(d => drillMistakeId(d) === id);
+    return d ? drillPayload(d).prompt : '';
+  }
+  const it = allTrackableItems().find(x => x.id === id);
+  return it ? questionText(stickingPayload(it, [])) : '';
+}
+
+/* ---- Practice: the answer, then the reason ---- */
+
+function shuffled(list) {
+  const out = list.map((v, i) => ({ v, i }));
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+function startStickingPractice() {
+  const l = stickingLessons().find(x => x.slug === fxState.slug);
+  if (!l) return;
+  const qs = shuffled(l.lesson.practice).map(({ v: q }) => {
+    const opts = shuffled(q.options);
+    const reasons = shuffled(q.reasons);
+    return {
+      fr: q.fr, en: q.en, explain: q.explain,
+      options: opts.map(o => o.v), answer: opts.findIndex(o => o.i === q.answer),
+      reasons: reasons.map(r => r.v), reason: reasons.findIndex(r => r.i === q.reason),
+    };
+  });
+  fxState.practice = { slug: l.slug, qs, i: 0, picked: null, reasonPicked: null, results: [] };
+  paintPractice();
+  document.getElementById('fxPractice').scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+
+function paintPractice() {
+  const l = stickingLessons().find(x => x.slug === fxState.slug);
+  const box = document.getElementById('fxPractice');
+  if (l && box) box.innerHTML = practiceHtml(l);
+}
+
+function practiceHtml(l) {
+  const pr = fxState.practice;
+  if (!pr || pr.slug !== l.slug) {
+    const p = loadStickingProgress()[l.slug];
+    return `
+      <div class="fx-start">
+        <p>${l.lesson.practice.length} questions. Pick the answer, then pick why. A right answer for the wrong reason counts as a guess, because that's the habit this is here to break.</p>
+        ${p ? `<p class="fx-last">Last time: ${p.right}/${p.total} right, ${p.why}/${p.total} for the right reason.</p>` : ''}
+        <button class="fx-build" onclick="startStickingPractice()">${p ? 'Practise again' : 'Start'}</button>
+      </div>`;
+  }
+  if (pr.i >= pr.qs.length) return practiceDoneHtml(pr);
+
+  const q = pr.qs[pr.i];
+  const answered = pr.picked !== null;
+  const reasoned = pr.reasonPicked !== null;
+  const filled = answered ? `<span class="fx-gap filled">${escapeHtml(q.options[q.answer])}</span>` : '<span class="fx-gap">_____</span>';
+  const optClass = (k, right, picked) => 'quiz-option' +
+    (picked === null ? '' : k === right ? ' correct' : k === picked ? ' wrong' : '');
+  let verdict = '';
+  if (reasoned) {
+    const a = pr.picked === q.answer, r = pr.reasonPicked === q.reason;
+    const head = a && r ? '✓ Right, and for the right reason.'
+      : a ? 'Right answer, wrong reason: that one was a guess.'
+      : r ? 'You know the rule, but picked the wrong one.'
+      : 'Not this time.';
+    verdict = `
+      <div class="quiz-feedback show ${a && r ? 'correct' : 'wrong'}"><strong>${head}</strong> ${escapeHtml(q.explain)}</div>
+      <button class="quiz-next show" onclick="nextStickingQuestion()">${pr.i === pr.qs.length - 1 ? 'See how you did →' : 'Next →'}</button>`;
+  }
+  return `
+    <div class="fx-q">
+      <div class="fx-q-count">Question ${pr.i + 1} of ${pr.qs.length}</div>
+      <div class="fx-q-fr">${escapeHtml(q.fr).replace(/___/g, filled)}</div>
+      <div class="fx-q-en">${escapeHtml(q.en)}</div>
+      <div class="fx-opts">${q.options.map((o, k) => `
+        <button class="${optClass(k, q.answer, pr.picked)}" ${answered ? 'disabled' : `onclick="pickStickingAnswer(${k})"`}>${escapeHtml(o)}</button>`).join('')}
+      </div>
+      ${answered ? `
+        <div class="fx-q-why">Now, why is it <strong>${escapeHtml(q.options[q.answer])}</strong>?</div>
+        <div class="fx-reasons">${q.reasons.map((r, k) => `
+          <button class="${optClass(k, q.reason, pr.reasonPicked)} fx-reason" ${reasoned ? 'disabled' : `onclick="pickStickingReason(${k})"`}>${escapeHtml(r)}</button>`).join('')}
+        </div>` : ''}
+      ${verdict}
+    </div>`;
+}
+
+function pickStickingAnswer(k) {
+  const pr = fxState.practice;
+  if (!pr || pr.picked !== null) return;
+  pr.picked = k;
+  if (k === pr.qs[pr.i].answer) playCorrectSound();
+  paintPractice();
+}
+
+function pickStickingReason(k) {
+  const pr = fxState.practice;
+  if (!pr || pr.picked === null || pr.reasonPicked !== null) return;
+  pr.reasonPicked = k;
+  const q = pr.qs[pr.i];
+  if (k === q.reason && pr.picked === q.answer) playCorrectSound();
+  pr.results.push({ right: pr.picked === q.answer, why: k === q.reason });
+  paintPractice();
+}
+
+function nextStickingQuestion() {
+  const pr = fxState.practice;
+  if (!pr) return;
+  pr.i++;
+  pr.picked = null;
+  pr.reasonPicked = null;
+  if (pr.i >= pr.qs.length) saveStickingRun(pr);
+  paintPractice();
+  document.getElementById('fxPractice').scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+
+function saveStickingRun(pr) {
+  const total = pr.results.length;
+  const right = pr.results.filter(r => r.right).length;
+  const why = pr.results.filter(r => r.right && r.why).length;
+  const progress = loadStickingProgress();
+  const before = progress[pr.slug] || {};
+  progress[pr.slug] = {
+    at: dateKey(), total, right, why,
+    best: Math.max(before.best || 0, right),
+    runs: (before.runs || 0) + 1,
+    // Clean: every answer right, and at most one of them a guess.
+    clean: !!before.clean || (right === total && why >= total - 1),
+  };
+  saveStickingProgress(progress);
+  tickPlan(`fix:${pr.slug}`, false);
+}
+
+function practiceDoneHtml(pr) {
+  const total = pr.results.length;
+  const right = pr.results.filter(r => r.right).length;
+  const why = pr.results.filter(r => r.right && r.why).length;
+  const guesses = right - why;
+  const message = right === total && why >= total - 1
+    ? 'That’s it sorted. It stays here until the questions you were missing come up right in your reviews, and Today’s plan brings it back if they don’t.'
+    : guesses > 0
+      ? `${guesses} of your right answers ${guesses === 1 ? 'was a guess' : 'were guesses'}. Read the rule and the tricks again, then have another go.`
+      : 'Read the rule and the tricks again, then have another go. It’ll come back on Today’s plan in a couple of days.';
+  return `
+    <div class="fx-done">
+      <div class="fx-done-score"><strong>${right}/${total}</strong> right · <strong>${why}/${total}</strong> for the right reason</div>
+      <p>${message}</p>
+      <div class="fx-card-actions">
+        <button class="fx-build" onclick="startStickingPractice()">Practise again</button>
+        <button class="fx-small ghost" onclick="showView('sticking')">All sticking points</button>
+      </div>
+    </div>`;
+}
+
+/* ---- Why? on a wrong answer ---- */
+
+const whyAsks = {};
+let whySeq = 0;
+
+/** A "Why not …?" button for a wrong answer, and the space its explanation opens into. */
+function whyButtonHtml(ask) {
+  const key = 'w' + (++whySeq);
+  whyAsks[key] = { ...ask, note: stripTags(ask.note || '') };
+  const label = ask.given ? `Why not “${ask.given}”?` : `Why “${ask.answer}”?`;
+  return `<div class="fx-why" id="fxWhy-${key}"><button class="fx-why-btn" onclick="showWhy('${key}')">${escapeHtml(label)}</button></div>`;
+}
+
+async function showWhy(key) {
+  const box = document.getElementById('fxWhy-' + key);
+  const ask = whyAsks[key];
+  if (!box || !ask) return;
+  box.innerHTML = '<div class="fx-why-body"><span class="up-spinner"></span>Working out why…</div>';
+  try {
+    const { why } = await window.Api.post('/api/why', ask);
+    box.innerHTML = whyHtml(ask, why);
+  } catch (err) {
+    box.innerHTML = `<div class="fx-why-body fx-why-error">${escapeHtml(err.status ? err.message : 'The connection dropped.')}
+      <button class="fx-why-btn" onclick="showWhy('${key}')">Try again</button></div>`;
+  }
+}
+
+function whyHtml(ask, why) {
+  const lesson = ask.id && lessonForItem(ask.id);
+  return `
+    <div class="fx-why-body">
+      <div class="fx-why-row"><span class="fx-why-label">Why “${escapeHtml(ask.answer)}”</span>${escapeHtml(why.right)}</div>
+      ${ask.given && why.wrong ? `<div class="fx-why-row"><span class="fx-why-label">${why.also_ok
+        ? `“${escapeHtml(ask.given)}” works too` : `Why not “${escapeHtml(ask.given)}”`}</span>${escapeHtml(why.wrong)}</div>` : ''}
+      ${why.trick ? `<div class="fx-why-trick">${escapeHtml(why.trick)}</div>` : ''}
+      ${lesson && lesson.status === 'ready' ? `<button class="fx-why-lesson" onclick="openSticking('${lesson.slug}')">One of your sticking points: ${escapeHtml(lesson.title)} →</button>` : ''}
+    </div>`;
+}
+
+/** The home card's line: how many things are waiting. */
+function updateStickingBadge() {
+  const sub = document.getElementById('fxModeSub');
+  if (!sub) return;
+  const items = stickingItems();
+  const open = new Set(items.map(it => it.id));
+  const waiting = stickingLessons().filter(l => ['new', 'due'].includes(lessonState(l, open))).length;
+  const loose = looseStickingItems(items).length;
+  sub.textContent = waiting ? `${waiting} lesson${waiting === 1 ? '' : 's'} to practise`
+    : loose ? `${loose} thing${loose === 1 ? '' : 's'} you keep getting wrong`
+    : 'Why you keep getting it wrong';
+}
+
+
 /* ====================== MASTERY TRACKING ====================== */
 /* Each item (a flashcard, quiz question, or conjugation prompt) gets a record:
    { seen: int, right: int, wrong: int, lastSeen: 'YYYY-MM-DD', level: 0-5, lastCorrectDate: ... }
@@ -10635,7 +11423,10 @@ function daysBetween(a, b) {
 // Minimum days required between two corrects to advance from a given level.
 const LEVEL_MIN_GAP_DAYS = [0, 0, 1, 3, 7, 14];
 
-function recordAnswer(id, wasCorrect) {
+// `given` is what was answered, when the exercise knows it: a wrong one goes in
+// the mistakes log, which is how the app sees what gets mixed up with what.
+function recordAnswer(id, wasCorrect, given) {
+  if (!wasCorrect) logMistake(id, given);
   const all = loadMastery();
   const today = dateKey();
   let rec = all[id] || {
@@ -10675,6 +11466,29 @@ function recordAnswer(id, wasCorrect) {
   all[id] = rec;
   saveMastery(all);
   return rec;
+}
+
+/* Mastery counts rights and wrongs; this keeps what was actually answered
+   when it was wrong ('' when it wasn't recorded, e.g. a flashcard marked
+   Again), newest last. It feeds Sticking points and the Why? explanations. */
+const MISTAKES_KEY = 'fr_mistakes';
+const MISTAKES_MAX = 250;
+
+function loadMistakes() {
+  try {
+    const log = JSON.parse(Store.getItem(MISTAKES_KEY) || '[]');
+    return Array.isArray(log) ? log : [];
+  } catch (e) { return []; }
+}
+
+function saveMistakes(log) {
+  try { Store.setItem(MISTAKES_KEY, JSON.stringify(log.slice(-MISTAKES_MAX))); } catch (e) {}
+}
+
+function logMistake(id, given) {
+  const log = loadMistakes();
+  log.push({ id, given: String(given || '').trim().slice(0, 100), at: dateKey() });
+  saveMistakes(log);
 }
 
 // Summarise across a set of ids. Returns {total, mastered, learning, notStarted, stale}
@@ -13665,6 +14479,7 @@ const ROLE_KINDS = {
   light:         ['story', 'concept', 'roleplay', 'drill'],
 };
 const PLAN_KINDS = ['quiz', 'workbook', 'drill', 'roleplay', 'conj', 'concept', 'story'];
+// A sticking-point lesson ('fix') that needs doing comes on top of the day's picks.
 // Days with a lesson, a conversation or a big session get fewer picks.
 const ROLE_MAX_PICKS = { tutor: 2, conversation: 2, heavyInput: 1 };
 
@@ -13738,6 +14553,18 @@ function planCandidates() {
     if (!reads[st.slug]) add('story', st.slug, st.meta ? (st.shared ? 1.1 : 0.7) : 0.4);
   });
   add('phone', 'numbers', 0.4);
+
+  // Sticking points: a lesson not yet practised, or due another go; failing
+  // that, a nudge to get lessons written when enough has piled up.
+  const items = stickingItems();
+  const open = new Set(items.map(it => it.id));
+  let lessonWaiting = false;
+  stickingLessons().forEach(l => {
+    const state = lessonState(l, open);
+    if (state === 'new' || state === 'due') add('fix', l.slug, state === 'new' ? 2 : 1.5);
+    if (state === 'new' || state === 'due' || state === 'writing') lessonWaiting = true;
+  });
+  if (!lessonWaiting && looseStickingItems(items).length >= 3) add('fix', 'new', 1.4);
   return out;
 }
 
@@ -13747,7 +14574,9 @@ function choosePicks(role, count, avoid) {
   cands.forEach(c => { c.total = c.score + Math.random() * 0.6 - (avoid.has(c.id) ? 3 : 0); });
   const preferred = ROLE_KINDS[role] || ROLE_KINDS.light;
   const kinds = [...preferred, ...PLAN_KINDS.filter(k => !preferred.includes(k))];
-  const picks = [];
+  const fix = cands.filter(c => c.kind === 'fix').sort((a, b) => b.total - a.total)[0];
+  const picks = fix ? [fix.id] : [];
+  count += picks.length;
   for (const kind of kinds) {
     if (picks.length >= count) break;
     const best = cands.filter(c => c.kind === kind).sort((a, b) => b.total - a.total)[0];
@@ -13816,6 +14645,14 @@ function planTask(id) {
     return st && task('📚', `Story: ${st.title}`, 'Play it, then read it aloud', '10 min');
   }
   if (kind === 'phone') return task('📞', 'Phone numbers', 'Say a few numbers in pairs, then listen to some', '3 min');
+  if (kind === 'fix') {
+    if (ref === 'new') {
+      const n = looseStickingItems().length;
+      return n ? task('🎯', 'Your sticking points', `${n} things you keep getting wrong. Get a lesson on why`, '5 min') : null;
+    }
+    const l = stickingLessons().find(x => x.slug === ref);
+    return l && l.status === 'ready' && task('🎯', `Sticking point: ${l.title}`, 'Read why, then practise picking the reason', '5 min');
+  }
   return null;
 }
 
@@ -13855,6 +14692,10 @@ function openPlanTask(id) {
     const i = ref === 'new' ? -1 : stories.findIndex(x => x.slug === ref);
     if (i >= 0) openStory(i); else showView('storyPicker');
   } else if (kind === 'phone') showView('phone');
+  else if (kind === 'fix') {
+    if (ref === 'new' || !stickingLessons().some(l => l.slug === ref)) showView('sticking');
+    else openSticking(ref);
+  }
 }
 
 /** The role-play screen with one scene open and "Practise my lines" on. */
@@ -14675,7 +15516,7 @@ function gradeAndShowVerdict(userAnswer, chosenBtn, wasSkipped) {
   // Log into SR so wrong answers feed the review queue
   // Use a stable item id based on chapter+exercise+question
   const srId = itemId('wb:' + ch.num + ':' + ex.id, q.prompt);
-  recordAnswer(srId, grade.correct);
+  recordAnswer(srId, grade.correct, wasSkipped ? '' : userAnswer);
 
   // Correct answer gets a nice little chime
   if (grade.correct && !wasSkipped) playCorrectSound();
@@ -14718,6 +15559,10 @@ function gradeAndShowVerdict(userAnswer, chosenBtn, wasSkipped) {
   }
   if (q.notes) {
     verdictBody += `<div class="wbx-verdict-note">${q.notes}</div>`;
+  }
+  if (!grade.correct) {
+    verdictBody += whyButtonHtml({ id: srId, kind: 'workbook', prompt: q.prompt, options: q.options || [],
+      answer: q.answer, note: q.notes || '', given: wasSkipped ? '' : userAnswer });
   }
 
   const verdictHtml = `
@@ -16213,6 +17058,7 @@ function bootApp() {
   initStreak();
   renderTracker();
   renderTodayCard();
+  updateStickingBadge();
   startTracking();
   scheduleReminder();
 

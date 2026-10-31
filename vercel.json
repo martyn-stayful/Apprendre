@@ -42,6 +42,12 @@
     },
     "api/stories.js": {
       "maxDuration": 300
+    },
+    "api/sticking.js": {
+      "maxDuration": 300
+    },
+    "api/why.js": {
+      "maxDuration": 60
     }
   },
   "headers": [

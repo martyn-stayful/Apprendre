@@ -460,6 +460,25 @@ nothing.
 
 ## Your progress
 
+The **Progress** screen leads with what you've done, because mastery takes five
+right answers spread over about a month, and a page that only counted mastered
+items showed nothing for the first few weeks:
+
+- **Your French so far:** total practice time, the days you practised and hit
+  your goal, your streak and best run, every answer you've given and how many
+  were right.
+- **Last 7 days:** time, days practised and goals hit, against the week before,
+  plus answers, accuracy and items that moved up a level (counted per day in
+  `fr_activity` from 31 Oct 2026).
+- **The climb:** every item as new, learning (practised), solid (right on three
+  separate days) or mastered, and the date your next items could be mastered if
+  you get them right when they come up.
+- **Milestones:** hours practised, streaks, things got right, solid and
+  mastered items, answers, stories read and sticking points sorted. What you've
+  earned, and the four you're closest to, with progress bars.
+- **Your level, and every deck, quiz and verb**, with bars that show what
+  you've started as well as what you've mastered.
+
 Everything the app tracks — spaced repetition, streak, time practised, workbook
 completion, your own flashcards and phrases — lives in your account, so it
 follows you between your phone and your laptop.
@@ -474,9 +493,9 @@ whatever was on that device is pushed up the first time you sign in.
 opening the app: today is day N when the N − 1 days before it each had at least
 five minutes of practice (or your daily goal, if that's less). It's worked out
 again every time the home screen shows, so a phone that keeps the app open for
-days can't miss one. Practice time is kept for 400 days, and the server merges
-it day by day (the most time recorded for a day wins) rather than letting one
-device's copy overwrite another's.
+days can't miss one. Practice time and daily answer counts are kept for 400
+days, and the server merges them day by day (the most recorded for a day wins)
+rather than letting one device's copy overwrite another's.
 
 ---
 

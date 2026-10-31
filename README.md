@@ -415,9 +415,23 @@ The popup gives:
 After a highlight, the popup sits below the text, so it doesn't cover the
 phone's own Copy menu.
 
-**Flashcards are the exception:** nothing on a flashcard, whether in a deck or in
-Today's Review, can be tapped or highlighted for a translation, because the
-point there is to remember it.
+**Flashcards wait until they're turned over.** Before you reveal a card,
+whether in a deck or in Today's Review, nothing on it can be tapped or
+highlighted, because the point there is to remember it. Once it's turned over,
+the French and the example sentence can be tapped like anything else. A deck
+card shows its French in small type on the back for this, and tapping a word
+doesn't flip the card back.
+
+**Explain this.** A turned-over flashcard, and a revealed Daily 10 answer, has
+an **Explain this** button. Claude breaks the French down chunk by chunk with
+the English for each, then explains what's going on: the tense of each verb
+(what it's called, how it's built here and why it's used), and anything
+irregular or tricky, with a tip for remembering it. It points to the app's own
+explainer to read next if one fits, and when the card's deck already belongs to
+a concept there's a **Read:** button for that explainer straight away. Coming
+back from an explainer returns you to the same card. Breakdowns are cached in
+`explanations` by the French, so each one is only paid for once, and they share
+the 100-a-day limit with Why?.
 
 Words a lesson already glosses show the lesson's own note straight away. For
 anything else, `/api/translate` asks Claude, then stores the answer in the
@@ -455,6 +469,14 @@ those writes to the database, batched a couple of seconds after you stop
 answering and again when you close the tab. If you're offline the work stays
 queued and goes up on the next sync. If you used the app before it had accounts,
 whatever was on that device is pushed up the first time you sign in.
+
+**The streak** ("day 4" at the top) is counted from practice time, not from
+opening the app: today is day N when the N − 1 days before it each had at least
+five minutes of practice (or your daily goal, if that's less). It's worked out
+again every time the home screen shows, so a phone that keeps the app open for
+days can't miss one. Practice time is kept for 400 days, and the server merges
+it day by day (the most time recorded for a day wins) rather than letting one
+device's copy overwrite another's.
 
 ---
 

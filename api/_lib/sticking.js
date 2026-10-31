@@ -47,6 +47,13 @@ export const Lesson = z.object({
   })),
 });
 
+export const Breakdown = z.object({
+  words: z.array(z.object({ fr: z.string(), en: z.string() })),
+  points: z.array(z.object({ title: z.string(), body: z.string() })),
+  tip: z.string(),
+  concept: z.string(),
+});
+
 export const Why = z.object({
   right: z.string(),
   wrong: z.string(),
@@ -168,6 +175,25 @@ stop guessing. Explain briefly, in plain British English:
   sentence; then say so in wrong, and why the app wanted the other.
 
 No waffle and no praise. Accents must be right.`;
+
+const BREAKDOWN_SYSTEM = `${LEARNER} They are revising a piece of French and want to understand
+how it works, not just what it means. Break it down, in plain British English:
+
+- words: the French in order, a chunk at a time: a word, or a few words that
+  only make sense together ("j'ai pris", "des photos", "il y a"). Give each its
+  English here.
+- points: one to four short notes on what is going on, the most useful first.
+  Always cover the tense of each verb: its name, how it is built here, and why
+  it is used here. For a single word or phrase, cover its gender or its forms
+  instead. Then anything else worth knowing: an irregular form, an article,
+  agreement, word order, a set phrase, a false friend. title is a few words
+  ("The passé composé", "pris, from prendre"); body is one to three sentences
+  with the French in it.
+- tip: one short, concrete way to remember it or use it again.
+- concept: if one of the app's explainers listed is the best next read for
+  this, its id; otherwise an empty string.
+
+Keep it short: they are in the middle of a review. Accents must be right.`;
 
 // ---------------------------------------------------------------- requests --
 
@@ -331,6 +357,33 @@ export function whyKey({ kind, prompt, answer, given }) {
   const norm = (s) => String(s || '').normalize('NFC').replace(/[’‘]/g, "'")
     .replace(/\s+/g, ' ').trim().toLowerCase();
   return createHash('sha256').update([kind, prompt, answer, given].map(norm).join('\n')).digest('hex');
+}
+
+/** The cache key for a breakdown: the same French, however typed. */
+export function breakdownKey(fr) {
+  const norm = String(fr || '').normalize('NFC').replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim().toLowerCase();
+  return createHash('sha256').update(`breakdown\n${norm}`).digest('hex');
+}
+
+/**
+ * How a piece of French works: chunk by chunk, its tenses and grammar, a tip,
+ * and which of the app's explainers (`concepts`, [{ id, title }]) to read next.
+ */
+export async function explainFrench({ fr, en, ex, concepts }) {
+  const content = [
+    `French: ${fr}`,
+    en ? `The app's English: ${en}` : '',
+    ex ? `An example sentence with it: ${ex}` : '',
+    concepts.length
+      ? "The app's explainers:\n" + concepts.map((c) => `- ${c.id}: ${c.title}`).join('\n')
+      : "The app's explainers: none.",
+  ].filter(Boolean).join('\n');
+
+  const { data } = await ask({
+    system: BREAKDOWN_SYSTEM, content, schema: Breakdown, effort: 'low', maxTokens: 4000,
+    what: 'explain that',
+  });
+  return data;
 }
 
 /** Why `given` was wrong and `answer` right, for one question. */

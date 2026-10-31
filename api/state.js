@@ -13,6 +13,25 @@ const ALLOWED = new Set([
 
 const MAX_VALUE_BYTES = 512 * 1024;
 
+// Practice time is { 'YYYY-MM-DD': seconds }, and the streak is counted from
+// it. Each device sends its whole copy, so a phone that had the app open for
+// days would wipe out a day practised on the laptop. Merge instead: the most
+// time recorded for each day wins, and days past what the app keeps drop off.
+const TIME_KEEP_DAYS = 400;
+
+function mergeTime(saved, incoming) {
+  const cutoff = new Date(Date.now() - TIME_KEEP_DAYS * 86400000).toISOString().slice(0, 10);
+  const out = {};
+  for (const source of [saved, incoming]) {
+    if (!source || typeof source !== 'object') continue;
+    for (const [day, seconds] of Object.entries(source)) {
+      if (day < cutoff || !Number.isFinite(seconds)) continue;
+      out[day] = Math.max(out[day] || 0, seconds);
+    }
+  }
+  return out;
+}
+
 export default route(['GET', 'PUT'], withAuth(async (req, res, user) => {
   const sql = db();
 
@@ -30,7 +49,13 @@ export default route(['GET', 'PUT'], withAuth(async (req, res, user) => {
   const pairs = Object.entries(entries).filter(([key]) => ALLOWED.has(key));
   if (!pairs.length) return ok(res, { saved: 0 });
 
-  for (const [key, value] of pairs) {
+  for (const [key, given] of pairs) {
+    let value = given;
+    if (key === 'fr_time') {
+      const [row] = await sql`
+        select value from user_state where user_id = ${user.id}::uuid and key = 'fr_time'`;
+      value = mergeTime(row?.value, given);
+    }
     const encoded = JSON.stringify(value ?? null);
     if (encoded.length > MAX_VALUE_BYTES) {
       return bad(res, `"${key}" is too large to sync (${Math.round(encoded.length / 1024)}KB)`, 413);

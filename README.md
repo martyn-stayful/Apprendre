@@ -221,6 +221,13 @@ It covers two lessons from the same afternoon:
 It adds five role-plays, a story, explainers, a page of corrections, and
 workbook chapters 25–26.
 
+**Lesson of 11 November** (`db/packs/mathilde-2026-11-11.js`) is the fourth:
+
+- spoken French without the *ne* (*chais pas*, *chui*) and *je suis en train de*
+- reflexive verbs (*se lever, se laver, se réveiller, s'entendre, se promener*)
+- family and relationships (*demi-frère, divorcé, célibataire, en couple, proches*)
+- a page of corrections from the written exercise, and workbook chapters 27–28
+
 Each new pack's material goes ahead of the packs before it.
 
 To add a pack, write a module like those (the builders are in

@@ -1,5 +1,10 @@
 import { db } from './db.js';
 import { visibleOwnerIds } from './partners.js';
+import { PACKS } from '../../db/packs/index.js';
+
+// The day each lesson pack's lesson took place, where the pack says. Its
+// source row only knows when the pack was loaded.
+const PACK_DATES = Object.fromEntries(PACKS.filter((p) => p.date).map((p) => [p.key, p.date]));
 
 /**
  * Everything the app renders, for one learner: the shared built-in library
@@ -27,7 +32,7 @@ export async function loadContent(userId) {
   // One HTTP round-trip for the lot.
   const [
     deckRows, cardRows, quizRows, questionRows, verbRows, drillRows,
-    conceptRows, storyRows, roleplayRows, grammarRows, chapterRows, exerciseRows,
+    conceptRows, storyRows, roleplayRows, grammarRows, chapterRows, exerciseRows, lessonRows,
   ] = await sql.transaction([
     sql`select id, slug, name, category, level, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
@@ -55,7 +60,7 @@ export async function loadContent(userId) {
          where z.user_id is null or z.user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by q.position`,
 
-    sql`select infinitive, meaning, forms, level, coalesce(user_id = ${uid}::uuid, false) as mine,
+    sql`select infinitive, meaning, forms, level, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null or source_id in (select id from sources where pack is not null)
                     then to_char(created_at, 'IYYY-"W"IW') end as week
@@ -63,7 +68,7 @@ export async function loadContent(userId) {
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, infinitive`,
 
-    sql`select id, cat, en, fr, note, level, coalesce(user_id = ${uid}::uuid, false) as mine,
+    sql`select id, cat, en, fr, note, level, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null or source_id in (select id from sources where pack is not null)
                     then to_char(created_at, 'IYYY-"W"IW') end as week
@@ -72,7 +77,7 @@ export async function loadContent(userId) {
          order by user_id nulls first, position, id`,
 
     sql`select slug, title, subtitle, category, paragraphs, table_rows, examples,
-               pitfall, related, coalesce(user_id = ${uid}::uuid, false) as mine,
+               pitfall, related, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null or source_id in (select id from sources where pack is not null)
                     then to_char(created_at, 'IYYY-"W"IW') end as week
@@ -82,14 +87,14 @@ export async function loadContent(userId) {
 
     // Your own and your partners' stories first, newest at the top: that's
     // where a story the app has just written for you belongs.
-    sql`select slug, title, blurb, level, tags, focus, body, translation, meta,
+    sql`select slug, title, blurb, level, tags, focus, body, translation, meta, source_id,
                coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from stories
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id is null, case when user_id is not null then created_at end desc, position, title`,
 
-    sql`select title, ctx, lines, notes, coalesce(user_id = ${uid}::uuid, false) as mine,
+    sql`select title, ctx, lines, notes, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null or source_id in (select id from sources where pack is not null)
                     then to_char(created_at, 'IYYY-"W"IW') end as week
@@ -97,13 +102,13 @@ export async function loadContent(userId) {
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
 
-    sql`select title, body, coalesce(user_id = ${uid}::uuid, false) as mine,
+    sql`select title, body, source_id, coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
           from grammar_notes
          where user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by user_id nulls first, position, title`,
 
-    sql`select id, slug, book, book_title, num, title, subtitle, level, rule, vocab,
+    sql`select id, slug, book, book_title, num, title, subtitle, level, rule, vocab, source_id,
                coalesce(user_id = ${uid}::uuid, false) as mine,
                coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared,
                case when user_id is not null or source_id in (select id from sources where pack is not null)
@@ -116,6 +121,16 @@ export async function loadContent(userId) {
           from workbook_exercises e join workbook_chapters c on c.id = e.chapter_id
          where c.user_id is null or c.user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value)
          order by e.position`,
+
+    // Each lesson pack, and each upload that's been read, is a lesson's worth
+    // of material: the app groups content by these to revise the latest one.
+    sql`select id, kind, title, summary, pack, to_char(created_at, 'YYYY-MM-DD') as day,
+               coalesce(user_id = ${uid}::uuid, false) as mine,
+               coalesce(user_id is not null and user_id <> ${uid}::uuid, false) as shared
+          from sources
+         where kind in ('pack', 'upload') and status = 'ready'
+           and (user_id is null or user_id in (select value::uuid from jsonb_array_elements_text(${owners}::jsonb) as value))
+         order by created_at desc`,
   ]);
 
   const cardsByDeck = groupBy(cardRows, 'deck_id');
@@ -158,6 +173,7 @@ export async function loadContent(userId) {
     verbTables[v.infinitive] = {
       meaning: v.meaning, forms: v.forms, level: v.level || undefined,
       mine: v.mine, shared: v.shared || undefined, week: v.week || undefined,
+      sourceId: v.source_id,
     };
   }
 
@@ -175,6 +191,7 @@ export async function loadContent(userId) {
       rule: c.rule || undefined,
       vocab: c.vocab || [],
       week: c.week || undefined,
+      sourceId: c.source_id,
       exercises: (exercisesByChapter[c.id] || []).map((e) => ({
         id: `${c.slug}-${e.slug}`,
         title: e.title,
@@ -201,6 +218,7 @@ export async function loadContent(userId) {
       mine: c.mine,
       shared: c.shared || undefined,
       week: c.week || undefined,
+      sourceId: c.source_id,
     };
   }
 
@@ -212,19 +230,32 @@ export async function loadContent(userId) {
     concepts,
     dailyDrills: drillRows.map((d) => ({
       cat: d.cat, en: d.en, fr: d.fr, note: d.note, level: d.level || undefined,
-      mine: d.mine, shared: d.shared || undefined, week: d.week || undefined,
+      mine: d.mine, shared: d.shared || undefined, week: d.week || undefined, sourceId: d.source_id,
     })),
     stories: storyRows.map((s) => ({
       slug: s.slug, title: s.title, blurb: s.blurb, level: s.level,
       tags: s.tags || [], focus: s.focus || [],
       body: s.body, translation: s.translation, mine: s.mine, shared: s.shared || undefined,
-      meta: s.meta && s.meta.generated ? s.meta : undefined,
+      meta: s.meta && s.meta.generated ? s.meta : undefined, sourceId: s.source_id,
     })),
     roleplays: roleplayRows.map((r) => ({
       title: r.title, ctx: r.ctx, lines: r.lines, notes: r.notes, mine: r.mine, shared: r.shared || undefined,
-      week: r.week || undefined,
+      week: r.week || undefined, sourceId: r.source_id,
     })),
-    grammar: grammarRows.map((g) => ({ title: g.title, body: g.body, mine: g.mine, shared: g.shared || undefined })),
+    grammar: grammarRows.map((g) => ({
+      title: g.title, body: g.body, mine: g.mine, shared: g.shared || undefined, sourceId: g.source_id,
+    })),
+    // Newest first. `date` is the day of the lesson for a pack, or the day an
+    // upload arrived. A pack without a date gathers months of lessons, so it
+    // isn't one lesson and is left out.
+    lessons: lessonRows
+      .filter((l) => l.kind !== 'pack' || PACK_DATES[l.pack])
+      .map((l) => ({
+        id: l.id, kind: l.kind, title: l.title, summary: l.summary || '',
+        date: l.kind === 'pack' ? PACK_DATES[l.pack] : l.day,
+        mine: l.mine, shared: l.shared || undefined,
+      }))
+      .sort((a, b) => b.date.localeCompare(a.date)),
   };
 }
 

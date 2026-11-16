@@ -15,7 +15,10 @@
 import mathilde2026 from './mathilde-2026.js';
 import notebook2026 from './notebook-2026.js';
 import mathilde20261028 from './mathilde-2026-10-28.js';
+import mathilde20261111 from './mathilde-2026-11-11.js';
 
 // Oldest first. Each pack's material goes ahead of the ones before it in every
-// list, so the most recent lessons are what you see first.
-export const PACKS = [mathilde2026, notebook2026, mathilde20261028];
+// list, so the most recent lessons are what you see first. A pack's `date`
+// (YYYY-MM-DD) is the day of its lesson: the Latest lesson screen goes by it,
+// and leaves out a pack without one (a compilation of many lessons).
+export const PACKS = [mathilde2026, notebook2026, mathilde20261028, mathilde20261111];

@@ -221,7 +221,53 @@ It covers two lessons from the same afternoon:
 It adds five role-plays, a story, explainers, a page of corrections, and
 workbook chapters 25–26.
 
-Each new pack's material goes ahead of the packs before it.
+**Lesson of 11 November** (`db/packs/mathilde-2026-11-11.js`) is the fourth:
+
+- talking about your family: *demi-frère*, *divorcés*, *célibataire*, *en
+  couple*, *mes proches*, *rencontrer* and *retrouver*
+- reflexive verbs for the daily routine (*je me lève, je me lave, on
+  s'entend bien*), and the ones whose meaning changes (*entendre /
+  s'entendre*, *promener le chien / se promener*)
+- *I'm working* is *je travaille*, never *je suis travaille*; *être en train
+  de* for right now; *être* for states
+- spoken French dropping the *ne* (*je sais pas, chépa, chui*) and where a
+  pronoun goes (*je ne la vois pas souvent*)
+- the corrections from the written exercise
+
+It adds three decks, two quizzes, four reflexive verbs (each form carries its
+pronoun, so *je* → *me lève*), three explainers, two role-plays, a story, 25
+Daily 10 prompts, a page of corrections and workbook chapter 27.
+
+Each new pack's material goes ahead of the packs before it. A pack can say
+when its lesson was (`date: 'YYYY-MM-DD'`); the Latest lesson screen goes by
+that.
+
+---
+
+## Latest lesson
+
+The **Latest lesson** card on the home screen opens everything from your most
+recent lesson in one place. A lesson is a dated lesson pack, or something you
+uploaded (dated the day you uploaded it); lessons in the same week are shown
+together, and chips at the top go back to earlier weeks. The Lessons with
+Mathilde and From your notebooks packs gather months of lessons with no single
+date, so they stay in the usual menus but aren't on this screen.
+
+- **Revise it all** runs a session of the lesson's flashcards, quiz questions,
+  verbs and workbook questions, mixed, the ones you know least first, 25 at a
+  time. Its progress bar shows how much of the lesson is new, learning, solid
+  and mastered.
+- **Understand it:** the lesson's explainers and grammar notes.
+- **Practise it:** its decks, quizzes, verbs and workbook chapter, each opening
+  as it would from its own menu.
+- **Say it:** the lesson's Daily 10 prompts (say it, then tap to check) and its
+  role-plays.
+- **Read it:** its story.
+
+Today's plan offers the latest lesson for three weeks after it, first on the
+day of your next lesson and the day after a lesson. `/api/content` returns the
+lessons (`lessons`) and tags every piece of content with the lesson it came
+from (`sourceId`).
 
 To add a pack, write a module like those (the builders are in
 `db/packs/helpers.js`) and add it to the end of the list in

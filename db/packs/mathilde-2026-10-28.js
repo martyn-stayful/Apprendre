@@ -14,6 +14,7 @@ import { mc, typed, choice, drills, lines, forms } from './helpers.js';
 export default {
   key: 'mathilde-2026-10-28',
   title: 'Lessons of 28 October',
+  date: '2026-10-28',
   summary:
     'Registers and slang (bosser, mon boulot, dégager), talking about the weekend with aller and ' +
     'faire, jouer à and faire de, bus times and dates with du… au…, hiring a bike, and the card ' +

@@ -1731,6 +1731,51 @@
   .mode-card[data-tone="concepts" i] .icon { background: rgba(212, 162, 76, 0.16); color: var(--gold); }
   .mode-card[data-tone="upload" i] .icon { background: rgba(198, 75, 59, 0.14); color: var(--ember); }
 
+  /* ---- Latest lesson ---- */
+  .ls-weeks { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .ls-chip {
+    padding: 7px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(42, 74, 60, 0.25);
+    background: var(--paper);
+    color: var(--pine);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .ls-chip.on { background: var(--pine); border-color: var(--pine); color: var(--paper); }
+  .cpt-header-card .cpt-header-title + .ls-summary { margin-bottom: 10px; }
+  .cpt-header-card .ls-summary:last-child { margin-bottom: 0; }
+  .ls-summary { font-style: normal; line-height: 1.5; }
+  .ls-list { display: flex; flex-direction: column; gap: 8px; }
+  .ls-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(26, 35, 50, 0.08);
+    border-radius: 12px;
+    background: var(--paper);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .ls-icon { flex-shrink: 0; font-size: 18px; }
+  .ls-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .ls-name { font-family: 'Fraunces', serif; font-size: 15px; color: var(--ink); line-height: 1.3; }
+  .ls-meta { font-size: 12px; color: var(--slate); line-height: 1.4; }
+  .ls-go { flex-shrink: 0; font-size: 20px; color: var(--slate); }
+  .ls-drills { background: var(--paper); border: 1px solid rgba(26, 35, 50, 0.08); border-radius: 14px; overflow: hidden; }
+  .ls-drill { padding: 11px 14px; border-bottom: 1px solid rgba(26, 35, 50, 0.06); cursor: pointer; }
+  .ls-drill:last-child { border-bottom: none; }
+  .ls-drill-en { font-size: 14px; color: var(--ink); line-height: 1.45; }
+  .ls-drill-fr, .ls-drill-note { display: none; }
+  .ls-drill.open .ls-drill-fr { display: block; margin-top: 6px; font-family: 'Fraunces', serif; font-size: 16px; color: var(--pine); }
+  .ls-drill.open .ls-drill-note { display: block; margin-top: 4px; font-size: 12.5px; color: var(--slate); line-height: 1.5; }
+  .ls-drill .rp-speak { margin-left: 6px; }
+
   /* ---- Sticking points ---- */
   .mode-card[data-tone="sticking" i] .icon { background: rgba(198, 75, 59, 0.12); color: var(--ember); }
   .fx-wrap { padding: 0 24px 40px; }
@@ -7326,7 +7371,7 @@
 
     <button class="review-block" id="reviewBlock" onclick="startReview('review')" style="display:none"></button>
 
-    <button class="review-block recent" id="recentLessonsBlock" onclick="startReview('this-week')" style="display:none"></button>
+    <button class="review-block recent" id="recentLessonsBlock" onclick="showView('lesson')" style="display:none"></button>
 
     <!-- These render conditionally. Populated by JS. -->
     <div id="weeklySummarySlot"></div>
@@ -7819,6 +7864,17 @@
     <div class="cpt-wrap" id="cptWrap"></div>
   </section>
 
+  <section class="view" id="lesson">
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('home')">←</button>
+      <div>
+        <div class="view-title" id="lsTitle">Latest lesson</div>
+        <div class="view-sub">Everything from it, in one place</div>
+      </div>
+    </div>
+    <div class="cpt-wrap" id="lsWrap"></div>
+  </section>
+
   <section class="view" id="sticking">
     <div class="view-header">
       <button class="back-btn" onclick="showView('home')">←</button>
@@ -8156,6 +8212,7 @@
     window.roleplays = c.roleplays || [];
     window.grammar = c.grammar || [];
     window.fixLessons = c.sticking || [];
+    window.lessons = c.lessons || [];
   }
 
   /** Pull content again after an upload, and repaint whatever is on screen. */
@@ -8809,6 +8866,7 @@ function showView(id) {
   if (id === 'workbookChapter') renderWorkbookChapter();
   if (id === 'concepts') renderConceptList();
   if (id === 'conceptDetail') renderConceptDetail();
+  if (id === 'lesson') renderLesson();
   if (id === 'sticking') renderSticking();
   if (id === 'stickingLesson') renderStickingLesson();
   if (id === 'home') { renderTodayCard(); updateStickingBadge(); }
@@ -8873,6 +8931,8 @@ function startReview(mode, limit) {
     items = basicsToCheck().slice(0, limit || BASICS_PER_CHECK);
   } else if (mode === 'recall') {
     items = recallableItems().slice(0, limit || RECALLS_PER_SESSION);
+  } else if (mode === 'lesson') {
+    items = lessonSessionItems().slice(0, limit || LESSON_PER_SESSION);
   } else {
     items = getDueItems();
   }
@@ -8916,6 +8976,10 @@ function startReview(mode, limit) {
   } else if (mode === 'recall') {
     if (title) title.textContent = 'Recall the French';
     if (sub) sub.textContent = `${items.length} words you recognise, English first`;
+  } else if (mode === 'lesson') {
+    const w = currentLessonWeek();
+    if (title) title.textContent = w && w.week === lessonWeeks()[0].week ? 'Latest lesson' : 'Lesson';
+    if (sub) sub.textContent = `${items.length} item${items.length === 1 ? '' : 's'} from the lesson of ${w ? lessonLabel(w) : ''}`;
   } else {
     if (title) title.textContent = "Today's Review";
     if (sub) sub.textContent = `${items.length} item${items.length === 1 ? '' : 's'} ready`;
@@ -8962,6 +9026,12 @@ function renderReviewCard() {
       <div class="eyebrow">Basics check · A1</div>
       <h3>${rvState.items.length} basics: show you know them</h3>
       <p>Anything you get right goes straight to a refresher in two weeks, and right again then, it's mastered. After that it only comes back every month or so. Anything you miss joins your normal practice.</p>
+    </div>
+  ` : rvState.i === 0 && rvState.mode === 'lesson' ? `
+    <div class="rv-intro" style="background:linear-gradient(135deg,var(--pine) 0%,var(--pine-deep) 100%)">
+      <div class="eyebrow">Revise your lesson · ${escapeHtml(currentLessonWeek() ? lessonLabel(currentLessonWeek()) : '')}</div>
+      <h3>${rvState.items.length} item${rvState.items.length === 1 ? '' : 's'} from your lesson</h3>
+      <p>Flashcards, quiz questions, verbs and workbook questions, mixed, the ones you know least first. Stuck on one? Tap Why? or Explain this.</p>
     </div>
   ` : rvState.i === 0 && rvState.mode === 'recall' ? `
     <div class="rv-intro" style="background:linear-gradient(135deg,var(--ink-soft) 0%,var(--ink) 100%)">
@@ -9626,7 +9696,9 @@ function renderReviewComplete(wrap) {
         ? `Basics checked`
         : rvState.mode === 'recall'
           ? `Recalled from the English`
-          : `Review session complete`;
+          : rvState.mode === 'lesson'
+            ? `Lesson revised`
+            : `Review session complete`;
 
   const subcopy = rvState.mode === 'new'
     ? `You'll see these again tomorrow. Come back each day and they'll gradually move further apart.`
@@ -9636,12 +9708,33 @@ function renderReviewComplete(wrap) {
         ? `${knownNow} confirmed: they'll be back as a refresher in two weeks, English first this time. ${results.length - knownNow ? `${results.length - knownNow} to practise: they're in your reviews from tomorrow.` : ''}`
       : rvState.mode === 'recall'
         ? `Bringing the French to mind is the step after recognising it. The ones you couldn't recall come back sooner.`
+      : rvState.mode === 'lesson'
+        ? `${levelledUp} moved up a level. ${lessonSessionItems().length ? `${lessonSessionItems().length} from this lesson still to master.` : 'Everything from this lesson is mastered.'}`
       : (levelledUp > held
           ? `${levelledUp} items moved forward. Spaced repetition working as designed.`
           : `Some items held at their current level — they'll be scheduled for another review soon.`);
 
   // Build the "keep going" options dynamically based on what's available
   const options = [];
+
+  // After revising a lesson: more of it, or back to everything else from it
+  if (rvState.mode === 'lesson') {
+    const more = lessonSessionItems().length;
+    if (more) {
+      options.push({
+        primary: true,
+        label: 'Revise more from this lesson',
+        sub: `${more} still to master`,
+        onclick: `startReview('lesson')`
+      });
+    }
+    options.push({
+      primary: !options.length,
+      label: 'Back to the lesson',
+      sub: 'Explainers, role-plays and the rest',
+      onclick: `showView('lesson')`
+    });
+  }
 
   // Offer new items if available and we haven't just done them
   if (newAvail > 0 && rvState.mode !== 'new') {
@@ -10261,7 +10354,10 @@ function nextConj() {
 }
 
 function normalize(s) {
+  // Phone keyboards type a curly apostrophe: m’entends is m'entends.
   return s.trim().toLowerCase()
+    .replace(/[’‘]/g, "'")
+    .replace(/\s+/g, ' ')
     .replace(/[éèêë]/g, 'e')
     .replace(/[àâä]/g, 'a')
     .replace(/[îï]/g, 'i')
@@ -10360,7 +10456,7 @@ function showConjEnd() {
       <div class="end-score">${conjState.correct}<span class="of">/${conjState.queue.length}</span></div>
       <p>${pct}% correct</p>
       <div class="end-actions">
-        <button class="end-btn" onclick="startConj('${conjState.verbKey}')">Again</button>
+        <button class="end-btn" data-k="${escapeHtml(conjState.verbKey)}" onclick="startConj(this.dataset.k)">Again</button>
         <button class="end-btn primary" onclick="showView('conjPicker')">Another verb</button>
       </div>
     </div>`;
@@ -11008,6 +11104,207 @@ function renderPhonePractice() {
 
 /* ====================== STORIES ====================== */
 
+
+/* ====================== LATEST LESSON ======================
+   Everything from your most recent lesson in one place. Each lesson pack and
+   each upload is a lesson's worth of material (window.lessons, from
+   /api/content, newest first); the screen shows the most recent week that has
+   any, with earlier weeks a tap away. Revise it all runs a session of that
+   lesson's flashcards, quiz questions, verbs and workbook questions, the ones
+   you know least first; everything else opens as it would from its own menu. */
+
+const LESSON_PER_SESSION = 25;
+let lsState = { week: null };   // the week on screen; null means the latest
+
+/** Source ids that something in the app came from. */
+function lessonSourcesInUse() {
+  const ids = new Set();
+  const add = (x) => { if (x && x.sourceId) ids.add(x.sourceId); };
+  [decks, quizzes, verbTables, workbook, concepts].forEach(map => Object.values(map || {}).forEach(add));
+  [dailyDrills, stories, roleplays, grammar].forEach(list => (list || []).forEach(add));
+  return ids;
+}
+
+/** Lessons grouped by the week they fall in, newest first: [{ week, date, lessons }]. */
+function lessonWeeks() {
+  const used = lessonSourcesInUse();
+  const weeks = [];
+  (window.lessons || []).forEach(l => {
+    if (!used.has(l.id)) return;
+    const [y, m, d] = l.date.split('-').map(Number);
+    const week = isoWeekKey(new Date(y, m - 1, d));
+    let w = weeks.find(x => x.week === week);
+    if (!w) weeks.push(w = { week, date: l.date, lessons: [] });
+    w.lessons.push(l);
+    if (l.date > w.date) w.date = l.date;
+  });
+  return weeks.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+function currentLessonWeek() {
+  const weeks = lessonWeeks();
+  return weeks.find(w => w.week === lsState.week) || weeks[0] || null;
+}
+
+function lessonIds(w) {
+  return new Set(w.lessons.map(l => l.id));
+}
+
+/** Everything that came from these lessons, by kind. */
+function lessonMaterial(ids) {
+  const has = (x) => x && ids.has(x.sourceId);
+  const pick = (map) => Object.entries(map || {}).filter(([, x]) => has(x)).map(([key, x]) => ({ key, ...x }));
+  return {
+    concepts: pick(concepts),
+    decks: pick(decks),
+    quizzes: pick(quizzes),
+    verbs: pick(verbTables),
+    chapters: pick(workbook),
+    drills: (dailyDrills || []).filter(has),
+    roleplays: (roleplays || []).filter(has),
+    stories: (stories || []).map((s, index) => ({ ...s, index })).filter(has),
+    grammar: (grammar || []).filter(has),
+  };
+}
+
+/** The trackable items from these lessons: flashcards, quiz questions, verb forms, workbook questions. */
+function lessonItems(ids) {
+  const owner = (it) => {
+    const key = it.sourceKey || '';
+    if (it.type === 'flashcard') return key.startsWith('wbvocab:') ? workbook[key.slice(8)] : decks[key];
+    if (it.type === 'quiz') return quizzes[key];
+    if (it.type === 'conj') return verbTables[key];
+    if (it.type === 'workbook') return workbook[key];
+    return null;
+  };
+  return allTrackableItems().filter(it => { const o = owner(it); return o && ids.has(o.sourceId); });
+}
+
+/** A Revise it all session: what isn't mastered yet, the least known first, kinds mixed. */
+function lessonSessionItems() {
+  const w = currentLessonWeek();
+  if (!w) return [];
+  const level = (it) => (it.rec ? it.rec.level : -1);
+  return lessonItems(lessonIds(w))
+    .filter(it => level(it) < 5)
+    .map(it => ({ it, r: Math.random() }))
+    .sort((a, b) => level(a.it) - level(b.it) || a.r - b.r)
+    .map(x => x.it);
+}
+
+function lessonLabel(w) {
+  return shortDate(w.date);
+}
+
+function pickLessonWeek(week) {
+  const weeks = lessonWeeks();
+  lsState.week = weeks.length && weeks[0].week === week ? null : week;
+  renderLesson();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function renderLesson() {
+  const wrap = document.getElementById('lsWrap');
+  const weeks = lessonWeeks();
+  const w = currentLessonWeek();
+  if (!w) {
+    wrap.innerHTML = `<div class="fx-empty">No lesson material yet. After a lesson, upload your worksheet or notes on the Upload Material screen and it all turns up here, ready to revise.</div>`;
+    return;
+  }
+  const latest = w.week === weeks[0].week;
+  document.getElementById('lsTitle').textContent = latest ? 'Latest lesson' : `Lesson of ${lessonLabel(w)}`;
+  const ids = lessonIds(w);
+  const m = lessonMaterial(ids);
+  const items = lessonItems(ids);
+  const climb = climbOf(items);
+  const toRevise = items.filter(it => !it.rec || it.rec.level < 5).length;
+
+  const row = (icon, title, meta, onclick, key) => `
+    <button class="ls-row" ${key !== undefined ? `data-k="${escapeHtml(String(key))}"` : ''} onclick="${onclick}">
+      <span class="ls-icon">${icon}</span>
+      <span class="ls-text"><span class="ls-name">${escapeHtml(title)}</span>${meta ? `<span class="ls-meta">${escapeHtml(meta)}</span>` : ''}</span>
+      <span class="ls-go">›</span>
+    </button>`;
+  const started = (list) => list.filter(it => it.rec).length;
+  const deckItems = (key) => items.filter(it => it.type === 'flashcard' && it.sourceKey === key);
+  const section = (title, rows) => rows.length ? `<div class="cpt-section-title">${title}</div><div class="ls-list">${rows.join('')}</div>` : '';
+
+  const understand = [
+    ...m.concepts.map(c => row('💡', c.title, c.subtitle || 'Explainer', "openConcept(this.dataset.k, 'lesson')", c.key)),
+    ...m.grammar.map(g => row('📄', g.title, 'Grammar note', "showView('grammar')")),
+  ];
+  const practise = [
+    ...m.decks.map(d => row('🃏', d.name, `${d.cards.length} cards · ${started(deckItems(d.key))} started`, 'startDeck(this.dataset.k)', d.key)),
+    ...m.quizzes.map(q => row('🧠', q.title, `${q.qs.length} questions`, 'startQuiz(this.dataset.k)', q.key)),
+    ...m.verbs.map(v => row('⚡', v.key, v.meaning, 'startConj(this.dataset.k)', v.key)),
+    ...m.chapters.map(c => row('📘', c.title, `Workbook · ${c.exercises.length} exercises`, 'openChapter(this.dataset.k)', c.key)),
+  ];
+  const say = m.roleplays.map(r => row('🎭', r.title, 'Role-play', 'openRoleplayScene(this.dataset.k)', r.title));
+  const read = m.stories.map(s => row('📚', s.title, s.blurb || 'Story', 'openStory(Number(this.dataset.k))', s.index));
+
+  wrap.innerHTML = `
+    ${weeks.length > 1 ? `<div class="ls-weeks">${weeks.slice(0, 6).map((x, i) => `
+      <button class="ls-chip${x.week === w.week ? ' on' : ''}" data-w="${x.week}" onclick="pickLessonWeek(this.dataset.w)">${i === 0 ? 'Latest · ' : ''}${escapeHtml(lessonLabel(x))}</button>`).join('')}
+    </div>` : ''}
+
+    <div class="cpt-header-card fx-header">
+      <div class="cpt-header-eyebrow">${latest ? 'Your latest lesson' : 'An earlier lesson'} · ${escapeHtml(lessonLabel(w))}</div>
+      ${w.lessons.map(l => `
+        <h2 class="cpt-header-title">${escapeHtml(l.title)}</h2>
+        ${l.summary ? `<div class="cpt-header-sub ls-summary">${escapeHtml(l.summary)}</div>` : ''}`).join('')}
+    </div>
+
+    <div class="pr-section">
+      <div class="pr-section-head"><div class="pr-section-title">Revise it all</div>
+        <div class="pr-section-pct small">${climb.total - climb.fresh} of ${climb.total} started</div></div>
+      ${climbBarHtml(climb, 'big')}
+      <div class="pg-legend">
+        <div><span class="pg-dot mastered"></span><strong>${climb.mastered}</strong> mastered</div>
+        <div><span class="pg-dot solid"></span><strong>${climb.solid}</strong> solid</div>
+        <div><span class="pg-dot learning"></span><strong>${climb.learning}</strong> learning</div>
+        <div><span class="pg-dot"></span><strong>${climb.fresh}</strong> still new</div>
+      </div>
+      <button class="fx-build" onclick="startReview('lesson')" ${toRevise ? '' : 'disabled'}>
+        ${toRevise ? `Revise ${Math.min(toRevise, LESSON_PER_SESSION)} now` : 'All mastered'}
+      </button>
+      <div class="pg-note">The lesson's flashcards, quiz questions, verbs and workbook questions, mixed together, the ones you know least first. Run it again to work through the rest.</div>
+    </div>
+
+    ${section('Understand it', understand)}
+    ${section('Practise it', practise)}
+    ${m.drills.length || say.length ? `<div class="cpt-section-title">Say it</div>
+      ${m.drills.length ? `<div class="ls-drills">${m.drills.map(d => `
+        <div class="ls-drill" onclick="if (!event.target.closest('button')) this.classList.toggle('open')">
+          <div class="ls-drill-en">${escapeHtml(d.en)}</div>
+          <div class="ls-drill-fr"${frAttrs(drillEnglish(d.en) || d.en)}>${escapeHtml(d.fr)}
+            <button class="rp-speak" onclick="${speakHandler(d.fr)}" aria-label="Listen">🔊</button></div>
+          ${d.note ? `<div class="ls-drill-note">${escapeHtml(stripTags(d.note))}</div>` : ''}
+        </div>`).join('')}</div>
+        <div class="pg-note">Say each one out loud, then tap to check.</div>` : ''}
+      ${say.length ? `<div class="ls-list" style="margin-top:10px">${say.join('')}</div>` : ''}` : ''}
+    ${section('Read it', read)}
+  `;
+}
+
+/** The home card: the latest lesson, a tap from revising it. */
+function renderLatestLessonBlock() {
+  const el = document.getElementById('recentLessonsBlock');
+  if (!el) return;
+  const w = lessonWeeks()[0];
+  if (!w) { el.style.display = 'none'; return; }
+  const items = lessonItems(lessonIds(w));
+  const toRevise = items.filter(it => !it.rec || it.rec.level < 5).length;
+  el.style.display = 'block';
+  el.onclick = () => { lsState.week = null; showView('lesson'); };
+  el.innerHTML = `
+    <div class="eyebrow">Latest lesson · ${escapeHtml(lessonLabel(w))}</div>
+    <div class="rb-headline">${escapeHtml(w.lessons.map(l => l.title).join(' · '))}</div>
+    <div class="rb-detail">${toRevise ? `${toRevise} to revise, and everything else from it in one place.` : 'All mastered. Everything from it is still there to look back at.'}</div>
+    <div class="rb-cta">
+      Revise it <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 6.71a.996.996 0 0 0 0 1.41L13.17 12l-3.88 3.88a.996.996 0 1 0 1.41 1.41l4.59-4.59a.996.996 0 0 0 0-1.41L10.7 6.7c-.38-.38-1.02-.38-1.41.01z"/></svg>
+    </div>
+  `;
+}
 
 /* ====================== STICKING POINTS ======================
    The things you keep getting wrong. Anything missed twice and not since put
@@ -14978,15 +15275,15 @@ const PLAN_KEY = 'fr_today_plan';
 // The kinds of exercise that suit each day of the weekly rhythm, best first.
 // Other kinds fill in after these when a day needs more picks.
 const ROLE_KINDS = {
-  tutor:         ['drill', 'conj'],
-  consolidation: ['quiz', 'workbook', 'recall', 'concept', 'drill'],
+  tutor:         ['lesson', 'drill', 'conj'],
+  consolidation: ['lesson', 'quiz', 'workbook', 'recall', 'concept', 'drill'],
   speakingPrep:  ['drill', 'roleplay', 'conj', 'phone'],
   conversation:  ['drill', 'roleplay'],
   heavyInput:    ['story'],
   review:        ['basics', 'recall', 'quiz', 'workbook', 'conj', 'roleplay'],
   light:         ['story', 'concept', 'roleplay', 'basics', 'drill'],
 };
-const PLAN_KINDS = ['quiz', 'workbook', 'drill', 'roleplay', 'conj', 'concept', 'story', 'basics', 'recall'];
+const PLAN_KINDS = ['lesson', 'quiz', 'workbook', 'drill', 'roleplay', 'conj', 'concept', 'story', 'basics', 'recall'];
 // A sticking-point lesson ('fix') that needs doing comes on top of the day's picks.
 // Days with a lesson, a conversation or a big session get fewer picks.
 const ROLE_MAX_PICKS = { tutor: 2, conversation: 2, heavyInput: 1 };
@@ -15066,6 +15363,12 @@ function planCandidates() {
   const basics = basicsStatus().toCheck;
   if (basics) add('basics', 'a1', basics >= 20 ? 1.1 : 0.6);
   if (recallableItems().length >= 5) add('recall', 'known', 0.9);
+
+  // The latest lesson, while it's recent and there's something in it to revise.
+  const latest = lessonWeeks()[0];
+  if (latest && daysBetween(dateKey(), latest.date) <= 21 && lessonItems(lessonIds(latest)).some(it => !it.rec || it.rec.level < 5)) {
+    add('lesson', 'latest', 1.2);
+  }
 
   // Sticking points: a lesson not yet practised, or due another go; failing
   // that, a nudge to get lessons written when enough has piled up.
@@ -15162,6 +15465,12 @@ function planTask(id) {
     const n = basicsStatus().toCheck;
     return n ? task('✅', 'Basics check', `${n} A1 basics to confirm. Right first time, and they're refreshers from then on`, '5 min') : null;
   }
+  if (kind === 'lesson') {
+    const w = lessonWeeks()[0];
+    if (!w) return null;
+    const n = lessonItems(lessonIds(w)).filter(it => !it.rec || it.rec.level < 5).length;
+    return task('📒', 'Revise your latest lesson', `${lessonLabel(w)}${n ? ` · ${n} to revise` : ''}: explainers, flashcards and the rest`, '10 min');
+  }
   if (kind === 'recall') {
     const n = recallableItems().length;
     return n >= 5 ? task('💭', 'Recall the French', `${Math.min(n, RECALLS_PER_SESSION)} words you recognise: see the English, think of the French`, '5 min') : null;
@@ -15215,6 +15524,7 @@ function openPlanTask(id) {
   } else if (kind === 'phone') showView('phone');
   else if (kind === 'basics') startReview('check');
   else if (kind === 'recall') startReview('recall');
+  else if (kind === 'lesson') { lsState.week = null; showView('lesson'); }
   else if (kind === 'fix') {
     if (ref === 'new' || !stickingLessons().some(l => l.slug === ref)) showView('sticking');
     else openSticking(ref);
@@ -15437,32 +15747,8 @@ function renderTodayCard() {
   renderNudgeSlot();
   renderInsightSlot();
   renderReviewBlock();
-  renderRecentLessonsBlock();
+  renderLatestLessonBlock();
   renderProgressBlock();
-}
-
-// Direct entry point for practising recent uploads — previously only
-// reachable via a button on the post-session "what's next" screen.
-function renderRecentLessonsBlock() {
-  const el = document.getElementById('recentLessonsBlock');
-  if (!el) return;
-
-  const items = recentToPractise();
-  if (items.length === 0) {
-    el.style.display = 'none';
-    return;
-  }
-
-  el.style.display = 'block';
-  el.onclick = () => startReview('this-week');
-  el.innerHTML = `
-    <div class="eyebrow">Recent lessons · your latest uploads</div>
-    <div class="rb-headline">${items.length} to practise from recent lessons</div>
-    <div class="rb-detail">Focus on what your tutor just covered.</div>
-    <div class="rb-cta">
-      Practise now <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9.29 6.71a.996.996 0 0 0 0 1.41L13.17 12l-3.88 3.88a.996.996 0 1 0 1.41 1.41l4.59-4.59a.996.996 0 0 0 0-1.41L10.7 6.7c-.38-.38-1.02-.38-1.41.01z"/></svg>
-    </div>
-  `;
 }
 
 function renderReviewBlock() {

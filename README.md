@@ -260,7 +260,7 @@ few specific exercises the app picks for you. Each pick is a different kind:
 - a verb
 - an explainer
 - a new story episode
-- a basics check, or writing words you know from memory (see below)
+- a basics check, or recalling the French for words you know (see below)
 
 Tapping a pick opens that exact exercise. A role-play opens on its scene with
 **Practise my lines** on.
@@ -307,18 +307,15 @@ learning, and too slow for things you already know. So:
   basics come last, since the basics check is the quick way through those.
   Today's Review also puts current material ahead of refreshers of the basics.
 
-**Writing it from memory.** Recognising a word is half of knowing it; producing
-it is the other half. Once a flashcard is at level 2 (right on two separate
-days), Today's Review shows you the English and asks you to type the French,
-and so do the refreshers of basics you've checked. The check forgives
-accents ("right, apart from the accents") and handles `grand(e)`, `fou / folle`
-and `(se) lever`. A missing article, or a letter or two out (swapped letters
-count as one), is "nearly". The rating is still yours, with the one the app
-suggests outlined, and a wrong answer gets the Why? button and goes in the
-mistakes log. **Just show me the French** switches back to recognising it, for
-when you're on the move. **Write it from memory** is also a session of its own:
-15 flashcards you've got right at least twice, the longest unseen first, offered
-at the end of a review and on Today's plan.
+**English first.** Recognising a word is half of knowing it; bringing it to
+mind is the other half. Once a flashcard is at level 2 (right on two separate
+days), Today's Review shows you the English first: think of the French, tap
+**Show the French**, and rate yourself as usual. So do the refreshers of basics
+you've checked. Nothing to type, so it's as quick as any other card. **Show the
+French side first** turns that one back round. **Recall the French** is also a
+session of its own: 15 flashcards you've got right at least twice, the longest
+unseen first, offered at the end of a review and on Today's plan. (An earlier
+version asked you to type the French; it was too slow, and it's gone.)
 
 ---
 

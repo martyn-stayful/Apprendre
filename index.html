@@ -4281,6 +4281,19 @@
   .rv-write-label { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
   .rv-fc.rv-write-en { font-size: 24px; }
   .rv-write-skip { display: block; margin: 12px auto 0; background: none; border: none; color: var(--slate); font-family: inherit; font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+  .rv-write-hint { margin: -6px 0 12px; text-align: center; font-family: 'Fraunces', serif; font-size: 20px; letter-spacing: 0.08em; color: var(--pine); }
+  .rv-write-help { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .rv-write-btn { padding: 11px 10px; border-radius: 12px; border: 1px solid rgba(26, 35, 50, 0.14); background: var(--paper); color: var(--ink-soft); font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+  .rv-write-btn:disabled { opacity: 0.45; cursor: default; }
+  .rv-rate-btn.suggested { border-color: var(--pine); box-shadow: 0 0 0 2px rgba(42, 74, 60, 0.14); }
+  .rv-write-verdict { margin-top: 4px; text-align: center; font-size: 13px; font-weight: 700; }
+  .rv-write-verdict.right { color: var(--moss); }
+  .rv-write-verdict.close { color: #9a7224; }
+  .rv-write-verdict.wrong { color: var(--ember); }
+  .rv-write-verdict.unknown { color: var(--slate); }
+  .rv-write-given { margin: -8px 0 6px; text-align: center; font-size: 14px; color: var(--slate); }
+  .rv-write-given.close span { color: #9a7224; }
+  .rv-write-given.wrong span { color: var(--ember-deep); text-decoration: line-through; }
   .rv-rate-btn[data-rate="again"]:hover { border-color: var(--ember); color: var(--ember); }
   .rv-rate-btn[data-rate="good"]:hover { border-color: var(--moss); color: var(--moss); }
   .rv-rate-btn[data-rate="easy"]:hover { border-color: var(--gold); color: var(--gold); }
@@ -8974,7 +8987,7 @@ function startReview(mode, limit) {
     if (title) title.textContent = 'Basics check';
     if (sub) sub.textContent = `${items.length} A1 basics to confirm`;
   } else if (mode === 'recall') {
-    if (title) title.textContent = 'Recall the French';
+    if (title) title.textContent = 'Write the French';
     if (sub) sub.textContent = `${items.length} words you recognise, English first`;
   } else if (mode === 'lesson') {
     const w = currentLessonWeek();
@@ -9035,9 +9048,9 @@ function renderReviewCard() {
     </div>
   ` : rvState.i === 0 && rvState.mode === 'recall' ? `
     <div class="rv-intro" style="background:linear-gradient(135deg,var(--ink-soft) 0%,var(--ink) 100%)">
-      <div class="eyebrow">Recall the French · English first</div>
+      <div class="eyebrow">Write the French · English first</div>
       <h3>${rvState.items.length} words you recognise</h3>
-      <p>You see the English; think of the French, then show it. Recognising a word is half of knowing it. Bringing it to mind yourself is the other half, and it's what you need in a conversation.</p>
+      <p>You see the English; type the French. Recognising a word is half of knowing it; producing it is the other half, and it's what you need in a conversation. Stuck? Tap Hint for some letters, or I don't know to see it.</p>
     </div>
   ` : rvState.i === 0 && rvState.mode === 'new' ? `
     <div class="rv-intro">
@@ -9115,6 +9128,18 @@ function renderReviewCard() {
     }, 80);
   }
 
+  // Focus the written answer; Enter checks it
+  const writeInput = document.getElementById('rvWriteInput');
+  if (writeInput) {
+    setTimeout(() => {
+      writeInput.focus();
+      writeInput.setSelectionRange(writeInput.value.length, writeInput.value.length);
+      writeInput.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); checkReviewWrite(); }
+      };
+    }, 80);
+  }
+
   // Focus the workbook typed input for typed exercise types
   if (item.type === 'workbook' && item.card.exerciseType !== 'multiple') {
     setTimeout(() => {
@@ -9135,7 +9160,7 @@ function renderReviewCard() {
 
 /* ---- Flashcard in review view ---- */
 
-/** English first, recall the French: in a Recall session, and once a card is going well. */
+/** English first, type the French: in a Write session, and once a card is going well. */
 function recallsThisCard(item) {
   if (rvState.frenchFirst || rvState.mode === 'check') return false;
   return rvState.mode === 'recall' || !!(item.rec && item.rec.level >= RECALL_FROM_LEVEL);
@@ -9143,11 +9168,19 @@ function recallsThisCard(item) {
 
 function renderReviewFlashcard(item) {
   const c = item.card;
+  if (rvState.flipped && rvState.writeGrade) return renderReviewWritten(item);
   if (!rvState.flipped && recallsThisCard(item)) {
     return `
-      <div class="rv-write-label">Think of the French</div>
+      <div class="rv-write-label">Write it in French</div>
       <div class="rv-fc rv-write-en">${escapeHtml(c.en)}</div>
-      <button class="rv-reveal" onclick="flipReviewCard()">Show the French</button>
+      ${rvState.hint ? `<div class="rv-write-hint">${escapeHtml(hintFor(c.fr, rvState.hint))}</div>` : ''}
+      <input type="text" class="rv-conj-input" id="rvWriteInput" lang="fr" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             placeholder="type the French…" value="${escapeHtml(rvState.typed || '')}">
+      <button class="rv-reveal" style="margin-top:12px" onclick="checkReviewWrite()">Check</button>
+      <div class="rv-write-help">
+        <button class="rv-write-btn" onclick="hintReviewWrite()" ${rvState.hint >= 2 ? 'disabled' : ''}>${rvState.hint ? 'More of a hint' : 'Hint'}</button>
+        <button class="rv-write-btn" onclick="giveUpReviewWrite()">I don't know</button>
+      </div>
       <button class="rv-write-skip" onclick="showFrenchFirst()">Show the French side first</button>
     `;
   }
@@ -9205,6 +9238,69 @@ function flipReviewCard() {
 /** This one the usual way round: French first, recall the meaning. */
 function showFrenchFirst() {
   rvState.frenchFirst = true;
+  renderReviewCard();
+}
+
+const WRITE_VERDICTS = {
+  right: ['right', '✓ Right'],
+  accents: ['right', '✓ Right, apart from the accents'],
+  article: ['close', 'Nearly: keep the article, it carries the gender'],
+  close: ['close', 'Nearly: a letter or two out'],
+  wrong: ['wrong', 'Not this time'],
+  unknown: ['unknown', "Here it is. Say it out loud, and it'll come back soon"],
+};
+
+function renderReviewWritten(item) {
+  const c = item.card;
+  const g = rvState.writeGrade;
+  const [tone, headline] = WRITE_VERDICTS[g.verdict];
+  const suggest = tone === 'right' || tone === 'close' ? 'good' : 'again';
+  return `
+    <div class="rv-write-verdict ${tone}">${headline}${g.hinted && tone !== 'unknown' ? ' (with a hint)' : ''}</div>
+    <div class="rv-fc"${frAttrs(c.en)}>${escapeHtml(c.fr)}
+      <button class="phrase-speak" style="margin-left:8px; width:32px; height:32px; vertical-align:-4px" onclick="${speakHandler(c.fr)}" aria-label="Listen">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+      </button>
+    </div>
+    ${g.given && tone !== 'right' ? `<div class="rv-write-given ${tone}">You wrote: <span lang="fr">${escapeHtml(g.given)}</span></div>` : ''}
+    <div class="rv-fc-answer">
+      <div class="rv-fc-answer-en">${escapeHtml(c.en)}</div>
+      ${c.ex ? `<div class="rv-fc-answer-ex"${frAttrs('')}>${escapeHtml(c.ex)}</div>` : ''}
+    </div>
+    ${tone === 'wrong' ? whyButtonHtml({ id: item.id, kind: 'flashcard: write the French', prompt: c.en, answer: c.fr, note: c.ex || '', given: g.given }) : ''}
+    ${explainHtml({ fr: c.fr, en: c.en, ex: c.ex, conceptId: conceptForItem(item), from: 'review' })}
+    <div class="rv-rate">
+      ${['again', 'good', 'easy'].map(r => `<button class="rv-rate-btn${r === suggest ? ' suggested' : ''}" data-rate="${r}" onclick="rateReviewCard('${r}')">${
+        { again: 'Again <small>&lt; 1 min</small>', good: 'Good <small>on track</small>', easy: 'Easy <small>push out</small>' }[r]}</button>`).join('')}
+    </div>
+  `;
+}
+
+function checkReviewWrite() {
+  if (rvState.flipped) return;
+  const input = document.getElementById('rvWriteInput');
+  const given = input ? input.value.trim() : '';
+  // Nothing typed is the same as "I don't know".
+  if (!given) { giveUpReviewWrite(); return; }
+  const item = rvState.items[rvState.i];
+  rvState.writeGrade = { verdict: gradeWritten(given, item.card.fr), given, hinted: !!rvState.hint };
+  rvState.flipped = true;
+  if (WRITE_VERDICTS[rvState.writeGrade.verdict][0] === 'right') playCorrectSound();
+  renderReviewCard();
+}
+
+/** Stuck: show some of the letters, keeping whatever's typed so far. */
+function hintReviewWrite() {
+  const input = document.getElementById('rvWriteInput');
+  rvState.typed = input ? input.value : '';
+  rvState.hint = Math.min(2, (rvState.hint || 0) + 1);
+  renderReviewCard();
+}
+
+/** No idea: show the answer without having to type anything. */
+function giveUpReviewWrite() {
+  rvState.writeGrade = { verdict: 'unknown', given: '', hinted: !!rvState.hint };
+  rvState.flipped = true;
   renderReviewCard();
 }
 
@@ -9283,9 +9379,12 @@ function takeABreakContinue() {
 function rateReviewCard(rating) {
   const item = rvState.items[rvState.i];
   const wasCorrect = rating !== 'again';
-  // In a basics check, knowing it is the point; elsewhere Easy says so.
-  const known = wasCorrect && (rvState.mode === 'check' || rating === 'easy');
-  const rec = recordAnswer(item.id, wasCorrect, '', known);
+  const written = rvState.writeGrade;
+  const wroteIt = written && ['right', 'accents', 'article'].includes(written.verdict);
+  // In a basics check, knowing it is the point; elsewhere Easy says so. A
+  // written answer has to have been right, and without a hint, to count.
+  const known = wasCorrect && (rvState.mode === 'check' || rating === 'easy') && (!written || (wroteIt && !written.hinted));
+  const rec = recordAnswer(item.id, wasCorrect, written && !wroteIt ? written.given : '', known);
   rvState.sessionResults[item.id] = {
     before: rvState.sessionStart[item.id],
     after: rec.level,
@@ -9298,6 +9397,9 @@ function rateReviewCard(rating) {
   rvState.i++;
   rvState.flipped = false;
   rvState.frenchFirst = false;
+  rvState.writeGrade = null;
+  rvState.hint = 0;
+  rvState.typed = '';
 
   // "Again" handling — check if we've hit the 2-wrong threshold
   if (rating === 'again') {
@@ -9648,7 +9750,7 @@ function renderReviewEmpty(wrap) {
         const basics = basicsStatus().toCheck, recallable = recallableItems().length;
         return basics || recallable >= 5 ? `<div class="rv-mode-switch">
           ${basics ? `<button class="rv-mode-btn" onclick="startReview('check')">Basics check (${basics} to confirm)</button>` : ''}
-          ${recallable >= 5 ? `<button class="rv-mode-btn" onclick="startReview('recall')">Recall ${Math.min(recallable, RECALLS_PER_SESSION)}, English first</button>` : ''}
+          ${recallable >= 5 ? `<button class="rv-mode-btn" onclick="startReview('recall')">Write ${Math.min(recallable, RECALLS_PER_SESSION)}, English first</button>` : ''}
         </div>` : '';
       })()}
       ${newAvail > 0 ? `
@@ -9695,7 +9797,7 @@ function renderReviewComplete(wrap) {
       : rvState.mode === 'check'
         ? `Basics checked`
         : rvState.mode === 'recall'
-          ? `Recalled from the English`
+          ? `Written from the English`
           : rvState.mode === 'lesson'
             ? `Lesson revised`
             : `Review session complete`;
@@ -9707,7 +9809,7 @@ function renderReviewComplete(wrap) {
       : rvState.mode === 'check'
         ? `${knownNow} confirmed: they'll be back as a refresher in two weeks, English first this time. ${results.length - knownNow ? `${results.length - knownNow} to practise: they're in your reviews from tomorrow.` : ''}`
       : rvState.mode === 'recall'
-        ? `Bringing the French to mind is the step after recognising it. The ones you couldn't recall come back sooner.`
+        ? `Producing it is the step after recognising it. The ones you couldn't write come back sooner.`
       : rvState.mode === 'lesson'
         ? `${levelledUp} moved up a level. ${lessonSessionItems().length ? `${lessonSessionItems().length} from this lesson still to master.` : 'Everything from this lesson is mastered.'}`
       : (levelledUp > held
@@ -9758,7 +9860,7 @@ function renderReviewComplete(wrap) {
     });
   }
 
-  // The basics, settled quickly, and recalling what you recognise
+  // The basics, settled quickly, and writing what you recognise
   const basics = basicsStatus();
   if (basics.toCheck > 0) {
     options.push({
@@ -9772,8 +9874,8 @@ function renderReviewComplete(wrap) {
   if (recallable >= 5 && rvState.mode !== 'recall') {
     options.push({
       primary: !options.length,
-      label: 'Recall the French',
-      sub: `${recallable} words you recognise · English first`,
+      label: 'Write the French',
+      sub: `${recallable} words you recognise · English first, type it`,
       onclick: `startReview('recall')`
     });
   }
@@ -12264,13 +12366,14 @@ function getNewItems(limit) {
   return brand;
 }
 
-/* ---- Basics, and recalling it yourself ----
+/* ---- Basics, and writing it yourself ----
    A1 is the basics. A basics check runs through the ones not yet settled:
    right first time, and an item goes straight to a two-week refresher
    (KNOWN_LEVEL); missed, and it joins normal practice. Once a flashcard is at
    RECALL_FROM_LEVEL (right on two separate days), reviews show the English
-   first and you think of the French, since bringing it to mind is the next
-   step after recognising it. */
+   and ask you to type the French, since producing it is the next step after
+   recognising it. Stuck, you can ask for a hint, or say you don't know and
+   see it straight away. */
 
 const KNOWN_LEVEL = 4;
 const RECALL_FROM_LEVEL = 2;
@@ -12313,11 +12416,66 @@ function basicsStatus() {
   return { total: basics.length, settled, toCheck, missed: basics.length - settled - toCheck };
 }
 
-/** Flashcards you've got right at least twice, the longest unseen first: ready to recall. */
+/** Flashcards you've got right at least twice, the longest unseen first: ready to write. */
 function recallableItems() {
   return allTrackableItems()
     .filter(it => it.type === 'flashcard' && it.rec && it.rec.right >= 2)
     .sort((a, b) => String(a.rec.lastSeen).localeCompare(String(b.rec.lastSeen)));
+}
+
+/** Every way the card's French can be written: "grand(e)" is grand or grande; "/" separates options. */
+function answerForms(answer) {
+  const out = new Set();
+  String(answer).split(/\s+\/\s+|\s*\/\s*(?=\S)/).forEach(opt => {
+    out.add(opt.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim());
+    out.add(opt.replace(/\(([^)]*)\)/g, '$1').replace(/\s+/g, ' ').trim());
+  });
+  return [...out].filter(Boolean);
+}
+
+/** Letters added, dropped, changed or swapped with a neighbour (a phone's usual typos). */
+function editDistance(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+  }
+  return d[a.length][b.length];
+}
+
+/**
+ * How a typed answer compares with the card's French: 'right', 'accents'
+ * (right apart from accents), 'article' (right but without its le/la/un),
+ * 'close' (a letter or two out), or 'wrong'.
+ */
+function gradeWritten(given, answer) {
+  const plain = (s) => String(s).toLowerCase().replace(/[’‘]/g, "'").replace(/[.,!?;:«»"]/g, ' ').replace(/\s+/g, ' ').trim();
+  const fold = (s) => plain(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const bare = (s) => fold(s).replace(/^(le |la |les |l'|un |une |des |du |de la |de l')/, '');
+  const forms = answerForms(answer);
+  if (forms.some(f => plain(f) === plain(given))) return 'right';
+  if (forms.some(f => fold(f) === fold(given))) return 'accents';
+  if (forms.some(f => bare(f) !== fold(f) && bare(f) === bare(given))) return 'article';
+  if (forms.some(f => editDistance(fold(f), fold(given)) <= Math.max(1, Math.floor(fold(f).length / 8)))) return 'close';
+  return 'wrong';
+}
+
+/**
+ * The answer with most of its letters hidden, for when you're stuck: level 1
+ * keeps the first letter of each word, level 2 the first half. « le registre
+ * courant » → « l_ r_______ c______ » → « l_ regi_____ cour___ ».
+ */
+function hintFor(answer, level) {
+  const isLetter = (ch) => /\p{L}/u.test(ch);
+  return (answerForms(answer)[0] || answer).split(' ').map(word => {
+    const chars = [...word];
+    const keep = level >= 2 ? Math.ceil(chars.filter(isLetter).length / 2) : 1;
+    let shown = 0;
+    return chars.map(ch => (isLetter(ch) ? (shown++ < keep ? ch : '_') : ch)).join('');
+  }).join(' ');
 }
 
 // Is this item from a recent lesson — current ISO week or the one before it?
@@ -15473,7 +15631,7 @@ function planTask(id) {
   }
   if (kind === 'recall') {
     const n = recallableItems().length;
-    return n >= 5 ? task('💭', 'Recall the French', `${Math.min(n, RECALLS_PER_SESSION)} words you recognise: see the English, think of the French`, '5 min') : null;
+    return n >= 5 ? task('✍️', 'Write the French', `${Math.min(n, RECALLS_PER_SESSION)} words you recognise: see the English, type the French`, '5 min') : null;
   }
   if (kind === 'fix') {
     if (ref === 'new') {

@@ -306,7 +306,7 @@ few specific exercises the app picks for you. Each pick is a different kind:
 - a verb
 - an explainer
 - a new story episode
-- a basics check, or recalling the French for words you know (see below)
+- a basics check, or writing the French for words you know (see below)
 
 Tapping a pick opens that exact exercise. A role-play opens on its scene with
 **Practise my lines** on.
@@ -353,15 +353,28 @@ learning, and too slow for things you already know. So:
   basics come last, since the basics check is the quick way through those.
   Today's Review also puts current material ahead of refreshers of the basics.
 
-**English first.** Recognising a word is half of knowing it; bringing it to
-mind is the other half. Once a flashcard is at level 2 (right on two separate
-days), Today's Review shows you the English first: think of the French, tap
-**Show the French**, and rate yourself as usual. So do the refreshers of basics
-you've checked. Nothing to type, so it's as quick as any other card. **Show the
-French side first** turns that one back round. **Recall the French** is also a
-session of its own: 15 flashcards you've got right at least twice, the longest
-unseen first, offered at the end of a review and on Today's plan. (An earlier
-version asked you to type the French; it was too slow, and it's gone.)
+**English first, write the French.** Recognising a word is half of knowing it;
+producing it is the other half. Once a flashcard is at level 2 (right on two
+separate days), Today's Review shows you the English and asks you to type the
+French. So do the refreshers of basics you've checked. It's marked forgivingly:
+right apart from the accents counts, a missing le/la or a letter or two out
+counts as nearly, and a wrong answer gets the Why? button and goes in the
+mistakes log. Then you rate it as usual, with the rating that fits the answer
+outlined.
+
+When you're stuck:
+
+- **Hint** shows the first letter of each word and how long it is
+  (« l_ r_______ c______ »); **More of a hint** shows the first half of each
+  word. Whatever you've typed stays put.
+- **I don't know**, or **Check** with nothing typed, shows the answer straight
+  away and suggests Again, so it comes back later in the session.
+
+Only an answer you wrote right, without a hint, can fast-track a card with
+Easy. **Show the French side first** turns a card back round. **Write the
+French** is also a session of its own: 15 flashcards you've got right at least
+twice, the longest unseen first, offered at the end of a review and on Today's
+plan.
 
 ---
 
